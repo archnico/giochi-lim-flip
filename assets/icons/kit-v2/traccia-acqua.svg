@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 390" role="img" aria-label="traccia-acqua">
+<rect x="16" y="15" width="548" height="360" rx="70" fill="#e9f5fc"/>
+<circle cx="315" cy="190" r="155" fill="white" opacity=".38"/>
+<defs><style>
+.o{fill:none;stroke:#163957;stroke-width:12;stroke-linecap:round;stroke-linejoin:round}
+.i{fill:none;stroke:#163957;stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+</style></defs><circle cx="83" cy="95" r="10" fill="#fff" opacity=".85"/>
+<path d="M489 77v36m-18-18h36M106 319v28m-14-14h28" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".83"/>
+<circle cx="504" cy="290" r="9" fill="#fff" opacity=".88"/><path d="M91 252Q152 165 215 252T343 252T475 252" fill="none" stroke="#173957" stroke-width="35" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M91 252Q152 165 215 252T343 252T475 252" fill="none" stroke="#79c9e9" stroke-width="24" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="104" cy="240" r="24" fill="#a0e6bb" stroke="#173957" stroke-width="8"/></svg>

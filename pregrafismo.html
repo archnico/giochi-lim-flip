@@ -56,17 +56,18 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 @media(max-height:680px){.top{min-height:58px;padding:4px 12px}.board-tools .btn{min-height:42px}.hud h1{font-size:25px}.hud p{margin:2px 0}.chapter{min-height:145px}}
 @media(prefers-reduced-motion:reduce){.particle,#celebrate .bigstar{animation:none}}
 </style>
+<link rel="stylesheet" href="pregrafismo-v2.css">
 <script src="diego-runtime.js"></script>
 </head>
 <body>
 <div id="app">
   <div class="top">
     <button type="button" id="home" class="btn">⌂ GIOCHI</button>
-    <strong>✏️ PREGRAFISMO</strong>
-    <div class="toolbar"><button id="sound" type="button" class="btn" aria-pressed="true">🔊 SUONI</button></div>
+    <strong class="pregra-brand"><img src="assets/icons/kit-v2/pregrafismo.svg" alt="">PREGRAFISMO</strong>
+    <div class="toolbar"><button id="sound" type="button" class="btn" aria-pressed="true">SUONI</button></div>
   </div>
   <div id="menu">
-    <div class="intro"><h1>Segui il percorso con il dito!</h1><p>Parti dal cerchio luminoso e arriva alla stella. Nessuna fretta. 🌟</p></div>
+    <div class="intro"><h1>Segui il percorso con il dito!</h1><p>Parti dal cerchio luminoso e arriva alla stella. Nessuna fretta.</p></div>
     <div id="chapters" class="chapters"></div>
   </div>
   <div id="play" hidden>
@@ -77,17 +78,17 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
         <g id="markers"></g>
         <g id="guide" visibility="hidden">
           <circle id="guide-halo" cx="0" cy="0" r="50" fill="#ffffff55" stroke="#fff" stroke-width="3"></circle>
-          <text id="guide-hand" x="0" y="0" text-anchor="middle" dy="13" font-size="75">👆</text>
+          <text id="guide-hand" x="0" y="0" text-anchor="middle" dy="13" font-size="75" fill="#fffdf0">●</text>
         </g>
       </svg>
       <div id="message" role="status" aria-live="polite">Parti dal cerchio e segui la linea</div>
-      <div id="celebrate" hidden><div id="confetti"></div><div class="bigstar">🌟</div><div class="yay">BRAVISSIMO!</div></div>
+      <div id="celebrate" hidden><div id="confetti"></div><div class="bigstar">★</div><div class="yay">BRAVISSIMO!</div></div>
     </div>
     <div class="board-tools">
       <button id="chaptersBtn" type="button" class="btn">☷ CAPITOLI</button>
       <button id="prev" type="button" class="btn">← PRIMA</button>
       <button id="again" type="button" class="btn">↻ RIPROVA</button>
-      <button id="hint" type="button" class="btn">👆 MOSTRA</button>
+      <button id="hint" type="button" class="btn">MOSTRA</button>
       <button id="easy" type="button" class="btn" aria-pressed="true">☺ FACILE</button>
       <button id="next" type="button" class="btn light">DOPO →</button>
     </div>
@@ -183,10 +184,10 @@ function setMessage(text){message.textContent=text}
 function title(){return chapters[state.chapter].levels[state.level][0]}
 function labelButtons(){var c=chapters[state.chapter];document.getElementById('ex-title').textContent=title();document.getElementById('ex-subtitle').textContent=c.title+' · Vai dal cerchio alla stella';document.getElementById('ex-counter').textContent=(state.level+1)+' / '+c.levels.length;document.getElementById('easy').textContent=state.easy?'☺ FACILE':'◎ PRECISO';document.getElementById('easy').setAttribute('aria-pressed',String(state.easy))}
 function chapterMenu(){state.session++;clearTimers();state.down=false;state.done=false;state.chapter=-1;menu.hidden=false;play.hidden=true;celebrate.hidden=true;var box=document.getElementById('chapters');clear(box);
- chapters.forEach(function(c,ci){var b=document.createElement('button');b.type='button';b.className='chapter';var done=(progress[c.id]||[]).length;b.innerHTML='<span class="symbol">'+c.icon+'</span><span class="name">'+c.title+'</span><span class="detail">'+c.detail+'</span><span class="stars">'+done+' / '+c.levels.length+' ★</span>';b.addEventListener('click',function(){var p=progress[c.id]||[],n=0;while(n<c.levels.length-1&&p.indexOf(n)>=0)n++;openLevel(ci,n)});box.appendChild(b)})
+ chapters.forEach(function(c,ci){var b=document.createElement('button');b.type='button';b.className='chapter';var done=(progress[c.id]||[]).length;b.innerHTML='<span class="symbol"><img src="assets/icons/kit-v2/traccia-'+c.id+'.svg" alt=""></span><span class="name">'+c.title+'</span><span class="detail">'+c.detail+'</span><span class="stars">'+done+' / '+c.levels.length+' ★</span>';b.addEventListener('click',function(){var p=progress[c.id]||[],n=0;while(n<c.levels.length-1&&p.indexOf(n)>=0)n++;openLevel(ci,n)});box.appendChild(b)})
 }
 function stopDemo(){if(demoTimer){clearInterval(demoTimer);demoTimer=0}guide.setAttribute('visibility','hidden')}
-function showDemo(){if(state.chapter<0||state.done||state.down)return;stopDemo();var data=state.parts[state.stroke];if(!data)return;var t0=Date.now(),duration=Math.max(2100,Math.min(4200,data.length*4));guide.setAttribute('visibility','visible');setMessage('Guarda il dito, poi prova tu!');demoTimer=setInterval(function(){if(state.down||state.done){stopDemo();return}var p=Math.min(1,(Date.now()-t0)/duration),point=data.path.getPointAtLength(p*data.length);document.getElementById('guide-halo').setAttribute('cx',point.x);document.getElementById('guide-halo').setAttribute('cy',point.y);document.getElementById('guide-hand').setAttribute('x',point.x);document.getElementById('guide-hand').setAttribute('y',point.y);if(p>=1){stopDemo();setMessage('Adesso tocca il cerchio luminoso') }},40)}
+function showDemo(){if(state.chapter<0||state.done||state.down)return;stopDemo();var data=state.parts[state.stroke];if(!data)return;var t0=Date.now(),duration=Math.max(2100,Math.min(4200,data.length*4));guide.setAttribute('visibility','visible');setMessage('Guarda il pallino, poi prova tu!');demoTimer=setInterval(function(){if(state.down||state.done){stopDemo();return}var p=Math.min(1,(Date.now()-t0)/duration),point=data.path.getPointAtLength(p*data.length);document.getElementById('guide-halo').setAttribute('cx',point.x);document.getElementById('guide-halo').setAttribute('cy',point.y);document.getElementById('guide-hand').setAttribute('x',point.x);document.getElementById('guide-hand').setAttribute('y',point.y);if(p>=1){stopDemo();setMessage('Adesso tocca il cerchio luminoso') }},40)}
 function openLevel(ci,li){state.session++;clearTimers();state.chapter=ci;state.level=(li+chapters[ci].levels.length)%chapters[ci].levels.length;state.stroke=0;state.index=0;state.down=false;state.id=null;state.done=false;celebrate.hidden=true;menu.hidden=true;play.hidden=false;labelButtons();draw();setMessage('Tocca il cerchio luminoso e segui la linea');if(state.level===0)later(function(){if(!state.down&&!state.done)showDemo()},800)}
 function draw(){clear(tracks);clear(markers);state.parts=[];var raw=chapters[state.chapter].levels[state.level][1],colors=['#ffe778','#fa7aa4','#7a85f7','#b2f27f'];
 raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#12476a','stroke-width':'48','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.72'},tracks);var p=svg('path',{d:d,fill:'none',stroke:colors[i%colors.length],'stroke-width':'30','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#fff9e5','stroke-width':'17','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});activate()}
@@ -227,7 +228,7 @@ function zoomBoard(delta){
  setMessage('Ingrandimento '+Math.round(state.zoom*100)+'%');
 }
 function chirp(){if(!window.DiegoAudio||!DiegoAudio.isEnabled())return;try{var AudioContext=window.AudioContext||window.webkitAudioContext;if(!AudioContext)return;if(!audioCtx)audioCtx=new AudioContext();var osc=audioCtx.createOscillator(),gain=audioCtx.createGain(),t=audioCtx.currentTime;osc.type='sine';osc.frequency.setValueAtTime(600,t);osc.frequency.exponentialRampToValueAtTime(880,t+.12);gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.05,t+.02);gain.gain.exponentialRampToValueAtTime(.0001,t+.18);osc.connect(gain);gain.connect(audioCtx.destination);osc.start(t);osc.stop(t+.19)}catch(ignore){}}
-var sound=document.getElementById('sound');function syncSound(){var enabled=window.DiegoAudio?DiegoAudio.isEnabled():false;sound.textContent=enabled?'🔊 SUONI':'🔇 MUTO';sound.setAttribute('aria-pressed',String(enabled))}
+var sound=document.getElementById('sound');function syncSound(){var enabled=window.DiegoAudio?DiegoAudio.isEnabled():false;sound.textContent=enabled?'SUONI':'MUTO';sound.setAttribute('aria-pressed',String(enabled))}
 sound.onclick=function(){if(window.DiegoAudio){DiegoAudio.setEnabled(!DiegoAudio.isEnabled());syncSound();if(DiegoAudio.isEnabled())DiegoAudio.play('bravo')}};
 if(window.DiegoAudio)DiegoAudio.subscribe(syncSound);syncSound();
 document.getElementById('home').onclick=function(){location.href='index.html'};

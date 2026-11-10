@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 390" role="img" aria-label="altri">
+<rect x="16" y="15" width="548" height="360" rx="70" fill="#e3f5e9"/>
+<circle cx="315" cy="190" r="155" fill="white" opacity=".38"/>
+<defs><style>
+.o{fill:none;stroke:#163957;stroke-width:12;stroke-linecap:round;stroke-linejoin:round}
+.i{fill:none;stroke:#163957;stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+</style></defs><circle cx="83" cy="95" r="10" fill="#fff" opacity=".85"/>
+<path d="M489 77v36m-18-18h36M106 319v28m-14-14h28" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".83"/>
+<circle cx="504" cy="290" r="9" fill="#fff" opacity=".88"/>
+<rect x="128" y="97" width="149" height="131" rx="25" fill="#f5ae7d" stroke="#173957" stroke-width="11"/>
+<path d="M275 143q26-26 48 1t-48 34" fill="#f5ae7d" stroke="#173957" stroke-width="10"/>
+<rect x="297" y="197" width="150" height="132" rx="25" fill="#95ddcf" stroke="#173957" stroke-width="11"/>
+<path d="M334 197q-24-25 2-42 27-19 39 10l-1 32" fill="#95ddcf" stroke="#173957" stroke-width="10"/>
+<circle cx="168" cy="161" r="16" fill="#ffedb2"/><path d="M371 236v51M345 261h52" stroke="#fff" stroke-width="18" stroke-linecap="round"/>
+</svg>

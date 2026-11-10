@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 390" role="img" aria-label="scacchi">
+<rect x="16" y="15" width="548" height="360" rx="70" fill="#ede2ff"/>
+<circle cx="315" cy="190" r="155" fill="white" opacity=".38"/>
+<defs><style>
+.o{fill:none;stroke:#163957;stroke-width:12;stroke-linecap:round;stroke-linejoin:round}
+.i{fill:none;stroke:#163957;stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+</style></defs><circle cx="83" cy="95" r="10" fill="#fff" opacity=".85"/>
+<path d="M489 77v36m-18-18h36M106 319v28m-14-14h28" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".83"/>
+<circle cx="504" cy="290" r="9" fill="#fff" opacity=".88"/>
+<path d="M144 301H433L414 335H164Z" fill="#806ad2" stroke="#163957" stroke-width="12" stroke-linejoin="round"/>
+<path d="M202 163H376L361 292H216Z" fill="#fff9e8" stroke="#163957" stroke-width="12" stroke-linejoin="round"/>
+<path d="M189 120H234V151H267V120H312V151H345V120H390V175H189Z" fill="#b5a4ef" stroke="#163957" stroke-width="12" stroke-linejoin="round"/>
+<path d="M225 280h132" stroke="#163957" stroke-width="10" stroke-linecap="round"/>
+<path d="M286 46l20 38 42 6-31 30 8 42-39-21-40 21 8-42-31-30 43-6Z" fill="#ffdb64" stroke="#163957" stroke-width="9" stroke-linejoin="round"/>
+<path d="M441 176l9 17 19 2-14 13 4 19-18-10-17 10 3-19-14-13 19-2Z" fill="#ffdb64" stroke="#163957" stroke-width="6"/>
+</svg>

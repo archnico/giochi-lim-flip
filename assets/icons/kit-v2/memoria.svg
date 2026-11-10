@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 390" role="img" aria-label="memoria">
+<rect x="16" y="15" width="548" height="360" rx="70" fill="#e4e5ff"/>
+<circle cx="315" cy="190" r="155" fill="white" opacity=".38"/>
+<defs><style>
+.o{fill:none;stroke:#163957;stroke-width:12;stroke-linecap:round;stroke-linejoin:round}
+.i{fill:none;stroke:#163957;stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+</style></defs><circle cx="83" cy="95" r="10" fill="#fff" opacity=".85"/>
+<path d="M489 77v36m-18-18h36M106 319v28m-14-14h28" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".83"/>
+<circle cx="504" cy="290" r="9" fill="#fff" opacity=".88"/>
+<rect x="116" y="99" width="162" height="225" rx="26" fill="#ffbe89" stroke="#173957" stroke-width="12" transform="rotate(-9 197 211)"/>
+<rect x="288" y="95" width="171" height="226" rx="26" fill="#9bcced" stroke="#173957" stroke-width="12" transform="rotate(9 374 211)"/>
+<path d="M194 144l15 34 37 4-28 26 7 37-31-18-32 18 7-37-28-26 38-4Z" fill="#ffe37a" stroke="#173957" stroke-width="8"/>
+<path d="M363 144l15 34 37 4-28 26 7 37-31-18-32 18 7-37-28-26 38-4Z" fill="#ffe37a" stroke="#173957" stroke-width="8"/>
+</svg>

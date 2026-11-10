@@ -93,6 +93,7 @@ footer{min-height:52px;border-top:1px solid var(--line);padding:10px 20px;displa
 @media(prefers-reduced-motion:reduce){#mini-celebrate span{animation:none}}
 </style>
 <link rel="stylesheet" href="flip-ui.css">
+<link rel="stylesheet" href="visual-v2.css">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="diego-runtime.css"><script src="diego-runtime.js"></script></head>
 <body>
@@ -192,9 +193,9 @@ function refreshScore(){const b=document.getElementById('scorebox');if(b)b.inner
 function miniCelebration(){
  const prior=document.getElementById('mini-celebrate');if(prior)prior.remove();
  const f=document.createElement('div');f.id='mini-celebrate';
- f.innerHTML='<span>⭐</span><span>✨</span><span>🌟</span>';
+ f.innerHTML='<span class="reward-spark a">✦</span><span class="reward-spark b">✦</span><span class="reward-spark c">✦</span><div class="reward-inner"><span class="reward-star">★</span><strong>BRAVO!</strong></div>';
  main.appendChild(f);
- gameScope.later(()=>{if(f.parentNode)f.parentNode.removeChild(f)},800);
+ gameScope.later(()=>{if(f.parentNode)f.parentNode.removeChild(f)},930);
 }
 function point(){var completed=stars===4;stars=Math.min(5,stars+1);refreshScore();say(stars===5?'Fantastico! ★★★★★':'Bravo! ★');miniCelebration();DiegoAudio.play(completed?'fantastico':'bravo')}
 const topics=[
@@ -210,23 +211,23 @@ const topics=[
 let topic=null;
 // EDIZIONE FLIP: navigazione visuale indipendente dalla versione PC.
 const flipVisual={
-  pregrafismo:'assets/icons/pregrafismo.svg',
-  acqua:'assets/icons/mare.jpg',
-  animali:'assets/icons/animali.jpg',
-  matematica:'assets/icons/matematica.png',
-  scacchi:'assets/icons/scacchi.png',
-  attenzione:'assets/icons/attenzione.png',
-  associazioni:'assets/icons/associazioni.png',
-  memoria:'assets/icons/memoria.png',
-  match:'assets/icons/associazioni.png',
-  count:'assets/icons/matematica.png',
-  numeri:'assets/icons/matematica.png',
-  unisci:'assets/icons/unisci.svg',
-  same:'assets/icons/attenzione.png',
-  odd:'assets/icons/attenzione.png',
-  habitat1:'assets/habitat/delfino.webp',
-  habitat2:'assets/habitat/aquila.webp',
-  colori:'assets/colori/tigre.svg'
+  pregrafismo:'assets/icons/kit-v2/pregrafismo.svg',
+  acqua:'assets/icons/kit-v2/acqua.svg',
+  animali:'assets/icons/kit-v2/animali.svg',
+  matematica:'assets/icons/kit-v2/matematica.svg',
+  scacchi:'assets/icons/kit-v2/scacchi.svg',
+  attenzione:'assets/icons/kit-v2/attenzione.svg',
+  associazioni:'assets/icons/kit-v2/associazioni.svg',
+  memoria:'assets/icons/kit-v2/memoria.svg',
+  match:'assets/icons/kit-v2/associazioni.svg',
+  count:'assets/icons/kit-v2/conta.svg',
+  numeri:'assets/icons/kit-v2/numeri.svg',
+  unisci:'assets/icons/kit-v2/unisci.svg',
+  same:'assets/icons/kit-v2/attenzione.svg',
+  odd:'assets/icons/kit-v2/attenzione.svg',
+  habitat1:'assets/icons/kit-v2/animali.svg',
+  habitat2:'assets/icons/kit-v2/animali.svg',
+  colori:'assets/icons/kit-v2/colori.svg',
 };
 function flipCard(title,desc,id,visual,kind,href){
   const tag=href?'a':'button';
@@ -245,7 +246,7 @@ function home(){
     ['PREGRAFISMO','56 tracciati · 7 capitoli','pregrafismo']
   ];
   main.innerHTML='<div class="flip-home">'+primaries.map(function(a){return flipCard(a[0],a[1],a[2],flipVisual[a[2]],'topic')}).join('')+
-   '<button type="button" class="flip-other" id="otherBtn"><img src="assets/icons/altri.png" alt="">ALTRI GIOCHI <span>Attenzione · Associazioni · Memoria</span></button></div>';
+   '<button type="button" class="flip-other" id="otherBtn"><img src="assets/icons/kit-v2/altri.svg" alt="">ALTRI GIOCHI <span>Attenzione · Associazioni · Memoria</span></button></div>';
   main.querySelectorAll('[data-topic]').forEach(function(b){b.onclick=function(){openTopic(b.dataset.topic)}});
   main.querySelector('#otherBtn').onclick=openOthers;
 }

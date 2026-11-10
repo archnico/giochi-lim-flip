@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 390" role="img" aria-label="numeri">
+<rect x="16" y="15" width="548" height="360" rx="70" fill="#fff4d6"/>
+<circle cx="315" cy="190" r="155" fill="white" opacity=".38"/>
+<defs><style>
+.o{fill:none;stroke:#163957;stroke-width:12;stroke-linecap:round;stroke-linejoin:round}
+.i{fill:none;stroke:#163957;stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+</style></defs><circle cx="83" cy="95" r="10" fill="#fff" opacity=".85"/>
+<path d="M489 77v36m-18-18h36M106 319v28m-14-14h28" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".83"/>
+<circle cx="504" cy="290" r="9" fill="#fff" opacity=".88"/>
+<rect x="135" y="98" width="150" height="192" rx="29" fill="#ffbd75" stroke="#173957" stroke-width="12"/>
+<rect x="299" y="98" width="150" height="192" rx="29" fill="#87d8c9" stroke="#173957" stroke-width="12"/>
+<text x="210" y="242" text-anchor="middle" fill="#173957" font-family="Arial,sans-serif" font-size="133" font-weight="900">2</text>
+<text x="375" y="242" text-anchor="middle" fill="#173957" font-family="Arial,sans-serif" font-size="133" font-weight="900">5</text>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 390" role="img" aria-label="matematica">
+<rect x="16" y="15" width="548" height="360" rx="70" fill="#fff0c9"/>
+<circle cx="315" cy="190" r="155" fill="white" opacity=".38"/>
+<defs><style>
+.o{fill:none;stroke:#163957;stroke-width:12;stroke-linecap:round;stroke-linejoin:round}
+.i{fill:none;stroke:#163957;stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+</style></defs><circle cx="83" cy="95" r="10" fill="#fff" opacity=".85"/>
+<path d="M489 77v36m-18-18h36M106 319v28m-14-14h28" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".83"/>
+<circle cx="504" cy="290" r="9" fill="#fff" opacity=".88"/>
+<g transform="rotate(-9 182 207)"><rect x="95" y="137" width="145" height="154" rx="32" fill="#ff9b78" stroke="#163957" stroke-width="11"/><text x="169" y="254" text-anchor="middle" fill="#173957" font-family="Arial,sans-serif" font-weight="900" font-size="107">1</text></g>
+<g transform="rotate(8 301 184)"><rect x="234" y="97" width="142" height="164" rx="32" fill="#ffdb6b" stroke="#163957" stroke-width="11"/><text x="304" y="220" text-anchor="middle" fill="#173957" font-family="Arial,sans-serif" font-weight="900" font-size="107">2</text></g>
+<g transform="rotate(-6 427 215)"><rect x="366" y="141" width="128" height="152" rx="32" fill="#90e0ce" stroke="#163957" stroke-width="11"/><text x="429" y="251" text-anchor="middle" fill="#173957" font-family="Arial,sans-serif" font-weight="900" font-size="102">3</text></g>
+<circle cx="181" cy="331" r="10" fill="#f49c72"/><circle cx="300" cy="329" r="10" fill="#ffdb6b"/><circle cx="418" cy="326" r="10" fill="#5acbb5"/>
+</svg>

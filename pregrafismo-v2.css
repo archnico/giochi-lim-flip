@@ -1,0 +1,115 @@
+/* Diego Flip — Pregrafismo v2. Offline: SVG artwork from local asset kit. */
+:root{--cream:#fff9ec;--ink:#17415b;--mint:#a9e8dc}
+#app{background:radial-gradient(circle at 22% 10%,#398e9c,#186d84 55%,#10455c 100%)}
+.top{background:#14445c;border-bottom:4px solid #b2eadf;box-shadow:0 5px 0 #072c3b33}
+.top .pregra-brand{display:flex;align-items:center;gap:13px;letter-spacing:.045em;font-weight:900;color:#fffdf3}
+.pregra-brand img{display:block;width:84px;height:55px;object-fit:contain}
+.btn{border:3px solid #fff7e6;background:#236a7b;color:#fffdf0;border-radius:16px;
+  box-shadow:0 4px 0 #092f40a6;padding:8px 17px}
+.btn:active{box-shadow:0 1px 0 #092f40a6;transform:translateY(3px)}
+.btn.light{background:#ffe4a1;color:#174158;border-color:#fff7e6}
+#menu{background:radial-gradient(circle at 80% 12%,#45a2a3 0,#197688 55%,#185269 100%);
+  padding:15px 26px 24px;gap:12px}
+.intro{width:100%;max-width:1700px;text-align:left;padding:4px 7px}
+.intro h1{font-weight:900;font-size:clamp(35px,3.6vw,64px);color:#fff8df;margin:0 0 3px}
+.intro p{color:#e0f9f3;line-height:1.18;font-size:clamp(19px,1.45vw,26px)}
+.chapters{max-width:1750px;grid-template-columns:repeat(4,minmax(0,1fr));grid-gap:14px;gap:14px;align-content:center}
+.chapter,.chapter:nth-child(2n),.chapter:nth-child(3n),.chapter:last-child{
+  position:relative;background:linear-gradient(140deg,#fffef4,#dff4ed);color:#174158;
+  border:5px solid #fff9ed;border-radius:28px;
+  box-shadow:0 8px 0 #0d485787,0 13px 23px #082f4370;
+  min-height:185px;gap:4px;padding:13px 9px 12px
+}
+.chapter:nth-child(2n){background:linear-gradient(140deg,#f2f5ff,#d9e8ff)}
+.chapter:nth-child(3n){background:linear-gradient(140deg,#fff4d9,#ffe3cd)}
+.chapter:focus{outline:6px solid #ffe16e;outline-offset:-3px}
+.chapter:active{transform:translateY(4px);box-shadow:0 4px 0 #0d485787}
+.chapter .symbol{width:100%;height:85px;display:flex;align-items:center;justify-content:center;line-height:1}
+.chapter .symbol img{width:95%;height:100%;max-width:190px;object-fit:contain;pointer-events:none}
+.chapter .name{font-family:Arial,Helvetica,sans-serif;font-weight:900;color:#173d58;
+  font-size:clamp(23px,2.05vw,38px);line-height:1.1}
+.chapter .detail{font-weight:700;color:#4b6872;font-size:clamp(14px,1vw,20px);line-height:1.15}
+.chapter .stars{color:#926014;letter-spacing:.055em;font-size:clamp(16px,1.15vw,21px);font-weight:900}
+#play{padding:10px 19px 14px;gap:10px}
+.hud{max-width:1700px;padding:0 6px}
+.hud h1{font-weight:900;color:#fff8e4}
+.hud p{color:#d7f3f1;font-weight:700}
+.hud .counter{background:#fff4c9;color:#1b4c5a;border-radius:16px;
+  padding:8px 18px;font-weight:900;box-shadow:0 4px 0 #0b445d}
+.board-wrap{max-width:1700px;border:8px solid #f7faf0;border-radius:34px;
+  background:linear-gradient(140deg,#2bacb0,#207c9a);
+  box-shadow:inset 0 0 60px #15556a45,0 9px 0 #0c47609c,0 16px 35px #002a3b85}
+.board-wrap:before{opacity:.27;background-image:
+  radial-gradient(circle at 6% 11%,#d4f0c0 0 14px,transparent 16px),
+  radial-gradient(circle at 94% 13%,#ffdf9e 0 18px,transparent 20px),
+  radial-gradient(circle at 95% 87%,#ffd6c4 0 13px,transparent 15px),
+  radial-gradient(circle at 5% 85%,#c5d8ff 0 17px,transparent 20px)}
+#message{top:10px;background:#17475de8;color:#fffce8;border:2px solid #abd7d8;
+  box-shadow:0 3px 12px #0c3a4b99;font-weight:900;padding:8px 25px}
+.board-tools{grid-gap:12px;gap:12px}
+.board-tools .btn{min-height:54px}
+#celebrate{background:#074c5bbd}
+#celebrate .bigstar{color:#ffe077;text-shadow:0 8px 0 #e3a53d,0 0 32px #fffdf3;
+  animation:celebrate-pop .55s ease-in-out infinite alternate;
+  font-family:Arial,Helvetica,sans-serif;font-weight:900}
+#celebrate .yay{color:#fffbe9;letter-spacing:.04em;
+  font-family:Arial,Helvetica,sans-serif;text-shadow:0 5px 0 #0f5062}
+#confetti{z-index:-1}
+.particle{width:19px;height:28px;border-radius:8px;animation:fall 1.9s linear forwards}
+.particle:nth-child(3n){width:25px;height:25px;border-radius:50%}
+.particle:nth-child(4n){height:17px;transform:rotate(15deg)}
+@keyframes celebrate-pop{
+  from{transform:scale(.88) rotate(-7deg)}
+  to{transform:scale(1.12) rotate(7deg)}
+}
+@media(max-width:1100px){
+ .chapters{grid-template-columns:repeat(3,minmax(0,1fr));align-content:start}
+ .chapter{min-height:155px;padding:10px}
+ .chapter .symbol{height:68px}
+ .top .pregra-brand{font-size:27px}
+ .pregra-brand img{width:66px;height:49px}
+}
+@media(max-width:720px){
+ .chapters{grid-template-columns:repeat(2,minmax(0,1fr));grid-gap:9px;gap:9px}
+ .chapter{min-height:147px;border-width:3px}
+ .chapter .symbol{height:55px}
+ .chapter .name{font-size:21px}
+ .chapter .detail{font-size:14px}
+ .top{padding:7px 9px;min-height:61px}
+ .top .pregra-brand{font-size:18px;gap:4px}
+ .pregra-brand img{width:38px;height:39px}
+ .btn{padding:7px 9px;font-size:15px;border-width:2px}
+ #menu{padding:10px}
+ #play{padding:7px;gap:6px}
+ .board-wrap{border-width:4px;border-radius:19px}
+ #message{font-size:15px;max-width:97%}
+ .hud .counter{padding:6px 8px}
+}
+@media(max-height:720px) and (min-width:721px){
+ .intro h1{font-size:38px}
+ .intro p{font-size:18px}
+ .chapter{min-height:134px;padding:7px;gap:2px;border-width:3px}
+ .chapter .symbol{height:53px}
+ .chapter .name{font-size:clamp(20px,1.65vw,30px)}
+ .chapter .detail{font-size:15px}
+ .chapter .stars{font-size:15px}
+}
+@media(prefers-reduced-motion:reduce){
+ #celebrate .bigstar,.particle{animation:none}
+ .btn,.chapter{transition:none}
+}
+
+@media(max-width:950px) and (min-width:721px){
+ .top{min-height:57px;padding:4px 10px;gap:8px}
+ .top .pregra-brand{font-size:clamp(19px,2.5vw,26px);gap:6px}
+ .pregra-brand img{width:53px;height:42px}
+ .top .btn{min-height:43px;font-size:16px;padding:5px 10px}
+ .hud h1{font-size:23px}
+ .hud p{font-size:15px;margin:1px 0 0}
+ .hud .counter{font-size:19px;padding:5px 10px}
+ #play{padding:4px 9px 5px;gap:4px}
+ .board-tools{gap:5px;flex-wrap:nowrap}
+ .board-tools .btn{min-height:39px;font-size:clamp(12px,1.7vw,17px);padding:5px 6px;border-width:2px;border-radius:12px}
+ .board-wrap{border-width:4px;border-radius:18px}
+ #message{top:5px;padding:4px 10px;font-size:16px}
+}

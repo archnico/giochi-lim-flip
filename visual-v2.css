@@ -1,0 +1,132 @@
+/* Diego Flip visual kit v2 — large, calm, consistent, fully local.
+   CSS intentionally avoids :has, backdrop-filter and external fonts for Tizen 5.
+   Existing touch areas and game routing remain unchanged. */
+:root{--diego-cream:#fffdf4;--diego-navy:#163957;--diego-deep:#102536}
+body,html{background:#102536}
+#app{background:#102536}
+#app header{background:#142b41;border-bottom:3px solid #315b72;min-height:74px}
+#app .brand{font-family:Arial,Helvetica,sans-serif;font-weight:900;letter-spacing:.015em;color:#fffdf4}
+#app .brand span{color:#ffdb77}
+#app .iconbtn{background:#274860;border:2px solid #6f9cae;box-shadow:0 3px 0 #0b1d2c;color:#fffdf4;border-radius:15px}
+#app .iconbtn:focus{outline:5px solid #ffd979}
+#app main{background:radial-gradient(circle at 30% 15%,#254d64 0,#142b41 63%,#0d2035 100%);padding:18px 22px}
+#app footer{background:#112636;color:#b4d0dc;border-top:1px solid #355367}
+#app footer a{color:#d4e7ea!important}
+.flip-home{width:100%;height:100%;max-width:1920px;margin:0 auto;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));grid-gap:17px;gap:17px}
+.flip-card,.flip-other{
+  color:#17364f!important;text-decoration:none;
+  border:5px solid #fffaf0;background:#f3f7eb;border-radius:30px;
+  padding:16px 19px 17px;box-shadow:0 8px 0 #071c2955,0 11px 26px #05192570;
+  transition:transform .12s ease,border-color .12s ease,box-shadow .12s ease
+}
+.flip-card:focus,.flip-other:focus{outline:5px solid #ffdc7d;outline-offset:-5px}
+.flip-card:active,.flip-other:active{border-color:#ffe89f;transform:scale(.985);box-shadow:0 4px 0 #071c2955,0 6px 14px #05192570}
+.flip-card .flip-copy{max-width:58%;flex:1;min-width:0;align-self:center}
+.flip-card h2,.flip-home .flip-card h2{
+  color:#17364f;text-shadow:none;font-family:Arial,Helvetica,sans-serif;font-weight:900;
+  font-size:clamp(28px,2.32vw,45px);line-height:1.05;letter-spacing:-.024em;
+  margin:0 0 12px;word-break:normal;overflow-wrap:normal
+}
+.flip-card p{
+  color:#3e5a6d!important;font-size:clamp(16px,1.23vw,24px);
+  line-height:1.22;font-weight:700;max-width:25ch
+}
+.flip-card .flip-visual{width:46%;min-width:0;height:100%;max-height:96%;border-radius:26px;overflow:visible}
+.flip-card .flip-visual img,.flip-animali .flip-visual img,.flip-acqua .flip-visual img{
+  display:block;width:100%;height:100%;max-height:100%;object-fit:contain;border-radius:0
+}
+.flip-card .flip-visual img{transition:transform .18s ease}
+.flip-card:active .flip-visual img{transform:scale(.955)}
+.flip-animali{background:linear-gradient(135deg,#dcf7d8,#c4eadb)}
+.flip-matematica,.flip-conta,.flip-numeri,.flip-unisci{background:linear-gradient(135deg,#fff4cf,#ffdfa9)}
+.flip-acqua{background:linear-gradient(135deg,#d4f2ff,#a6ddf2)}
+.flip-scacchi{background:linear-gradient(135deg,#efe5ff,#d4c4f1)}
+.flip-pregrafismo{background:linear-gradient(135deg,#ffeddd,#ffd5bb)}
+.flip-attenzione{background:linear-gradient(135deg,#d9f1ff,#b8deef)}
+.flip-associazioni,.flip-match{background:linear-gradient(135deg,#ffe7e8,#fbc9d2)}
+.flip-memoria{background:linear-gradient(135deg,#e8e7ff,#d3d0f8)}
+.flip-habitat1,.flip-habitat2,.flip-colori{background:linear-gradient(135deg,#dff7de,#c9e8d0)}
+.flip-other{grid-column:auto;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;grid-gap:3px;gap:3px;background:linear-gradient(135deg,#e2f4e9,#ccecd9);font-size:clamp(26px,2.15vw,43px);font-weight:900}
+.flip-home .flip-other img{height:55%;max-height:190px;width:70%;max-width:270px;object-fit:contain}
+.flip-home .flip-other span{font-weight:700;line-height:1.15;font-size:clamp(15px,1.1vw,21px);color:#3e5a6d;display:block;text-align:center}
+.flip-section{max-width:1900px;margin:auto;display:flex;flex-direction:column}
+.flip-section .gamehead{height:auto;min-height:80px;flex:none;gap:16px}
+.flip-section .gamehead h1{color:#fffdf4}
+.flip-back{background:#fff0c9;color:#1a3d4d;border:3px solid #fff9ee;min-height:58px;box-shadow:0 4px 0 #071a2766}
+.flip-games{grid-auto-rows:minmax(185px,1fr);grid-gap:16px;gap:16px;padding:7px 2px 14px}
+.flip-games .flip-card{min-height:186px}
+.flip-games .flip-card .flip-visual{max-width:43%}
+.flip-games .flip-card h2{font-size:clamp(27px,2.25vw,42px)}
+.flip-games .flip-card .flip-copy{max-width:61%}
+.gamewrap.match-wide{max-width:none;width:100%;height:100%}
+.match-wide .gamehead{padding:0 8px 6px}
+.match-wide .gamehead h1{color:#fffdf4;font-size:clamp(32px,3.4vw,58px)}
+.match-wide .gamehead .sub{font-size:clamp(20px,1.6vw,29px);color:#d4e5e6}
+.match-simple{height:100%;width:100%;max-width:1840px;margin:0 auto;gap:10px;min-height:0}
+.match-word{flex:none;margin:0 auto 4px;padding:5px 18px 11px;line-height:1.03;
+  font-family:Arial,Helvetica,sans-serif;color:#ffe48e;
+  font-size:clamp(57px,7vw,119px);font-weight:900;letter-spacing:.02em;
+  text-shadow:0 5px 3px #0b263c}
+.match-word:before{content:"TROVA LA FOTO DI";display:block;text-align:center;
+  color:#d4e8ec;letter-spacing:.17em;font-weight:900;font-size:clamp(15px,1.15vw,21px);
+  line-height:1.5;text-shadow:none}
+.match-photo-grid{flex:1;min-height:0;grid-gap:20px;gap:20px}
+.match-photo{background:#fffdf7;border:7px solid #fffdf7;border-radius:35px;
+  box-shadow:0 8px 0 #071d2966,0 12px 30px #0006;padding:13px;
+  position:relative;transition:transform .12s ease,border-color .12s ease}
+.match-photo img{object-fit:contain;border-radius:20px}
+.match-photo:focus{outline:6px solid #ffe083;outline-offset:0}
+.match-photo:active{transform:scale(.99)}
+.match-photo.good{border-color:#87ddad;box-shadow:0 0 0 9px #4eca8b99,0 8px 30px #001d2e55}
+.match-photo.good:after{content:"✓";position:absolute;top:8px;right:14px;width:64px;height:64px;border-radius:50%;
+  background:#2caa75;color:#fff;text-align:center;line-height:64px;font:900 51px Arial,Helvetica,sans-serif}
+.match-photo.wrong{border-color:#ffb7a6;animation:shake .18s linear 2}
+#mini-celebrate{position:fixed;left:50%;top:48%;transform:translate(-50%,-50%);z-index:25;
+  display:block;min-width:280px;text-align:center;pointer-events:none;
+  filter:none;animation:reward-in .9s ease-out both}
+#mini-celebrate .reward-inner{display:flex;flex-direction:column;align-items:center;
+  background:linear-gradient(140deg,#fff9e4,#d0f7e9);color:#15465a;
+  border:8px solid #fff;border-radius:44px;padding:14px 42px 18px;
+  box-shadow:0 10px 0 #063b4560,0 15px 50px #0006}
+#mini-celebrate .reward-star{font:900 clamp(85px,10vw,170px) Arial,Helvetica,sans-serif;
+  color:#ffbe45;line-height:1;text-shadow:0 6px 0 #de8c39,0 0 23px #fff}
+#mini-celebrate strong{font:900 clamp(28px,3.1vw,60px) Arial,Helvetica,sans-serif;
+  color:#166d80;letter-spacing:.055em}
+#mini-celebrate .reward-spark{position:absolute;font:900 clamp(44px,5vw,81px) Arial,Helvetica,sans-serif;
+  color:#f6cb6c;animation:reward-spark .85s ease-out both}
+#mini-celebrate .reward-spark.a{top:-50px;left:-75px;color:#8de1d3}
+#mini-celebrate .reward-spark.b{top:55px;right:-74px;color:#ffd56b;animation-delay:.06s}
+#mini-celebrate .reward-spark.c{bottom:-65px;left:20%;color:#ff9f89;animation-delay:.12s}
+@keyframes reward-in{0%{opacity:0;transform:translate(-50%,-30%) scale(.56)}34%{opacity:1;transform:translate(-50%,-56%) scale(1.09)}68%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-63%) scale(.95)}}
+@keyframes reward-spark{0%{opacity:0;transform:translateY(24px) scale(.45) rotate(-28deg)}38%{opacity:1;transform:translateY(-20px) scale(1.1) rotate(12deg)}100%{opacity:0;transform:translateY(-65px) scale(.75) rotate(26deg)}}
+.notice{font-family:Arial,Helvetica,sans-serif;background:#fff1c6;color:#173957;border:3px solid #fff;box-shadow:0 6px 23px #0006;font-size:clamp(21px,1.65vw,30px)}
+@media(max-width:1250px) and (min-width:801px){
+  .flip-home{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr))}
+  .flip-card h2,.flip-home .flip-card h2{font-size:clamp(26px,2.75vw,38px)}
+}
+@media(max-width:800px){
+  #app main{padding:12px}
+  .flip-home{height:auto;min-height:100%;grid-template-columns:1fr;grid-template-rows:repeat(6,minmax(156px,auto))}
+  .flip-card{min-height:154px;padding:10px 13px;border-radius:24px}
+  .flip-card h2,.flip-home .flip-card h2{font-size:clamp(27px,5vw,40px)}
+  .flip-card p{font-size:16px}
+  .flip-other{min-height:160px}
+  .flip-home .flip-other img{height:80px}
+  .flip-home .flip-other span{font-size:15px}
+  .flip-games{grid-template-columns:1fr}
+  .match-word{font-size:clamp(48px,11vw,76px)}
+  .match-photo-grid{grid-gap:9px;gap:9px}
+  .match-photo{padding:4px;border-width:4px;border-radius:20px}
+  #mini-celebrate{min-width:220px}
+}
+@media(max-height:680px) and (min-width:801px){
+  .flip-card{padding:8px 13px;border-width:3px}
+  .flip-card h2,.flip-home .flip-card h2{font-size:clamp(24px,2.1vw,37px);margin-bottom:7px}
+  .flip-card p{font-size:clamp(14px,1.15vw,19px)}
+  .flip-home .flip-other img{max-height:95px}
+  .match-word{font-size:clamp(50px,5.7vw,88px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .flip-card,.flip-other,.match-photo{transition:none}
+  #mini-celebrate,#mini-celebrate .reward-spark{animation:none}
+}

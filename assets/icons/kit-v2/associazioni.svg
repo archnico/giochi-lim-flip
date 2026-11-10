@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 390" role="img" aria-label="associazioni">
+<rect x="16" y="15" width="548" height="360" rx="70" fill="#ffe4e6"/>
+<circle cx="315" cy="190" r="155" fill="white" opacity=".38"/>
+<defs><style>
+.o{fill:none;stroke:#163957;stroke-width:12;stroke-linecap:round;stroke-linejoin:round}
+.i{fill:none;stroke:#163957;stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+</style></defs><circle cx="83" cy="95" r="10" fill="#fff" opacity=".85"/>
+<path d="M489 77v36m-18-18h36M106 319v28m-14-14h28" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".83"/>
+<circle cx="504" cy="290" r="9" fill="#fff" opacity=".88"/>
+<rect x="95" y="94" width="179" height="221" rx="26" fill="#fffdf2" stroke="#173957" stroke-width="11"/>
+<rect x="311" y="94" width="179" height="221" rx="26" fill="#fffdf2" stroke="#173957" stroke-width="11"/>
+<circle cx="183" cy="200" r="53" fill="#ff8c74" stroke="#173957" stroke-width="10"/>
+<path d="M181 149q-12-31 11-50" class="i"/><path d="M184 139q25-26 43-12-10 24-43 12" fill="#70bd84" stroke="#173957" stroke-width="7"/>
+<path d="M349 201q45-83 101 0q-46 84-101 0Z" fill="#6dc5d8" stroke="#173957" stroke-width="9"/>
+<circle cx="417" cy="191" r="8" fill="#173957"/>
+<path d="M272 197h38" stroke="#173957" stroke-width="9" stroke-dasharray="8 14"/>
+</svg>
