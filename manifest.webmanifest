@@ -1,0 +1,24 @@
+{
+  "name": "Giochi LIM — Samsung Flip",
+  "short_name": "Giochi LIM",
+  "lang": "it",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#131a21",
+  "theme_color": "#152c42",
+  "icons": [
+    {
+      "src": "assets/icons/matematica.png",
+      "sizes": "600x600",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/scacchi.png",
+      "sizes": "600x600",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

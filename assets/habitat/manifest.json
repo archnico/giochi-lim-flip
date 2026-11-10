@@ -1,0 +1,189 @@
+[
+  {
+    "key": "delfino",
+    "file": "assets/habitat/delfino.webp",
+    "title": "File:A spinner dolphin in the Red Sea.jpg",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "author": "Alexander Vasenin",
+    "source": "https://commons.wikimedia.org/wiki/File:A_spinner_dolphin_in_the_Red_Sea.jpg",
+    "width": 1280,
+    "height": 960
+  },
+  {
+    "key": "pesce",
+    "file": "assets/habitat/pesce.webp",
+    "title": "File:Common clownfish.jpg",
+    "license": "Public domain",
+    "license_url": "",
+    "author": "Janderk",
+    "source": "https://commons.wikimedia.org/wiki/File:Common_clownfish.jpg",
+    "width": 1280,
+    "height": 960
+  },
+  {
+    "key": "balena",
+    "file": "assets/habitat/balena.webp",
+    "title": "File:Humpback Whale Underwater (37209287981).jpg",
+    "license": "Public domain",
+    "license_url": "",
+    "author": "National Marine Sanctuaries",
+    "source": "https://commons.wikimedia.org/wiki/File:Humpback_Whale_Underwater_(37209287981).jpg",
+    "width": 1280,
+    "height": 853
+  },
+  {
+    "key": "polpo",
+    "file": "assets/habitat/polpo.webp",
+    "title": "File:Common Octopus.jpg",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Lee Vilenski",
+    "source": "https://commons.wikimedia.org/wiki/File:Common_Octopus.jpg",
+    "width": 1280,
+    "height": 960
+  },
+  {
+    "key": "leone",
+    "file": "assets/habitat/leone.webp",
+    "title": "File:León (Panthera leo), parque nacional de Tarangire, Tanzania, 2024-05-24, DD 99.jpg",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Diego Delso",
+    "source": "https://commons.wikimedia.org/wiki/File:Le%C3%B3n_(Panthera_leo),_parque_nacional_de_Tarangire,_Tanzania,_2024-05-24,_DD_99.jpg",
+    "width": 1280,
+    "height": 853
+  },
+  {
+    "key": "elefante",
+    "file": "assets/habitat/elefante.webp",
+    "title": "File:African elephant (Loxodonta africana) 2.jpg",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Charles J. Sharp",
+    "source": "https://commons.wikimedia.org/wiki/File:African_elephant_(Loxodonta_africana)_2.jpg",
+    "width": 1280,
+    "height": 853
+  },
+  {
+    "key": "giraffa",
+    "file": "assets/habitat/giraffa.webp",
+    "title": "File:Graceful Giant of the Savanna (Giraffe) 03.jpg",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Ssemmanda will",
+    "source": "https://commons.wikimedia.org/wiki/File:Graceful_Giant_of_the_Savanna_(Giraffe)_03.jpg",
+    "width": 1280,
+    "height": 851
+  },
+  {
+    "key": "cane",
+    "file": "assets/habitat/cane.webp",
+    "title": "File:Dülmen, Hausdülmen, Golden Retriever -- 2022 -- 5530.jpg",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Dietmar Rabich",
+    "source": "https://commons.wikimedia.org/wiki/File:D%C3%BClmen,_Hausd%C3%BClmen,_Golden_Retriever_--_2022_--_5530.jpg",
+    "width": 1000,
+    "height": 1000
+  },
+  {
+    "key": "mare",
+    "file": "assets/habitat/mare.webp",
+    "title": "File:Mar de Coral 4.jpg",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "LBM1948",
+    "source": "https://commons.wikimedia.org/wiki/File:Mar_de_Coral_4.jpg",
+    "width": 1280,
+    "height": 850
+  },
+  {
+    "key": "terra",
+    "file": "assets/habitat/terra.webp",
+    "title": "File:East Belgium 2020 - Landscape of meadows and trees. 02.jpg",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Horst J. Meuter",
+    "source": "https://commons.wikimedia.org/wiki/File:East_Belgium_2020_-_Landscape_of_meadows_and_trees._02.jpg",
+    "width": 1280,
+    "height": 853
+  },
+  {
+    "key": "squalo",
+    "file": "assets/habitat/squalo.webp",
+    "title": "File:Blacktip reef shark (Carcharhinus melanopterus) Moorea.jpg",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Charles J. Sharp",
+    "source": "https://commons.wikimedia.org/wiki/File%3ABlacktip_reef_shark_%28Carcharhinus_melanopterus%29_Moorea.jpg",
+    "width": 1280,
+    "height": 853
+  },
+  {
+    "key": "cavallo",
+    "file": "assets/habitat/cavallo.webp",
+    "title": "File:Brown Horse Pasture Undermountain Home Farm Equestrian Center.jpg",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "EgorovaSvetlana",
+    "source": "https://commons.wikimedia.org/wiki/File%3ABrown_Horse_Pasture_Undermountain_Home_Farm_Equestrian_Center.jpg",
+    "width": 1280,
+    "height": 960
+  },
+  {
+    "key": "aquila",
+    "file": "assets/habitat/aquila.webp",
+    "title": "File:Golden Eagle flying (53657503722).jpg",
+    "license": "Public domain",
+    "license_url": "",
+    "author": "BLMUtah",
+    "source": "https://commons.wikimedia.org/wiki/File:Golden_Eagle_flying_(53657503722).jpg",
+    "width": 1251,
+    "height": 1000
+  },
+  {
+    "key": "pappagallo",
+    "file": "assets/habitat/pappagallo.webp",
+    "title": "File:Scarlet macaw (Ara macao cyanopterus) Copan.jpg",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Charles J. Sharp",
+    "source": "https://commons.wikimedia.org/wiki/File%3AScarlet_macaw_%28Ara_macao_cyanopterus%29_Copan.jpg",
+    "width": 1280,
+    "height": 853
+  },
+  {
+    "key": "gabbiano",
+    "file": "assets/habitat/gabbiano.webp",
+    "title": "File:Seagull flying in blue sky.jpg",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Michael N Haddad",
+    "source": "https://commons.wikimedia.org/wiki/File:Seagull_flying_in_blue_sky.jpg",
+    "width": 1280,
+    "height": 850
+  },
+  {
+    "key": "gufo",
+    "file": "assets/habitat/gufo.webp",
+    "title": "File:Eagle Owl Portrait.jpg",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "author": "Joselodos",
+    "source": "https://commons.wikimedia.org/wiki/File:Eagle_Owl_Portrait.jpg",
+    "width": 1280,
+    "height": 853
+  },
+  {
+    "key": "cielo",
+    "file": "assets/habitat/cielo.webp",
+    "title": "File:Blue sky with white clouds over Egyptian landscape 2026.jpg",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0",
+    "author": "Serfezi",
+    "source": "https://commons.wikimedia.org/wiki/File:Blue_sky_with_white_clouds_over_Egyptian_landscape_2026.jpg",
+    "width": 1280,
+    "height": 960
+  }
+]

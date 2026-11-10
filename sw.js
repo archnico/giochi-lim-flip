@@ -1,0 +1,40 @@
+var PREFIX='diego-flip-'+new URL('./',self.location.href).pathname+'-';
+var CACHE=PREFIX+'3982b4a8d394';
+var FILES=["./index.html", "./flip-ui.css", "./manifest.webmanifest", "./acqua.html", "./scacchi-stelle.html", "./trova-il-numero.html", "./trova-il-4.html", "./colori-animali.html", "./crediti-foto.html", "./test-lim.html", "./diagnostica-flip.html", "./unisci-quantita.html", "./prova-suoni.html", "./pregrafismo.html", "./diego-runtime.js", "./diego-runtime.css", "./diego-audio.js", "./offline-check.html", "./assets/associazioni/auto.webp", "./assets/associazioni/banana.webp", "./assets/associazioni/bicicletta.webp", "./assets/associazioni/mela.webp", "./assets/colori/coccinella.svg", "./assets/colori/elefante.svg", "./assets/colori/fenicottero.svg", "./assets/colori/leone.svg", "./assets/colori/panda.svg", "./assets/colori/pinguino.svg", "./assets/colori/rana.svg", "./assets/colori/tigre.svg", "./assets/colori/volpe.svg", "./assets/colori/zebra.svg", "./assets/habitat/aquila.webp", "./assets/habitat/balena.webp", "./assets/habitat/cane.webp", "./assets/habitat/cavallo.webp", "./assets/habitat/cielo.webp", "./assets/habitat/delfino.webp", "./assets/habitat/elefante.webp", "./assets/habitat/gabbiano.webp", "./assets/habitat/giraffa.webp", "./assets/habitat/gufo.webp", "./assets/habitat/leone.webp", "./assets/habitat/manifest.json", "./assets/habitat/mare.webp", "./assets/habitat/pappagallo.webp", "./assets/habitat/pesce.webp", "./assets/habitat/polpo.webp", "./assets/habitat/squalo.webp", "./assets/habitat/terra.webp", "./assets/icons/acqua.png", "./assets/icons/acqua.svg", "./assets/icons/altri.png", "./assets/icons/altri.svg", "./assets/icons/animali.jpg", "./assets/icons/associazioni.png", "./assets/icons/associazioni.svg", "./assets/icons/attenzione.png", "./assets/icons/attenzione.svg", "./assets/icons/mare.jpg", "./assets/icons/matematica.png", "./assets/icons/matematica.svg", "./assets/icons/memoria.png", "./assets/icons/memoria.svg", "./assets/icons/pregrafismo.svg", "./assets/icons/scacchi.png", "./assets/icons/scacchi.svg", "./assets/icons/unisci.svg", "./assets/suoni/bolle.wav", "./assets/suoni/bravo.wav", "./assets/suoni/fantastico.wav", "./assets/suoni/stella.wav"];
+
+var SCOPE=new URL('./',self.location.href);
+var ALLOWED=FILES.map(function(f){return new URL(f,SCOPE).pathname});
+self.addEventListener('install',function(e){
+ e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(FILES)}));
+});
+self.addEventListener('activate',function(e){
+ e.waitUntil(caches.keys().then(function(names){
+  return Promise.all(names.filter(function(n){return n.indexOf(PREFIX)===0&&n!==CACHE}).map(function(n){return caches.delete(n)}));
+ }).then(function(){return self.clients.claim()}));
+});
+function fromRange(request,response){
+ var value=request.headers.get('range');
+ if(!value)return Promise.resolve(response);
+ var range=/^bytes=(\d*)-(\d*)$/.exec(value);
+ if(!range)return Promise.resolve(response);
+ return response.arrayBuffer().then(function(buffer){
+  var length=buffer.byteLength,start=range[1]?Number(range[1]):Math.max(0,length-Number(range[2]));
+  var end=range[1]&&range[2]?Math.min(Number(range[2]),length-1):length-1;
+  if(start>=length||end<start)return new Response(null,{status:416,headers:{'Content-Range':'bytes */'+length}});
+  var headers=new Headers(response.headers);
+  headers.set('Content-Range','bytes '+start+'-'+end+'/'+length);
+  headers.set('Content-Length',String(end-start+1));headers.set('Accept-Ranges','bytes');
+  return new Response(buffer.slice(start,end+1),{status:206,headers:headers});
+ });
+}
+self.addEventListener('fetch',function(e){
+ var url=new URL(e.request.url);
+ if(e.request.method!=='GET'||url.origin!==SCOPE.origin)return;
+ if(url.pathname===SCOPE.pathname)url.pathname+='index.html';
+ if(ALLOWED.indexOf(url.pathname)<0)return;
+ // I parametri game, topic e numero scelgono la schermata; i byte HTML sono gli stessi.
+ url.search='';url.hash='';
+ e.respondWith(caches.open(CACHE).then(function(c){return c.match(url.href)}).then(function(response){
+  return response?fromRange(e.request,response):fetch(e.request);
+ }));
+});

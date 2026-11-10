@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="it" data-diego-edition="flip">
+<head><meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Trova il numero — Giochi LIM</title>
+<style>
+:root{color-scheme:light;--paper:#fffdf6;--ink:#1e293b;--good:#3b9965;--bad:#df694c}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:system-ui,"Arial Rounded MT Bold",Arial,sans-serif;background:#17212c;color:#fff;touch-action:manipulation}
+body{display:grid;grid-template-rows:auto minmax(0,1fr) auto}
+header{/*diego-fallback*/padding:10px 2vw;/*end-fallback*/padding:10px clamp(12px,2vw,28px);display:flex;align-items:center;justify-content:space-between;/*diego-fallback*/--diego-gap:12px;grid-gap:12px;/*end-fallback*/gap:12px;background:#17212c}
+h1{/*diego-fallback*/font-size:3vw;/*end-fallback*/font-size:clamp(23px,3vw,47px);margin:0;font-weight:900;line-height:1.1}
+.subtitle{/*diego-fallback*/font-size:1.4vw;/*end-fallback*/font-size:clamp(13px,1.4vw,23px);margin:4px 0 0;color:#d9e2eb;font-weight:650}
+button{font:inherit;touch-action:manipulation;cursor:pointer}
+.controls{display:flex;align-items:center;/*diego-fallback*/--diego-gap:9px;grid-gap:9px;/*end-fallback*/gap:9px;flex-shrink:0}
+.control{min-width:64px;min-height:58px;padding:8px 15px;border:2px solid #8595a6;background:#32475b;color:#fff;border-radius:16px;/*diego-fallback*/font-size:1.4vw;/*end-fallback*/font-size:clamp(16px,1.4vw,21px);font-weight:800}
+.control:focus-visible,.number:focus-visible,.chapter:focus-visible{outline:5px solid #f6c64d;outline-offset:3px}
+main{min-height:0;/*diego-fallback*/padding:3px 1.6vw;/*end-fallback*/padding:3px clamp(8px,1.6vw,26px);display:flex;flex-direction:column;/*diego-fallback*/--diego-gap:8px;grid-gap:8px;/*end-fallback*/gap:8px}
+.board{flex:1;min-height:0;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--paper);border:5px solid #e1e7ed;border-radius:27px;box-shadow:0 8px 30px #0005}
+svg{display:block;width:100%;height:100%;max-height:100%}
+.model{font-family:Arial,"Arial Rounded MT Bold",sans-serif;font-size:475px;font-weight:950;text-anchor:middle;fill:#263a4e;pointer-events:none;user-select:none}
+.modelback{fill:#f8e5b7;stroke:#e9d093;stroke-width:6;pointer-events:none}
+.number{cursor:pointer;outline:none}
+.number circle{fill:#fff;stroke:#34465a;stroke-width:6;transition:fill .14s,stroke .14s}
+.number text{fill:#253242;font-family:Arial,"Arial Rounded MT Bold",sans-serif;font-weight:900;font-size:66px;text-anchor:middle;dominant-baseline:central;pointer-events:none;user-select:none}
+.number.found circle{fill:#bdeecb;stroke:#20804e;stroke-width:8}
+.number.found text{fill:#184b2e}
+.number.found{cursor:default}
+.number.wrong circle{fill:#ffe2db;stroke:var(--bad)}
+.number.wrong{animation:wiggle .24s linear}
+@keyframes wiggle{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.board .check{font-size:28px;font-weight:900;fill:#186641;pointer-events:none;dominant-baseline:central;text-anchor:middle}
+footer{display:flex;justify-content:space-between;align-items:center;/*diego-fallback*/--diego-gap:14px;grid-gap:14px;/*end-fallback*/gap:14px;/*diego-fallback*/padding:9px 2vw;/*end-fallback*/padding:9px clamp(12px,2vw,28px);background:#17212c;min-height:84px}
+.progressbox{display:flex;align-items:center;/*diego-fallback*/--diego-gap:17px;grid-gap:17px;/*end-fallback*/gap:17px}
+#progress{/*diego-fallback*/font-size:2.4vw;/*end-fallback*/font-size:clamp(21px,2.4vw,34px);font-weight:900;white-space:nowrap}
+#bar{/*diego-fallback*/width:20vw;/*end-fallback*/width:clamp(150px,20vw,320px);height:18px;border-radius:12px;background:#495c6b;overflow:hidden}
+#fill{height:100%;width:0;background:#89dd9d;border-radius:12px;transition:width .25s}
+#message{/*diego-fallback*/font-size:2vw;/*end-fallback*/font-size:clamp(19px,2vw,30px);font-weight:850;color:#ffe594;text-align:center;flex:1}
+#reset{background:#ffd65c;border-color:#ffd65c;color:#212835;min-width:120px}
+#mode{background:#fbedd0;border-color:#f4d98c;color:#253447;white-space:nowrap}
+#next{background:#95f0aa;border-color:#95f0aa;color:#153526;min-width:170px}
+#celebration{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);background:#fef8e9;border:5px solid #2b9e5a;color:#16552f;padding:20px 38px;border-radius:30px;text-align:center;/*diego-fallback*/font-size:3vw;/*end-fallback*/font-size:clamp(28px,3vw,48px);font-weight:950;box-shadow:0 10px 65px #0005;opacity:0;pointer-events:none;transition:.28s;z-index:2;white-space:nowrap}
+#celebration.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.chooser{flex:1;min-height:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));/*diego-fallback*/gap:1.5vw;--diego-gap:1.5vw;grid-gap:1.5vw;/*end-fallback*/gap:clamp(8px,1.5vw,24px);/*diego-fallback*/padding:2vw;/*end-fallback*/padding:clamp(8px,2vw,24px);background:#fffdf6;border-radius:27px;border:5px solid #e1e7ed}
+.chapter{min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px;border:5px solid #42546a;border-radius:26px;color:#25374c;background:#e9f2ff;/*diego-fallback*/font-size:12vh;/*end-fallback*/font-size:clamp(70px,12vh,156px);font-weight:950;line-height:1;box-shadow:0 7px 18px #1523332c}
+.chapter:nth-child(even){background:#fff1cf}
+.chapter span{/*diego-fallback*/font-size:1.45vw;/*end-fallback*/font-size:clamp(15px,1.45vw,23px);font-weight:800}
+.chapter:active{transform:scale(.97)}
+[hidden]{display:none!important}
+@media(max-width:1050px){header{/*diego-fallback*/--diego-gap:8px;grid-gap:8px;/*end-fallback*/gap:8px}.control{min-width:48px;min-height:46px;padding:6px 9px}.subtitle{display:none}footer{min-height:62px}#bar{display:none}#message{font-size:16px}#reset,#next{min-width:78px}#celebration{white-space:normal;width:80%}.chapter{/*diego-fallback*/font-size:10vh;/*end-fallback*/font-size:clamp(50px,10vh,116px)}}
+@media(max-width:680px){.chooser{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:none;overflow:auto}.chapter{min-height:130px}main{overflow:auto}.controls{flex-wrap:wrap;justify-content:flex-end}.progressbox{/*diego-fallback*/--diego-gap:6px;grid-gap:6px;/*end-fallback*/gap:6px}}
+@media(max-height:630px){header{padding-top:5px;padding-bottom:5px}footer{min-height:56px;padding-top:4px;padding-bottom:4px}.control{min-height:42px}.board{border-radius:15px}}
+</style>
+<link rel="stylesheet" href="diego-runtime.css"><script src="diego-runtime.js"></script></head>
+<body>
+<header>
+<div><h1 id="heading">🔎 TROVA IL NUMERO</h1><p class="subtitle" id="subtitle">Scegli un capitolo: ogni numero è un gioco!</p></div>
+<div class="controls">
+<button class="control" id="chapters" hidden>▦ CAPITOLI</button>
+<button class="control" id="mode" aria-pressed="true" title="Attiva o disattiva i numeri colorati">🌈 FACILE</button>
+<button class="control" id="sound" title="Attiva o disattiva i suoni" aria-label="Disattiva suoni" aria-pressed="true">🔊</button>
+<button class="control" id="home" title="Torna ai giochi">⌂ GIOCHI</button>
+</div>
+</header>
+<main>
+<section class="chooser" id="chooser" aria-label="Scegli il capitolo"></section>
+<div class="board" id="board" hidden>
+<svg id="sheet" viewBox="0 0 1440 720" preserveAspectRatio="xMidYMid meet" role="group" aria-label="Trova tutti i numeri uguali al modello">
+<rect width="1440" height="720" fill="#fffdf6"/>
+<circle class="modelback" cx="736" cy="363" r="225"/>
+<text class="model" id="model" x="731" y="535" aria-hidden="true">1</text>
+<g id="circles"></g>
+</svg>
+<div id="celebration" aria-live="polite">🌟 BRAVISSIMO! 🌟<div id="completeText" style="font-size:.55em;margin-top:8px"></div></div>
+</div>
+</main>
+<footer id="footer" hidden>
+<div class="progressbox"><span id="progress" role="status" aria-live="polite">TROVATI: 0 / 9</span><div id="bar" aria-hidden="true"><div id="fill"></div></div></div>
+<div id="message" aria-live="polite">CERCA IL NUMERO!</div>
+<button class="control" id="reset">↻ RICOMINCIA</button>
+<button class="control" id="next" hidden>PROSSIMO →</button>
+</footer>
+<script src="diego-audio.js"></script><script>
+'use strict';
+// Dieci capitoli: 1–9 e 0. La scheda del 4 conserva le posizioni della fotografia.
+const chapterOrder=[1,2,3,4,5,6,7,8,9,0];
+const cells=[
+[115,85,4],[330,85,2],[555,85,5],[780,85,4],[1005,85,0],[1225,85,4],
+[140,225,8],[340,225,9],[510,225,4],[965,225,6],[1125,225,3],[1300,225,4],
+[120,365,6],[330,365,5],[1090,365,1],[1310,365,7],
+[130,500,4],[330,500,0],[525,500,4],[1105,500,4],[1310,500,3],
+[120,635,9],[305,635,7],[490,635,4],[665,635,2],[840,635,8],[1015,635,1],[1190,635,5]
+];
+const total=9;
+const digitColors=['#f7bec0','#f7c89d','#f6df8e','#bbe9a5','#a0e1d0','#a5d5f7','#b7baf4','#e3bbf6','#eec2d9','#e3d6aa'];
+let colorMode=true,numberZoom=1;
+function panNumber(dx,dy){
+ if(numberZoom<=1)return;
+ const sheet=document.getElementById('sheet'),v=sheet.viewBox.baseVal,w=1440/numberZoom,h=720/numberZoom;
+ const x=Math.max(0,Math.min(1440-w,v.x+dx)),y=Math.max(0,Math.min(720-h,v.y+dy));
+ sheet.setAttribute('viewBox',x+' '+y+' '+w+' '+h);
+}
+function zoomNumber(delta){
+ const sheet=document.getElementById('sheet'),v=sheet.viewBox.baseVal,cx=v.x+v.width/2,cy=v.y+v.height/2;
+ numberZoom=Math.max(1,Math.min(1.45,Math.round((numberZoom+delta)*100)/100));
+ const w=1440/numberZoom,h=720/numberZoom;
+ const x=Math.max(0,Math.min(1440-w,cx-w/2)),y=Math.max(0,Math.min(720-h,cy-h/2));
+ sheet.setAttribute('viewBox',x+' '+y+' '+w+' '+h);
+}
+function syncColorMode(){
+ const b=document.getElementById('mode');
+ b.textContent=colorMode?'🌈 FACILE':'◻ NORMALE';
+ b.setAttribute('aria-pressed',String(colorMode));
+}
+const numberScope=DiegoRuntime.createScope();
+let target=null,found=0,muted=!DiegoAudio.isEnabled(),context=null,wrongTimeout=null;
+const ns='http://www.w3.org/2000/svg';
+const layer=document.getElementById('circles');
+const progress=document.getElementById('progress');
+const message=document.getElementById('message');
+function node(tag,attr,parent){
+ const e=document.createElementNS(ns,tag);
+ for(const k in attr)e.setAttribute(k,attr[k]);
+ parent.appendChild(e);
+ return e;
+}
+function beep(success){
+ if(muted)return;
+ try{
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC)return;
+  context=context||new AC();
+  if(context.state==='suspended')context.resume();
+  const start=context.currentTime,notes=success?[523,659,784]:[330];
+  notes.forEach((freq,i)=>{
+   const o=context.createOscillator(),g=context.createGain(),t=start+i*.09;
+   o.type='sine';o.frequency.setValueAtTime(freq,t);
+   g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.085,t+.012);
+   g.gain.exponentialRampToValueAtTime(.0001,t+.16);
+   o.connect(g);g.connect(context.destination);o.start(t);o.stop(t+.17);
+  });
+ }catch(e){}
+}
+function update(){
+ progress.textContent='TROVATI: '+found+' / '+total;
+ document.getElementById('fill').style.width=(found*100/total)+'%';
+ message.textContent=found===total?'TUTTI TROVATI! 🌟':found?'BRAVO! CONTINUA!':'CERCA IL '+target+'!';
+ document.getElementById('celebration').classList.toggle('show',found===total);
+ document.getElementById('next').hidden=found!==total;
+}
+function choose(g,value,x,y){
+ if(g.classList.contains('found')||found===total)return;
+ if(value===target){
+  g.classList.add('found');g.setAttribute('aria-label','Numero '+target+' trovato');
+  g.querySelector('circle').style.fill='#bdeecb';
+  g.setAttribute('aria-pressed','true');
+  node('text',{x:x+38,y:y-42,class:'check','aria-hidden':'true'},g).textContent='✓';
+  found++;if(!muted)DiegoAudio.play(found===total?'fantastico':'bravo');update();
+ }else{
+  g.classList.remove('wrong');void g.getBoundingClientRect();g.classList.add('wrong');
+  message.textContent='RIPROVA: CERCA IL '+target;
+  // Nessun suono punitivo per gli errori.
+  clearTimeout(g._wrongTimer);
+  const activeChapter=target;
+  g._wrongTimer=numberScope.later(()=>{
+   g.classList.remove('wrong');
+   if(target===activeChapter&&found!==total)message.textContent=found?'BRAVO! CONTINUA!':'CERCA IL '+target+'!';
+  },580);
+ }
+}
+function valuesFor(n){
+ // Ruota gli obiettivi e trasla le cifre: ogni capitolo ha nove bersagli,
+ // ma la posizione corretta cambia per evitare risposte puramente motorie.
+ const shift=n===4?0:((n+7)*3)%cells.length;
+ return cells.map((p,i)=>(cells[(i+shift)%cells.length][2]+n-4+10)%10);
+}
+function draw(){
+ numberScope.reset();DiegoAudio.stop();
+ layer.replaceChildren();found=0;
+ const digits=valuesFor(target);
+ document.getElementById('celebration').classList.remove('show');
+ document.getElementById('model').textContent=target;
+ document.querySelector('.modelback').style.fill=colorMode?digitColors[target]:'';
+ document.getElementById('model').style.fill=colorMode?'#192b3e':'';
+ document.getElementById('completeText').textContent='Hai trovato tutti i '+target+'!';
+ cells.forEach(([x,y],i)=>{
+  const v=digits[i];
+  const g=node('g',{class:'number',role:'button',tabindex:0,'data-number':v,'aria-label':'Numero '+v,'aria-pressed':'false'},layer);
+  const circle=node('circle',{cx:x,cy:y,r:55},g);
+  if(colorMode){circle.style.fill=digitColors[v];circle.style.stroke='#384c5f'}
+  node('text',{x:x,y:y+3},g).textContent=v;
+  g.addEventListener('click',()=>choose(g,v,x,y));
+  g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose(g,v,x,y)}});
+ });
+ update();
+}
+function selectChapter(n){
+ if(!chapterOrder.includes(n))return;
+ target=n;
+ document.getElementById('chooser').hidden=true;
+ document.getElementById('board').hidden=false;
+ document.getElementById('footer').hidden=false;
+ document.getElementById('chapters').hidden=false;
+ document.getElementById('heading').textContent='🔎 TROVA TUTTI I NUMERI '+n;
+ document.getElementById('subtitle').textContent='CAPITOLO '+(chapterOrder.indexOf(n)+1)+' DI 10 · Tocca i numeri '+n+' nei cerchi';
+ document.getElementById('sheet').setAttribute('aria-label','Trova tutti i numeri '+n);
+ history.replaceState(null,'',location.pathname+'?numero='+n);
+ draw();
+}
+function showChapters(){
+ numberScope.reset();DiegoAudio.stop();
+ target=null;found=0;
+ document.getElementById('chooser').hidden=false;
+ document.getElementById('board').hidden=true;
+ document.getElementById('footer').hidden=true;
+ document.getElementById('chapters').hidden=true;
+ document.getElementById('heading').textContent='🔎 TROVA IL NUMERO';
+ document.getElementById('subtitle').textContent='SCEGLI UN CAPITOLO · DAL NUMERO 1 ALLO 0';
+ history.replaceState(null,'',location.pathname);
+}
+const chooser=document.getElementById('chooser');
+for(const n of chapterOrder){
+ const b=document.createElement('button');
+ b.className='chapter';b.type='button';b.dataset.chapter=n;
+ b.setAttribute('aria-label','Capitolo '+(chapterOrder.indexOf(n)+1)+': trova tutti i numeri '+n);
+ const num=document.createTextNode(String(n)),hint=document.createElement('span');
+ hint.textContent='CAPITOLO '+(chapterOrder.indexOf(n)+1);
+ b.append(num,hint);b.addEventListener('click',()=>selectChapter(n));chooser.appendChild(b);
+}
+document.getElementById('mode').addEventListener('click',()=>{
+ colorMode=!colorMode;syncColorMode();if(target!==null)draw();
+});
+syncColorMode();
+document.addEventListener('keydown',e=>{
+ if(e.ctrlKey||e.altKey||e.metaKey||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;
+ const k=e.key.toLowerCase();
+ if(k==='+'||k==='='||k==='add'){e.preventDefault();zoomNumber(.15)}
+ if(k==='-'||k==='subtract'){e.preventDefault();zoomNumber(-.15)}
+ if(k==='arrowleft'&&numberZoom>1){e.preventDefault();panNumber(-100,0)}
+ if(k==='arrowright'&&numberZoom>1){e.preventDefault();panNumber(100,0)}
+ if(k==='arrowup'&&numberZoom>1){e.preventDefault();panNumber(0,-70)}
+ if(k==='arrowdown'&&numberZoom>1){e.preventDefault();panNumber(0,70)}
+ if((k==='j'||k==='k')&&target!==null){
+  e.preventDefault();const i=chapterOrder.indexOf(target),step=k==='j'?1:-1;
+  if(i+step<0||i+step>=chapterOrder.length)showChapters();
+  else selectChapter(chapterOrder[i+step]);
+ }
+ if(k==='escape'&&target!==null){e.preventDefault();showChapters()}
+});
+document.getElementById('reset').addEventListener('click',draw);
+document.getElementById('next').addEventListener('click',()=>{
+ if(found!==total)return;
+ const index=chapterOrder.indexOf(target);
+ if(index===chapterOrder.length-1)showChapters();
+ else selectChapter(chapterOrder[index+1]);
+});
+document.getElementById('chapters').addEventListener('click',showChapters);
+document.getElementById('home').addEventListener('click',()=>{location.href='index.html?topic=matematica'});
+DiegoAudio.subscribe(function(enabled){
+ muted=!enabled;const b=document.getElementById('sound');b.textContent=enabled?'SUONI':'MUTO';
+ b.setAttribute('aria-pressed',String(enabled));b.setAttribute('aria-label',enabled?'Disattiva suoni':'Attiva suoni');
+});
+document.getElementById('sound').addEventListener('click',()=>DiegoAudio.setEnabled(!DiegoAudio.isEnabled()));
+const requested=new URLSearchParams(location.search).get('numero');
+if(requested!==null&&chapterOrder.includes(Number(requested)))selectChapter(Number(requested));
+else showChapters();
+</script>
+</body>
+</html>

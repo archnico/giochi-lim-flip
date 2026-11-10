@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="it" data-diego-edition="flip">
+<head><meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Pregrafismo — Giochi LIM</title>
+<style>
+:root{--navy:#103b53;--cyan:#00b6af;--yellow:#ffe36d;--white:#fffdf6}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,Helvetica,sans-serif;background:#0c424f;color:white}
+button{font:inherit;cursor:pointer;touch-action:manipulation}
+button:focus-visible{outline:4px solid #fff;outline-offset:3px}
+[hidden]{display:none!important}
+#app{height:100vh;height:100dvh;display:flex;flex-direction:column;min-height:0;background:radial-gradient(circle at 8% 88%,#26bca5 0,#0f888a 30%,#10506c 78%,#173956)}
+.top{flex:none;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px 20px;background:#10364fe8;border-bottom:3px solid #6ed6d6;min-height:78px}
+.top strong{font-size:clamp(25px,2.5vw,44px);white-space:nowrap}
+.top .toolbar{display:flex;gap:12px;align-items:center}
+.btn{border:3px solid #b3eeed;border-radius:18px;background:#174f66;color:#fff;padding:10px 16px;min-height:56px;font-size:clamp(19px,1.5vw,28px);font-weight:bold}
+.btn:active{transform:scale(.98);background:#267d84}
+.btn.light{background:#fff1a0;color:#20344d;border-color:#fff9d7}
+#sound{min-width:118px}
+#menu{flex:1;min-height:0;overflow:auto;padding:24px;display:flex;flex-direction:column;gap:16px}
+.intro{max-width:1200px;margin:0 auto;text-align:center}
+.intro h1{font-size:clamp(32px,3.7vw,62px);margin:3px 0}
+.intro p{font-size:clamp(19px,1.5vw,28px);margin:8px 0 4px}
+.chapters{flex:1;min-height:0;width:100%;max-width:1700px;margin:auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-content:center}
+.chapter{min-height:200px;border-radius:28px;border:4px solid #ffffffb8;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;text-align:center;background:linear-gradient(140deg,#14789b,#136681);box-shadow:0 8px 20px #061d3570}
+.chapter:nth-child(2n){background:linear-gradient(140deg,#087d74,#126782)}
+.chapter:nth-child(3n){background:linear-gradient(140deg,#7151a9,#4164aa)}
+.chapter .symbol{font-size:clamp(50px,5.5vw,105px);line-height:1}
+.chapter .name{font-weight:900;font-size:clamp(24px,2.4vw,43px);line-height:1.06}
+.chapter .detail{font-size:clamp(17px,1.2vw,22px);color:#fffbe6}
+.chapter .stars{font-size:clamp(18px,1.2vw,22px);letter-spacing:.2em;color:#ffe26e}
+.chapter:last-child{background:linear-gradient(140deg,#168db1,#095e88)}
+#play{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;padding:10px 15px 12px;gap:8px}
+.hud{flex:none;width:100%;max-width:1680px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.hud div{min-width:0}.hud h1{margin:0;font-size:clamp(27px,2.3vw,42px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hud p{margin:4px 0 0;font-size:clamp(17px,1.3vw,24px);color:#ebffff}
+.hud .counter{font-size:clamp(21px,1.7vw,31px);color:#ffe66e;font-weight:bold;white-space:nowrap}
+.board-wrap{width:100%;max-width:1680px;flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;border:5px solid #ceffff;border-radius:28px;overflow:hidden;box-shadow:inset 0 0 48px #08b9b866,0 10px 25px #032d3f88;background:#0ca79d}
+.board-wrap:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.36;background-image:radial-gradient(circle at 5% 7%,#ffd668 0 8px,transparent 10px),radial-gradient(circle at 8% 93%,#f16f9b 0 12px,transparent 14px),radial-gradient(circle at 95% 90%,#ffe668 0 8px,transparent 10px),radial-gradient(circle at 93% 8%,#be90eb 0 11px,transparent 13px);background-size:100% 100%;background-repeat:no-repeat}
+#board{width:100%;height:100%;max-height:100%;display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+.board-tools{flex:none;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
+.board-tools .btn{min-height:54px}
+#message{position:absolute;top:14px;left:50%;transform:translateX(-50%);border-radius:20px;background:#163a4edf;padding:9px 21px;max-width:95%;text-align:center;font-size:clamp(17px,1.5vw,27px);font-weight:800;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#celebrate{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;background:#063d55a8;pointer-events:none;z-index:4;overflow:hidden}
+#celebrate .bigstar{font-size:clamp(75px,9vw,155px);animation:pop .6s ease-in-out alternate infinite;text-shadow:0 0 35px #fff}
+#celebrate .yay{font-size:clamp(28px,3vw,58px);font-weight:900;text-shadow:0 5px 6px #064050}
+#confetti{position:absolute;inset:0;pointer-events:none}
+.particle{position:absolute;top:-10%;width:16px;height:35px;border-radius:5px;animation:fall 2s linear forwards}
+@keyframes fall{from{transform:translateY(0) rotate(0deg)}to{transform:translateY(850px) rotate(600deg)}}
+@keyframes pop{from{transform:scale(.92) rotate(-8deg)}to{transform:scale(1.14) rotate(8deg)}}
+#guide{pointer-events:none}
+@media(max-width:1100px){.chapters{grid-template-columns:repeat(3,1fr);align-content:start}.top strong{font-size:26px}}
+@media(max-width:720px){.chapters{grid-template-columns:repeat(2,1fr)}.chapter{min-height:160px}.top{min-height:64px;padding:5px 8px}.top strong{font-size:19px}.top .toolbar{gap:4px}.btn{font-size:16px;min-height:44px;padding:6px 9px;border-radius:12px}.hud p{font-size:15px}.hud h1{font-size:22px}.hud .counter{font-size:18px}.board-tools{gap:6px}.board-wrap{border-width:3px;border-radius:14px}#play{padding:6px;gap:6px}}
+@media(max-height:680px){.top{min-height:58px;padding:4px 12px}.board-tools .btn{min-height:42px}.hud h1{font-size:25px}.hud p{margin:2px 0}.chapter{min-height:145px}}
+@media(prefers-reduced-motion:reduce){.particle,#celebrate .bigstar{animation:none}}
+</style>
+<script src="diego-runtime.js"></script>
+</head>
+<body>
+<div id="app">
+  <div class="top">
+    <button type="button" id="home" class="btn">⌂ GIOCHI</button>
+    <strong>✏️ PREGRAFISMO</strong>
+    <div class="toolbar"><button id="sound" type="button" class="btn" aria-pressed="true">🔊 SUONI</button></div>
+  </div>
+  <div id="menu">
+    <div class="intro"><h1>Segui il percorso con il dito!</h1><p>Parti dal cerchio luminoso e arriva alla stella. Nessuna fretta. 🌟</p></div>
+    <div id="chapters" class="chapters"></div>
+  </div>
+  <div id="play" hidden>
+    <div class="hud"><div><h1 id="ex-title"></h1><p id="ex-subtitle"></p></div><span class="counter" id="ex-counter"></span></div>
+    <div class="board-wrap">
+      <svg id="board" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Percorso da seguire con un dito">
+        <g id="tracks"></g>
+        <g id="markers"></g>
+        <g id="guide" visibility="hidden">
+          <circle id="guide-halo" cx="0" cy="0" r="50" fill="#ffffff55" stroke="#fff" stroke-width="3"></circle>
+          <text id="guide-hand" x="0" y="0" text-anchor="middle" dy="13" font-size="75">👆</text>
+        </g>
+      </svg>
+      <div id="message" role="status" aria-live="polite">Parti dal cerchio e segui la linea</div>
+      <div id="celebrate" hidden><div id="confetti"></div><div class="bigstar">🌟</div><div class="yay">BRAVISSIMO!</div></div>
+    </div>
+    <div class="board-tools">
+      <button id="chaptersBtn" type="button" class="btn">☷ CAPITOLI</button>
+      <button id="prev" type="button" class="btn">← PRIMA</button>
+      <button id="again" type="button" class="btn">↻ RIPROVA</button>
+      <button id="hint" type="button" class="btn">👆 MOSTRA</button>
+      <button id="easy" type="button" class="btn" aria-pressed="true">☺ FACILE</button>
+      <button id="next" type="button" class="btn light">DOPO →</button>
+    </div>
+  </div>
+</div>
+<script src="diego-audio.js"></script>
+<script>
+(function(){
+'use strict';
+var S='http://www.w3.org/2000/svg',root=document.getElementById('app'),menu=document.getElementById('menu'),play=document.getElementById('play'),board=document.getElementById('board');
+var tracks=document.getElementById('tracks'),markers=document.getElementById('markers'),guide=document.getElementById('guide'),message=document.getElementById('message'),celebrate=document.getElementById('celebrate');
+var chapters=[
+{id:'rette',title:'Linee dritte',icon:'📏',detail:'Orizzontali e verticali',levels:[
+['Tre strade colorate',['M130 160 L870 160','M130 300 L870 300','M130 440 L870 440']],
+['Piccole strade',['M230 170 L770 170','M230 300 L770 300','M230 430 L770 430']],
+['Dall’alto in basso',['M240 110 L240 510','M500 110 L500 510','M760 110 L760 510']],
+['Da destra a sinistra',['M870 160 L130 160','M870 300 L130 300','M870 440 L130 440']],
+['Colonne lunghe e corte',['M250 130 L250 470','M500 180 L500 420','M750 110 L750 510']],
+['Strade in salita',['M130 220 L870 220','M130 380 L870 380']],
+['Strade in discesa',['M870 220 L130 220','M870 380 L130 380']],
+['La strada gigante',['M100 300 L900 300']]
+]},
+{id:'diagonali',title:'Diagonali',icon:'↗️',detail:'Salite e discese',levels:[
+['Sali la collina',['M170 480 L830 120']],
+['Scendi la collina',['M170 120 L830 480']],
+['Due salite',['M170 390 L430 110','M570 490 L840 210']],
+['Due discese',['M170 110 L430 390','M570 210 L840 490']],
+['Il grande tetto',['M130 420 L500 100 L870 420']],
+['La valle',['M130 160 L500 500 L870 160']],
+['La grande X',['M130 120 L870 480','M130 480 L870 120']],
+['Monte e valle',['M110 400 L310 140 L510 400 L710 140 L890 400']]
+]},
+{id:'curve',title:'Curve morbide',icon:'🌈',detail:'Archi e serpentine',levels:[
+['Il ponte',['M100 460 Q500 60 900 460']],
+['La grande U',['M140 170 Q500 860 860 170']],
+['Arcobaleni',['M120 450 Q500 40 880 450','M200 460 Q500 180 800 460']],
+['Le due gobbe',['M100 460 Q290 100 500 460 Q710 100 900 460']],
+['Una curva a sinistra',['M150 160 C850 130 860 460 240 470']],
+['Una curva a destra',['M850 160 C150 130 140 460 760 470']],
+['La serpentina',['M110 210 C360 30 390 570 620 380 S820 90 900 300']],
+['La lettera S',['M800 130 C150 10 120 300 490 310 S880 580 160 500']]
+]},
+{id:'onde',title:'Onde',icon:'〰️',detail:'Movimenti ondulati',levels:[
+['La prima onda',['M100 300 Q300 80 500 300 T900 300']],
+['Tre onde dolci',['M80 290 Q220 80 360 290 T640 290 T920 290']],
+['Onde del mare',['M80 290 C220 100 350 490 500 290 S780 100 920 290']],
+['Due strade ondulate',['M100 160 Q300 10 500 160 T900 160','M100 450 Q300 300 500 450 T900 450']],
+['Le piccole onde',['M90 300 Q190 160 290 300 T490 300 T690 300 T890 300']],
+['Saliscendi lento',['M100 180 C250 180 330 490 500 490 S740 180 900 180']],
+['L’onda gigante',['M80 480 C250 480 260 110 500 110 S750 480 920 480']],
+['Serpentina in piedi',['M500 80 C200 180 800 300 500 390 S200 530 500 550']]
+]},
+{id:'cerchi',title:'Cerchi e anelli',icon:'⭕',detail:'Giri grandi e piccoli',levels:[
+['Il cerchio grande',['M500 110 C710 110 880 195 880 300 C880 410 710 490 500 490 C290 490 120 410 120 300 C120 195 290 110 500 110']],
+['L’ovale',['M500 100 C750 100 750 500 500 500 C250 500 250 100 500 100']],
+['Il girotondo',['M340 300 A160 160 0 1 1 660 300 A160 160 0 1 1 340 300']],
+['Due grandi anelli',['M260 300 A140 140 0 1 1 540 300 A140 140 0 1 1 260 300','M560 300 A130 130 0 1 1 820 300 A130 130 0 1 1 560 300']],
+['Il cerchio piccolo',['M500 160 A140 140 0 1 1 500 440 A140 140 0 1 1 500 160']],
+['La goccia',['M500 110 C600 250 780 300 730 440 C670 570 330 570 270 440 C220 300 400 250 500 110']],
+['Il grande otto',['M500 300 C200 60 160 400 500 300 C840 200 800 540 500 300']],
+['La spirale',['M150 330 C150 30 850 20 850 310 C850 550 280 570 280 310 C280 140 720 130 720 310 C720 430 420 450 420 320 C420 250 580 240 580 310']]
+]},
+{id:'segni',title:'Segni speciali',icon:'✏️',detail:'Zigzag, ponti, forme',levels:[
+['Il primo zigzag',['M100 440 L280 160 L460 440 L640 160 L820 440']],
+['Tre scalini',['M120 150 L350 150 L350 300 L580 300 L580 450 L870 450']],
+['Il quadrato',['M300 150 L700 150 L700 450 L300 450 L300 150']],
+['Il triangolo',['M500 110 L870 480 L130 480 L500 110']],
+['La grande M',['M140 480 L140 120 L500 360 L860 120 L860 480']],
+['La grande W',['M130 140 L280 480 L500 220 L720 480 L870 140']],
+['Una casa',['M180 330 L500 90 L820 330 L820 500 L180 500 L180 330']],
+['Il cuore',['M500 490 C300 330 90 180 240 120 C360 40 490 150 500 200 C510 150 640 40 760 120 C910 180 700 330 500 490']]
+]},
+{id:'acqua',title:'Acqua magica',icon:'🌊',detail:'Onde, schizzi e pesciolini',levels:[
+['L’onda blu',['M100 320 Q300 80 500 320 T900 320']],
+['La piscina',['M120 170 L880 170 L880 480 L120 480 L120 170']],
+['Goccia d’acqua',['M500 110 C610 260 790 340 700 470 C630 590 370 590 300 470 C210 340 390 260 500 110']],
+['Onde gemelle',['M110 200 Q280 70 450 200 T790 200','M110 420 Q280 290 450 420 T790 420']],
+['Il pesciolino',['M260 310 C420 100 730 100 840 310 C730 520 420 520 260 310 L90 180 L90 440 L260 310']],
+['Lo spruzzo',['M130 470 Q200 160 320 350 Q470 30 530 310 Q720 90 870 470']],
+['La conchiglia',['M180 430 Q180 130 500 150 Q820 130 820 430 Q500 530 180 430']],
+['Il mare infinito',['M80 320 C210 120 340 500 470 320 S730 120 920 320']]
+]}
+];
+var state={chapter:-1,level:0,stroke:0,parts:[],samples:[],index:0,down:false,id:null,lastTouch:0,done:false,easy:true,session:0,zoom:1};
+var sessionTimers=[],demoTimer=0,audioCtx=null,progress={};
+try{progress=JSON.parse(localStorage.getItem('diego-pregrafismo-progress-v1')||'{}')||{}}catch(e){progress={}}
+function save(){try{localStorage.setItem('diego-pregrafismo-progress-v1',JSON.stringify(progress))}catch(e){}}
+function later(fn,ms){var id=setTimeout(fn,ms);sessionTimers.push(id);return id}
+function clearTimers(){sessionTimers.forEach(clearTimeout);sessionTimers=[];stopDemo()}
+function svg(tag,attr,parent){var n=document.createElementNS(S,tag);Object.keys(attr||{}).forEach(function(k){n.setAttribute(k,attr[k])});if(parent)parent.appendChild(n);return n}
+function clear(node){while(node.firstChild)node.removeChild(node.firstChild)}
+function setMessage(text){message.textContent=text}
+function title(){return chapters[state.chapter].levels[state.level][0]}
+function labelButtons(){var c=chapters[state.chapter];document.getElementById('ex-title').textContent=title();document.getElementById('ex-subtitle').textContent=c.title+' · Vai dal cerchio alla stella';document.getElementById('ex-counter').textContent=(state.level+1)+' / '+c.levels.length;document.getElementById('easy').textContent=state.easy?'☺ FACILE':'◎ PRECISO';document.getElementById('easy').setAttribute('aria-pressed',String(state.easy))}
+function chapterMenu(){state.session++;clearTimers();state.down=false;state.done=false;state.chapter=-1;menu.hidden=false;play.hidden=true;celebrate.hidden=true;var box=document.getElementById('chapters');clear(box);
+ chapters.forEach(function(c,ci){var b=document.createElement('button');b.type='button';b.className='chapter';var done=(progress[c.id]||[]).length;b.innerHTML='<span class="symbol">'+c.icon+'</span><span class="name">'+c.title+'</span><span class="detail">'+c.detail+'</span><span class="stars">'+done+' / '+c.levels.length+' ★</span>';b.addEventListener('click',function(){var p=progress[c.id]||[],n=0;while(n<c.levels.length-1&&p.indexOf(n)>=0)n++;openLevel(ci,n)});box.appendChild(b)})
+}
+function stopDemo(){if(demoTimer){clearInterval(demoTimer);demoTimer=0}guide.setAttribute('visibility','hidden')}
+function showDemo(){if(state.chapter<0||state.done||state.down)return;stopDemo();var data=state.parts[state.stroke];if(!data)return;var t0=Date.now(),duration=Math.max(2100,Math.min(4200,data.length*4));guide.setAttribute('visibility','visible');setMessage('Guarda il dito, poi prova tu!');demoTimer=setInterval(function(){if(state.down||state.done){stopDemo();return}var p=Math.min(1,(Date.now()-t0)/duration),point=data.path.getPointAtLength(p*data.length);document.getElementById('guide-halo').setAttribute('cx',point.x);document.getElementById('guide-halo').setAttribute('cy',point.y);document.getElementById('guide-hand').setAttribute('x',point.x);document.getElementById('guide-hand').setAttribute('y',point.y);if(p>=1){stopDemo();setMessage('Adesso tocca il cerchio luminoso') }},40)}
+function openLevel(ci,li){state.session++;clearTimers();state.chapter=ci;state.level=(li+chapters[ci].levels.length)%chapters[ci].levels.length;state.stroke=0;state.index=0;state.down=false;state.id=null;state.done=false;celebrate.hidden=true;menu.hidden=true;play.hidden=false;labelButtons();draw();setMessage('Tocca il cerchio luminoso e segui la linea');if(state.level===0)later(function(){if(!state.down&&!state.done)showDemo()},800)}
+function draw(){clear(tracks);clear(markers);state.parts=[];var raw=chapters[state.chapter].levels[state.level][1],colors=['#ffe778','#fa7aa4','#7a85f7','#b2f27f'];
+raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#12476a','stroke-width':'48','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.72'},tracks);var p=svg('path',{d:d,fill:'none',stroke:colors[i%colors.length],'stroke-width':'30','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#fff9e5','stroke-width':'17','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});activate()}
+function samplePart(data){var samples=[],n=Math.max(3,Math.ceil(data.length/5));for(var i=0;i<=n;i++)samples.push(data.path.getPointAtLength(data.length*i/n));return samples}
+function activate(){clear(markers);if(state.stroke>=state.parts.length)return;state.parts.forEach(function(d,i){var o=i===state.stroke||d.completed?'1':'.22';d.path.setAttribute('opacity',o);d.outer.setAttribute('opacity',i===state.stroke?'.78':'.13')});state.samples=samplePart(state.parts[state.stroke]);state.index=0;state.lastBell=0;state.down=false;
+ var first=state.samples[0],last=state.samples[state.samples.length-1];
+ svg('circle',{cx:last.x,cy:last.y,r:43,fill:'#fff9b8',stroke:'#f8b744','stroke-width':7},markers);
+ svg('text',{x:last.x,y:last.y+19,'text-anchor':'middle','font-size':64},markers).textContent='★';
+ svg('circle',{cx:first.x,cy:first.y,r:47,fill:'#e6ffbc',stroke:'#287c67','stroke-width':8},markers);
+ svg('circle',{cx:first.x,cy:first.y,r:19,fill:'#1b946f'},markers);
+ svg('circle',{id:'cursor',cx:first.x,cy:first.y,r:26,fill:'#fff',stroke:'#0a5065','stroke-width':5},markers);
+ setMessage('Dal cerchio alla stella · '+(state.stroke+1)+' / '+state.parts.length);
+}
+function mapEvent(e){var rect=board.getBoundingClientRect(),x=e.clientX,y=e.clientY;try{var pt=board.createSVGPoint();pt.x=x;pt.y=y;var m=board.getScreenCTM();if(m){var r=pt.matrixTransform(m.inverse());return{x:r.x,y:r.y}}}catch(ignore){}var scale=Math.min(rect.width/1000,rect.height/600),offX=(rect.width-1000*scale)/2,offY=(rect.height-600*scale)/2;return{x:(x-rect.left-offX)/scale,y:(y-rect.top-offY)/scale}}
+function dist(a,b){var x=a.x-b.x,y=a.y-b.y;return Math.sqrt(x*x+y*y)}
+function startGesture(ev,id){if(state.chapter<0||state.done||state.down)return;var pt=mapEvent(ev),target=state.samples[state.index];if(!target||dist(pt,target)>(state.easy?48:30)){setMessage('Cerca il pallino bianco per cominciare');return}stopDemo();state.down=true;state.id=id;state.index=Math.max(0,state.index);setMessage('Benissimo! Continua fino alla stella');moveGesture(ev,id)}
+function moveGesture(ev,id){if(!state.down||state.id!==id||state.done)return;var pt=mapEvent(ev),lo=Math.max(0,state.index-10),hi=Math.min(state.samples.length-1,state.index+36),best=-1,bestDist=1e9;for(var i=lo;i<=hi;i++){var di=dist(pt,state.samples[i]);if(di<bestDist){bestDist=di;best=i}}if(bestDist>(state.easy?36:22))return;state.index=Math.max(state.index,best);
+ var data=state.parts[state.stroke],r=state.index/(state.samples.length-1),point=state.samples[state.index];data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));var phase=Math.min(3,Math.floor(r*4));if(phase>state.lastBell){state.lastBell=phase;chirp()}var cursor=document.getElementById('cursor');if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y)}if(r>=.985||(r>.90&&dist(pt,state.samples[state.samples.length-1])<90))completeStroke()}
+function endGesture(id){if(!state.down||state.id!==id)return;state.down=false;state.id=null;if(!state.done)setMessage('Bravo! Riparti dal pallino bianco')}
+function completeStroke(){state.down=false;state.id=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';if(window.DiegoAudio)DiegoAudio.play('stella');state.stroke++;
+ if(state.stroke<state.parts.length){var token=state.session;setMessage('Ottimo! Ecco un’altra linea!');later(function(){if(state.session!==token)return;activate()},520)}else finishLevel()}
+function finishLevel(){state.done=true;celebrate.hidden=false;var p=progress[chapters[state.chapter].id]||[];if(p.indexOf(state.level)<0){p.push(state.level);progress[chapters[state.chapter].id]=p;save()}
+ var confetti=document.getElementById('confetti');clear(confetti);for(var i=0;i<27;i++){var el=document.createElement('span');el.className='particle';el.style.left=(5+((i*37)%90))+'%';el.style.background=['#ffdc4a','#ff79a8','#88f6ec','#c6a2ff'][i%4];el.style.animationDelay=(i%8)*.11+'s';confetti.appendChild(el)}
+ if(window.DiegoAudio)DiegoAudio.play(state.level===7?'fantastico':'bravo');setMessage('Bravissimo! Hai completato il percorso 🌟');var token=state.session;later(function(){if(state.session===token&&state.done)nextLevel()},1850)}
+function nextLevel(){if(state.chapter<0)return;var n=state.level+1;if(n>=chapters[state.chapter].levels.length){chapterMenu()}else openLevel(state.chapter,n)}
+function panBoard(dx,dy){
+ if(state.zoom<=1)return;
+ var v=board.viewBox.baseVal,w=1000/state.zoom,h=600/state.zoom;
+ var x=Math.max(0,Math.min(1000-w,v.x+dx)),y=Math.max(0,Math.min(600-h,v.y+dy));
+ board.setAttribute('viewBox',x+' '+y+' '+w+' '+h);
+}
+function zoomBoard(delta){
+ var old=board.viewBox.baseVal,cx=old.x+old.width/2,cy=old.y+old.height/2;
+ state.zoom=Math.max(1,Math.min(1.45,Math.round((state.zoom+delta)*100)/100));
+ var w=1000/state.zoom,h=600/state.zoom;
+ var x=Math.max(0,Math.min(1000-w,cx-w/2)),y=Math.max(0,Math.min(600-h,cy-h/2));
+ board.setAttribute('viewBox',x+' '+y+' '+w+' '+h);
+ setMessage('Ingrandimento '+Math.round(state.zoom*100)+'%');
+}
+function chirp(){if(!window.DiegoAudio||!DiegoAudio.isEnabled())return;try{var AudioContext=window.AudioContext||window.webkitAudioContext;if(!AudioContext)return;if(!audioCtx)audioCtx=new AudioContext();var osc=audioCtx.createOscillator(),gain=audioCtx.createGain(),t=audioCtx.currentTime;osc.type='sine';osc.frequency.setValueAtTime(600,t);osc.frequency.exponentialRampToValueAtTime(880,t+.12);gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.05,t+.02);gain.gain.exponentialRampToValueAtTime(.0001,t+.18);osc.connect(gain);gain.connect(audioCtx.destination);osc.start(t);osc.stop(t+.19)}catch(ignore){}}
+var sound=document.getElementById('sound');function syncSound(){var enabled=window.DiegoAudio?DiegoAudio.isEnabled():false;sound.textContent=enabled?'🔊 SUONI':'🔇 MUTO';sound.setAttribute('aria-pressed',String(enabled))}
+sound.onclick=function(){if(window.DiegoAudio){DiegoAudio.setEnabled(!DiegoAudio.isEnabled());syncSound();if(DiegoAudio.isEnabled())DiegoAudio.play('bravo')}};
+if(window.DiegoAudio)DiegoAudio.subscribe(syncSound);syncSound();
+document.getElementById('home').onclick=function(){location.href='index.html'};
+document.getElementById('chaptersBtn').onclick=chapterMenu;
+document.getElementById('prev').onclick=function(){if(state.level===0)chapterMenu();else openLevel(state.chapter,state.level-1)};
+document.getElementById('next').onclick=nextLevel;
+document.getElementById('again').onclick=function(){if(state.chapter>=0)openLevel(state.chapter,state.level)};
+document.getElementById('hint').onclick=showDemo;
+document.addEventListener('keydown',function(e){
+ var t=e.target&&e.target.tagName;if(t==='INPUT'||t==='TEXTAREA'||t==='SELECT'||e.ctrlKey||e.altKey||e.metaKey)return;
+ var key=(e.key||'').toLowerCase();
+ if(key==='+'||key==='='||key==='add'){e.preventDefault();zoomBoard(.15)}
+ else if(key==='-'||key==='subtract'){e.preventDefault();zoomBoard(-.15)}
+ else if(key==='arrowleft'&&state.zoom>1){e.preventDefault();panBoard(-90,0)}
+ else if(key==='arrowright'&&state.zoom>1){e.preventDefault();panBoard(90,0)}
+ else if(key==='arrowup'&&state.zoom>1){e.preventDefault();panBoard(0,-65)}
+ else if(key==='arrowdown'&&state.zoom>1){e.preventDefault();panBoard(0,65)}
+ else if(key==='j'&&state.chapter>=0){e.preventDefault();nextLevel()}
+ else if(key==='k'&&state.chapter>=0){e.preventDefault();if(state.level===0)chapterMenu();else openLevel(state.chapter,state.level-1)}
+ else if(key==='escape'&&state.chapter>=0){e.preventDefault();chapterMenu()}
+});
+document.getElementById('easy').onclick=function(){state.easy=!state.easy;labelButtons();setMessage(state.easy?'Modalità facile: percorsi più tolleranti':'Modalità precisa: segui la linea più da vicino')};
+var usePointer=!!window.PointerEvent;
+if(usePointer){
+ board.addEventListener('pointerdown',function(e){if(e.button!==undefined&&e.button!==0)return;if(e.cancelable)e.preventDefault();startGesture(e,e.pointerId);try{board.setPointerCapture(e.pointerId)}catch(ignore){}});
+ window.addEventListener('pointermove',function(e){if(e.cancelable&&state.down)e.preventDefault();moveGesture(e,e.pointerId)});
+ window.addEventListener('pointerup',function(e){endGesture(e.pointerId)});
+ window.addEventListener('pointercancel',function(e){endGesture(e.pointerId)});
+ board.addEventListener('lostpointercapture',function(e){endGesture(e.pointerId)});
+}else{
+ board.addEventListener('touchstart',function(e){if(e.cancelable)e.preventDefault();if(state.down||!e.changedTouches.length)return;state.lastTouch=Date.now();var t=e.changedTouches[0];startGesture(t,t.identifier)},{passive:false});
+ window.addEventListener('touchmove',function(e){if(e.cancelable&&state.down)e.preventDefault();for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];if(t.identifier===state.id)moveGesture(t,t.identifier)}},{passive:false});
+ window.addEventListener('touchend',function(e){for(var i=0;i<e.changedTouches.length;i++)endGesture(e.changedTouches[i].identifier)});
+ window.addEventListener('touchcancel',function(e){for(var i=0;i<e.changedTouches.length;i++)endGesture(e.changedTouches[i].identifier)});
+ board.addEventListener('mousedown',function(e){if(e.button!==0||Date.now()-state.lastTouch<800)return;if(e.cancelable)e.preventDefault();startGesture(e,'mouse')});
+ window.addEventListener('mousemove',function(e){moveGesture(e,'mouse')});window.addEventListener('mouseup',function(){endGesture('mouse')});
+}
+window.addEventListener('blur',function(){state.down=false;state.id=null;stopDemo()});
+document.addEventListener('visibilitychange',function(){if(document.hidden){state.down=false;state.id=null;stopDemo()}});
+window.addEventListener('pagehide',function(){clearTimers();if(audioCtx&&audioCtx.close)try{audioCtx.close()}catch(ignore){}});
+chapterMenu();
+window.PregrafismoTest={chapters:chapters,state:state,openLevel:openLevel,nextLevel:nextLevel,chapterMenu:chapterMenu,startGesture:startGesture,moveGesture:moveGesture,endGesture:endGesture,mapEvent:mapEvent,zoomBoard:zoomBoard,panBoard:panBoard};
+})();
+</script>
+</body>
+</html>

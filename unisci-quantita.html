@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="it" data-diego-edition="flip">
+<head><meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Unisci numeri e quantità — Giochi LIM</title>
+<style>
+:root{--bg:#101820;--panel:#213443;--ink:#fff;--muted:#d4e5ee;--gold:#ffda64;--green:#73eda7;--red:#ff978e}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--bg)}
+body{overflow:hidden;touch-action:manipulation}
+button{font-family:inherit;cursor:pointer;touch-action:manipulation}
+.page{height:100vh;min-height:0;display:flex;flex-direction:column;/*diego-fallback*/--diego-gap:8px;grid-gap:8px;/*end-fallback*/gap:8px;/*diego-fallback*/padding:12px 2.5vw 14px;/*end-fallback*/padding:12px clamp(12px,2.5vw,36px) 14px}
+.top{display:flex;align-items:center;justify-content:space-between;/*diego-fallback*/--diego-gap:12px;grid-gap:12px;/*end-fallback*/gap:12px;flex-shrink:0}
+.back,.setting,.again{min-height:54px;background:#334b60;color:#fff;border:2px solid #96b8ca;border-radius:14px;/*diego-fallback*/font-size:1.6vw;/*end-fallback*/font-size:clamp(18px,1.6vw,27px);font-weight:800;padding:8px 16px}
+.back{white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center}
+.settings{display:flex;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.setting.active{background:var(--gold);border-color:var(--gold);color:#1a2730}
+.heading{display:flex;align-items:center;justify-content:space-between;/*diego-fallback*/--diego-gap:16px;grid-gap:16px;/*end-fallback*/gap:16px;flex-shrink:0}
+h1{/*diego-fallback*/font-size:3.2vw;/*end-fallback*/font-size:clamp(28px,3.2vw,56px);line-height:1.03;margin:0;font-weight:900}
+.instruction{/*diego-fallback*/font-size:1.8vw;/*end-fallback*/font-size:clamp(19px,1.8vw,31px);font-weight:700;color:var(--muted);margin:6px 0 0}
+.progress{/*diego-fallback*/font-size:2.3vw;/*end-fallback*/font-size:clamp(22px,2.3vw,38px);font-weight:900;color:var(--gold);white-space:nowrap}
+.board{min-height:0;flex:1;position:relative;/*diego-fallback*/margin:5px 2vw;/*end-fallback*/margin:5px clamp(0px,2vw,32px);isolation:isolate}
+.columns{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);/*diego-fallback*/column-gap:15vw;grid-column-gap:15vw;/*end-fallback*/column-gap:clamp(80px,15vw,240px);height:100%;min-height:0}
+.column{display:grid;grid-template-rows:repeat(5,minmax(0,1fr));/*diego-fallback*/gap:1.2vh;--diego-gap:1.2vh;grid-gap:1.2vh;/*end-fallback*/gap:clamp(7px,1.2vh,16px);min-height:0}
+.pair-tile{min-width:0;min-height:0;width:100%;height:100%;border:4px solid #89a7b7;border-radius:20px;background:#fff;color:#102536;display:flex;justify-content:center;align-items:center;font-weight:900;position:relative;outline:0;box-shadow:0 3px 0 #0006}
+.number-tile{/*diego-fallback*/font-size:7vh;/*end-fallback*/font-size:clamp(47px,7vh,94px)}
+.quantity-tile{/*diego-fallback*/gap:1.2vw;--diego-gap:1.2vw;grid-gap:1.2vw;/*end-fallback*/gap:clamp(7px,1.2vw,19px);padding:5px 9px}
+.dot{display:block;flex:0 0 auto;background:#122837;/*diego-fallback*/width:2.45vw;/*end-fallback*/width:clamp(17px,2.45vw,39px);/*diego-fallback*/height:2.45vw;/*end-fallback*/height:clamp(17px,2.45vw,39px);border-radius:50%}
+.pair-tile.selected,.pair-tile:focus-visible{border-color:var(--gold);box-shadow:0 0 0 6px #ffda6499,inset 0 0 0 3px #ffda64}
+.pair-tile.matched{border-color:var(--green);background:#e6fff0}
+.pair-tile.matched::after{content:"✓";position:absolute;right:12px;top:4px;/*diego-fallback*/font-size:2vw;/*end-fallback*/font-size:clamp(20px,2vw,34px);color:#157240}
+.pair-tile.wrong{border-color:var(--red);background:#ffe6e4}
+.lines{position:absolute;z-index:1;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.bottom{min-height:62px;display:flex;align-items:center;justify-content:space-between;/*diego-fallback*/--diego-gap:14px;grid-gap:14px;/*end-fallback*/gap:14px;flex-shrink:0}
+.feedback{/*diego-fallback*/font-size:2vw;/*end-fallback*/font-size:clamp(20px,2vw,34px);font-weight:900;color:var(--gold);min-width:0}
+.again{border-color:var(--gold);background:#3a3e33;white-space:nowrap}
+.complete .feedback{color:var(--green)}
+.complete .again{background:var(--green);border-color:var(--green);color:#09301e}
+@media(max-width:800px){.page{padding:8px 9px}.back,.setting,.again{min-height:43px;padding:5px 9px;font-size:16px}.top{flex-wrap:wrap}.heading{/*diego-fallback*/--diego-gap:5px;grid-gap:5px;/*end-fallback*/gap:5px}.instruction{font-size:17px}.progress{font-size:20px}.columns{/*diego-fallback*/column-gap:11vw;grid-column-gap:11vw;/*end-fallback*/column-gap:clamp(48px,11vw,90px)}.pair-tile{border-width:3px;border-radius:13px}.quantity-tile{/*diego-fallback*/--diego-gap:5px;grid-gap:5px;/*end-fallback*/gap:5px}.dot{/*diego-fallback*/width:2.9vw;/*end-fallback*/width:clamp(12px,2.9vw,23px);/*diego-fallback*/height:2.9vw;/*end-fallback*/height:clamp(12px,2.9vw,23px)}.pair-tile.matched::after{font-size:17px;right:3px;top:0}.bottom{min-height:48px}.feedback{font-size:19px}}
+@media(max-height:680px){.page{/*diego-fallback*/--diego-gap:4px;grid-gap:4px;/*end-fallback*/gap:4px;padding-top:5px;padding-bottom:5px}.back,.setting,.again{min-height:38px}.instruction{margin:0}.bottom{min-height:44px}.column{/*diego-fallback*/--diego-gap:6px;grid-gap:6px;/*end-fallback*/gap:6px}.pair-tile{border-width:3px;border-radius:12px}.number-tile{/*diego-fallback*/font-size:8vh;/*end-fallback*/font-size:clamp(31px,8vh,58px)}}
+@media(max-width:380px){.dot{width:11px;height:11px}.quantity-tile{/*diego-fallback*/--diego-gap:3px;grid-gap:3px;/*end-fallback*/gap:3px}.settings{/*diego-fallback*/--diego-gap:3px;grid-gap:3px;/*end-fallback*/gap:3px}h1{font-size:24px}}
+</style>
+<link rel="stylesheet" href="diego-runtime.css"><script src="diego-runtime.js"></script></head>
+<body>
+<div class="page" id="page">
+  <div class="top">
+    <a class="back" href="index.html?topic=matematica">← MATEMATICA</a>
+    <div class="settings">
+      <button class="setting" data-level="3" type="button">FACILE · 1–3</button>
+      <button class="setting active" data-level="5" type="button">1–5</button>
+    </div>
+  </div>
+  <div class="heading">
+    <div>
+      <h1>Unisci numeri e quantità</h1>
+      <p class="instruction">Tocca un numero e poi i pallini giusti</p>
+    </div>
+    <div class="progress" id="progress" aria-live="polite">0 / 5 ★</div>
+  </div>
+  <div class="board" id="board">
+    <svg class="lines" id="lines" aria-hidden="true"></svg>
+    <div class="columns">
+      <div class="column" id="numbers" aria-label="Numeri"></div>
+      <div class="column" id="quantities" aria-label="Quantità"></div>
+    </div>
+  </div>
+  <div class="bottom">
+    <div class="feedback" id="feedback" role="status" aria-live="polite">Scegli un numero</div>
+    <button class="again" id="again" type="button">↻ RICOMINCIA</button>
+  </div>
+</div>
+<script src="diego-audio.js"></script><script>
+(function(){
+  'use strict';
+  var pairScope=DiegoRuntime.createScope();
+  var level=5, initial=true, done={}, chosen=null, complete=false;
+  var board=document.getElementById('board'), lines=document.getElementById('lines');
+  var numbers=document.getElementById('numbers'), quantities=document.getElementById('quantities');
+  var feedback=document.getElementById('feedback'), progress=document.getElementById('progress');
+  var page=document.getElementById('page'), again=document.getElementById('again');
+  var lineNS='http://www.w3.org/2000/svg';
+  function mix(a){
+    for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var temp=a[i];a[i]=a[j];a[j]=temp;}
+    return a;
+  }
+  function countDone(){return Object.keys(done).length;}
+  function btn(side,n){
+    var el=document.createElement('button');
+    el.type='button';el.className='pair-tile '+(side==='n'?'number-tile':'quantity-tile');
+    el.setAttribute('data-side',side);el.setAttribute('data-value',String(n));
+    if(side==='n'){el.textContent=String(n);el.setAttribute('aria-label','Numero '+n);}
+    else{
+      el.setAttribute('aria-label',n+' pallini');
+      for(var i=0;i<n;i++){var dot=document.createElement('span');dot.className='dot';dot.setAttribute('aria-hidden','true');el.appendChild(dot);}
+    }
+    el.addEventListener('click',function(){choose(el);});
+    return el;
+  }
+  function beep(){
+    try{
+      var C=window.AudioContext||window.webkitAudioContext;
+      if(!C)return;
+      var ctx=beep.ctx||(beep.ctx=new C());
+      var osc=ctx.createOscillator(),gain=ctx.createGain();
+      osc.type='sine';osc.frequency.value=660;gain.gain.value=.045;
+      osc.connect(gain);gain.connect(ctx.destination);
+      var t=ctx.currentTime;
+      gain.gain.setValueAtTime(.045,t);gain.gain.exponentialRampToValueAtTime(.001,t+.17);
+      osc.start(t);osc.stop(t+.18);
+    }catch(e){}
+  }
+  function clearSelected(){
+    var all=board.querySelectorAll('.pair-tile.selected');
+    for(var i=0;i<all.length;i++)all[i].classList.remove('selected');
+  }
+  function choose(el){
+    if(complete||el.classList.contains('matched'))return;
+    if(!chosen){chosen=el;el.classList.add('selected');feedback.textContent=el.getAttribute('data-side')==='n'?'Ora tocca i pallini':'Ora tocca il numero';return;}
+    if(chosen===el){feedback.textContent='Ora scegli dall’altra parte';return;} // doppio tocco NON deseleziona
+    if(chosen.getAttribute('data-side')===el.getAttribute('data-side')){
+      clearSelected();chosen=el;el.classList.add('selected');return;
+    }
+    var n=el.getAttribute('data-value'),m=chosen.getAttribute('data-value');
+    if(n!==m){
+      el.classList.add('wrong');feedback.textContent='Riprova: conta i pallini';
+      pairScope.later(function(){el.classList.remove('wrong');},480);
+      return; // selezione resta attiva
+    }
+    done[n]=true;
+    chosen.classList.remove('selected');chosen.classList.add('matched');
+    el.classList.add('matched');chosen=null;
+    progress.textContent=countDone()+' / '+level+' ★';
+    DiegoAudio.play(countDone()===level?'fantastico':'bravo');draw();
+    if(countDone()===level){
+      complete=true;page.classList.add('complete');
+      feedback.textContent='Bravissimo! Tutti collegati! ★';
+      again.textContent='★ NUOVA SCHEDA';
+    }else{
+      feedback.textContent='Bravo! Scegli un altro numero';
+    }
+  }
+  function draw(){
+    while(lines.firstChild)lines.removeChild(lines.firstChild);
+    var b=board.getBoundingClientRect();
+    lines.setAttribute('viewBox','0 0 '+b.width+' '+b.height);
+    var keys=Object.keys(done);
+    for(var i=0;i<keys.length;i++){
+      var n=keys[i],a=numbers.querySelector('[data-value="'+n+'"]'),z=quantities.querySelector('[data-value="'+n+'"]');
+      if(!a||!z)continue;
+      var ar=a.getBoundingClientRect(),zr=z.getBoundingClientRect();
+      var x1=ar.right-b.left,y1=ar.top+ar.height/2-b.top;
+      var x2=zr.left-b.left,y2=zr.top+zr.height/2-b.top;
+      var p=document.createElementNS(lineNS,'line');
+      p.setAttribute('x1',x1);p.setAttribute('y1',y1);p.setAttribute('x2',x2);p.setAttribute('y2',y2);
+      p.setAttribute('stroke','#73eda7');p.setAttribute('stroke-width','10');p.setAttribute('stroke-linecap','round');
+      lines.appendChild(p);
+    }
+  }
+  function newRound(){
+    pairScope.reset();DiegoAudio.stop();
+    done={};chosen=null;complete=false;page.classList.remove('complete');
+    feedback.textContent='Scegli un numero';progress.textContent='0 / '+level+' ★';
+    again.textContent='↻ RICOMINCIA';
+    numbers.innerHTML='';quantities.innerHTML='';
+    numbers.style.gridTemplateRows='repeat('+level+',minmax(0,1fr))';
+    quantities.style.gridTemplateRows='repeat('+level+',minmax(0,1fr))';
+    var a=[],z=[];for(var i=1;i<=level;i++){a.push(i);z.push(i);}
+    if(initial&&level===5){a=[2,4,5,3,1];z=[4,5,2,3,1];initial=false;}
+    else{mix(a);mix(z);}
+    for(var j=0;j<level;j++){numbers.appendChild(btn('n',a[j]));quantities.appendChild(btn('q',z[j]));}
+    draw();
+  }
+  var settings=document.querySelectorAll('[data-level]');
+  for(var i=0;i<settings.length;i++){
+    settings[i].addEventListener('click',function(){
+      level=Number(this.getAttribute('data-level'));
+      for(var j=0;j<settings.length;j++)settings[j].classList.toggle('active',settings[j]===this);
+      newRound();
+    });
+  }
+  again.addEventListener('click',newRound);
+  window.addEventListener('resize',draw);
+  if(window.ResizeObserver)new ResizeObserver(draw).observe(board);
+  window.addEventListener('orientationchange',function(){window.setTimeout(draw,150);});
+  newRound();
+})();
+</script>
+</body>
+</html>

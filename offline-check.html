@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="it" data-diego-edition="flip">
+<head><meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verifica offline — Giochi LIM</title>
+<style>
+*{box-sizing:border-box}
+body{background:#102b3e;color:#fffdf5;font-family:Arial,Helvetica,sans-serif;margin:0;padding:20px}
+main{max-width:1080px;margin:0 auto}
+h1{font-size:clamp(34px,4vw,57px);margin:12px 0}
+p{font-size:clamp(18px,2vw,26px);line-height:1.4}
+.box{background:#22455b;border:3px solid #70bec8;border-radius:20px;padding:15px 20px;margin:15px 0}
+#verdict{font-weight:900;font-size:clamp(24px,2.7vw,36px)}
+table{border-collapse:collapse;width:100%}
+td{padding:10px 8px;border-bottom:1px solid #5a8896;font-size:clamp(17px,1.8vw,25px)}
+td:last-child{text-align:right;font-weight:bold}
+.good{color:#a6ffc7}.bad{color:#ffc2b9}.wait{color:#ffe399}
+button,a.action{display:inline-block;background:#ffe383;color:#15263a;font-weight:900;font-size:clamp(18px,2vw,26px);border:0;border-radius:14px;padding:14px 22px;margin:9px 9px 9px 0;text-decoration:none;cursor:pointer}
+#steps{font-size:clamp(17px,1.8vw,24px);line-height:1.5}
+small{font-size:17px;color:#d1e5e8}
+</style>
+<script src="diego-runtime.js"></script>
+</head>
+<body><main>
+<h1>🌐 Verifica autonomia</h1>
+<p>Questa pagina controlla se i giochi sono memorizzati nella lavagna, non soltanto se il sito è raggiungibile su Internet.</p>
+<div class="box"><div id="verdict" role="status" aria-live="polite">Verifica in corso…</div><p id="hint">Caricamento dei controlli.</p></div>
+<div class="box"><table id="checks" aria-label="Esito prove"><tbody></tbody></table></div>
+<button id="retry" type="button">↻ CONTROLLA DI NUOVO</button>
+<a href="index.html" class="action">⌂ APRI I GIOCHI</a>
+<div class="box" id="steps"><strong>Prova definitiva:</strong>
+<ol><li>Con la rete attiva, attendi che tutte le risorse risultino memorizzate.</li>
+<li>Disattiva il Wi-Fi della Flip.</li><li>Chiudi e riapri completamente il browser, poi torna ai giochi dal preferito.</li>
+<li>Se funzionano, spegni e riaccendi la Flip con Wi-Fi ancora disattivato e riprova.</li></ol>
+Questa prova non è superata finché non funzionano anche fotografie, audio e touch dopo il riavvio.
+</div>
+<small>Non installa nulla, non cambia le impostazioni Samsung e non trasmette dati del dispositivo.</small>
+</main>
+<script>
+(function(){
+var verdict=document.getElementById('verdict'),hint=document.getElementById('hint'),rows=document.querySelector('#checks tbody');
+function line(name,value,state){var r=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td');a.textContent=name;b.textContent=value;b.className=state;r.appendChild(a);r.appendChild(b);rows.appendChild(r)}
+function status(text,desc,ok){verdict.textContent=text;verdict.className=ok?'good':'bad';hint.textContent=desc}
+function check(){
+rows.innerHTML='';verdict.className='wait';verdict.textContent='Controllo in corso…';
+line('HTTPS sicuro',location.protocol==='https:'?'SÌ':'NO',location.protocol==='https:'?'good':'bad');
+if(location.protocol!=='https:'){status('Non è HTTPS','Apri questo test dal sito HTTPS pubblicato, non dal server LAN.',false);return}
+if(!('serviceWorker' in navigator)){line('Service Worker','NON SUPPORTATO','bad');status('Offline non disponibile','Il browser non offre l’interfaccia necessaria. La semplice cache non garantisce il riavvio senza rete.',false);return}
+line('Service Worker API','PRESENTE','good');
+if(!('caches' in window)){line('CacheStorage','NON SUPPORTATO','bad');status('Cache non disponibile','Il browser non offre CacheStorage.',false);return}
+line('CacheStorage API','PRESENTE','good');
+var finished=false,timeout=setTimeout(function(){if(finished)return;finished=true;status('Installazione non confermata','Controlla che il browser non abbia bloccato il Service Worker e riprova.',false)},15000);
+navigator.serviceWorker.register('./sw.js').then(function(){
+return navigator.serviceWorker.ready
+}).then(function(reg){
+if(finished)return;
+if(!reg.active){throw new Error('Nessun Service Worker attivo')}
+line('Worker attivo','SÌ','good');
+return caches.keys().then(function(names){
+var prefix='diego-flip-'+new URL('./',location.href).pathname+'-';
+var good=names.filter(function(n){return n.indexOf(prefix)===0});
+if(!good.length)throw new Error('Cache dei giochi non trovata');
+return Promise.all(good.map(function(n){
+return caches.open(n).then(function(cache){return cache.keys().then(function(reqs){return {name:n,count:reqs.length,cache:cache}})})
+})).then(function(a){
+a.sort(function(x,y){return y.count-x.count});return a[0]
+})
+})
+}).then(function(c){
+if(finished)return;line('Risorse in cache',String(c.count),'good');
+var paths=['index.html','pregrafismo.html','trova-il-numero.html','scacchi-stelle.html','acqua.html','assets/suoni/bravo.wav','assets/associazioni/mela.webp','assets/habitat/delfino.webp'];
+return Promise.all(paths.map(function(path){return c.cache.match('./'+path).then(function(r){return {path:path,ok:!!r}})})).then(function(results){
+if(finished)return;
+var good=results.filter(function(r){return r.ok}).length;
+line('Risorse essenziali',good+' / '+results.length,good===results.length?'good':'bad');
+finished=true;clearTimeout(timeout);
+if(good===results.length&&c.count>=60){status('✅ Pronta per la prova senza rete','Cache popolata. Non è ancora la prova definitiva: disattiva il Wi-Fi e riavvia la lavagna.',true)}
+else status('Cache incompleta','Ricarica con la rete attiva. Se continua così, la Flip potrebbe non supportare il funzionamento offline.',false)
+})
+}).catch(function(e){
+if(finished)return;finished=true;clearTimeout(timeout);
+line('Errore',String(e&&e.message||e),'bad');status('Offline non confermato','Il browser non ha completato la memorizzazione. Potrebbe essere incompatibile.',false)
+})
+}
+document.getElementById('retry').onclick=check;
+check();
+})();
+</script>
+</body></html>

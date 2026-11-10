@@ -1,0 +1,15 @@
+/* Controlli raggiungibili anche con barre browser e zoom. */
+[hidden]{display:none!important}
+html[data-diego-edition=flip] #app{grid-template-rows:auto minmax(0,1fr) auto}
+button,a{-webkit-tap-highlight-color:transparent}
+button{touch-action:manipulation}
+button:focus,a:focus,[role=button]:focus{outline:3px solid #ffd34d;outline-offset:2px}
+@supports selector(:focus-visible){button:focus:not(:focus-visible),a:focus:not(:focus-visible),[role=button]:focus:not(:focus-visible){outline:none}}
+img{max-width:100%}
+.diego-image-fallback{display:flex;flex-direction:column;align-items:center;justify-content:center;/*diego-fallback*/--diego-gap:8px;grid-gap:8px;/*end-fallback*/gap:8px;max-width:100%;padding:12px;color:#fff;background:#25374a;border-radius:12px;font:700 20px Arial,sans-serif;text-align:center}
+.diego-retry{min-height:44px;border:2px solid #aecde4;border-radius:10px;background:#fff;color:#18344a;padding:8px;font:700 16px Arial,sans-serif}
+#diego-audio-toggle{position:static;flex-shrink:0}
+.diego-standalone-audio{position:fixed!important;right:10px;bottom:10px;left:auto!important}
+@media(max-width:700px){header{flex-wrap:wrap;height:auto!important;/*diego-fallback*/--diego-gap:6px;grid-gap:6px;/*end-fallback*/gap:6px}header .toolbar{margin-left:auto}.gamehead{flex-wrap:wrap}.gamehead h1{overflow-wrap:break-word}.score{font-size:22px}.answers{grid-template-columns:repeat(3,minmax(0,1fr));/*diego-fallback*/--diego-gap:8px;grid-gap:8px;/*end-fallback*/gap:8px}.answer{min-width:0;min-height:84px}.gamewrap{min-width:0}.gamecard{min-width:0}.home{height:auto;min-height:100%}.colori-choice{min-width:0;flex-wrap:wrap}.colori-dot{width:38px;height:38px}.habitat-back{min-width:100px}.habitat-name{font-size:26px}.habitat-label{font-size:18px}.habitatboard.level2 .habitat-choices{/*diego-fallback*/--diego-gap:6px;grid-gap:6px;/*end-fallback*/gap:6px}.habitat-zone{border-radius:14px}footer{flex-wrap:wrap;/*diego-fallback*/--diego-gap:4px;grid-gap:4px;/*end-fallback*/gap:4px}.tiny{font-size:11px}}
+@media(max-height:540px){header{padding-top:4px;padding-bottom:4px}.gamewrap{/*diego-fallback*/--diego-gap:8px;grid-gap:8px;/*end-fallback*/gap:8px}.gamehead h1{font-size:27px}.sub{font-size:16px}.answer{min-height:70px}.samewrap{/*diego-fallback*/--diego-gap:12px;grid-gap:12px;/*end-fallback*/gap:12px}.sameexample{height:110px}.sortitem{min-height:95px}.memgrid{/*diego-fallback*/--diego-gap:8px;grid-gap:8px;/*end-fallback*/gap:8px}.habitat-name{font-size:24px}.habitat-label{font-size:22px;padding:6px}.habitat-animal>img{max-height:calc(100% - 35px)}.iconbtn{min-height:44px}.toolbar{/*diego-fallback*/--diego-gap:6px;grid-gap:6px;/*end-fallback*/gap:6px}.gamehead .score{font-size:21px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}

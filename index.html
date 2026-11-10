@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="it" data-diego-edition="flip">
+<head><meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Giochi LIM — Edizione Samsung Flip 2</title>
+<style>
+:root{--bg:#111315;--panel:#1b1f23;--ink:#f4f5f6;--muted:#aeb6bf;--line:#343b43;--accent:#ffd34d;--ok:#77d68b;--bad:#ff8b7a;--blue:#75bfff;--purple:#c79cff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--ink);font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace;overflow:hidden;touch-action:manipulation}
+button{font:inherit;color:inherit}
+#app{height:100%;display:grid;grid-template-rows:auto 1fr auto}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line);/*diego-fallback*/--diego-gap:16px;grid-gap:16px;/*end-fallback*/gap:16px}
+.brand{font-weight:800;letter-spacing:.04em;/*diego-fallback*/font-size:2.2vw;/*end-fallback*/font-size:clamp(18px,2.2vw,28px)}
+.brand span{color:var(--accent)}
+.toolbar{display:flex;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px;align-items:center}
+.iconbtn{min-width:54px;min-height:54px;border:1px solid var(--line);background:var(--panel);border-radius:14px;cursor:pointer;font-size:24px}
+.iconbtn:active{transform:scale(.98)}
+main{min-height:0;overflow:auto;padding:22px;overscroll-behavior:contain}
+footer{min-height:52px;border-top:1px solid var(--line);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:14px}
+.home{height:100%;display:grid;grid-template-columns:repeat(3,minmax(180px,1fr));/*diego-fallback*/--diego-gap:16px;grid-gap:16px;/*end-fallback*/gap:16px;align-content:center}
+.gamecard{border:1px solid var(--line);background:linear-gradient(160deg,#20262b,#171a1e);border-radius:24px;min-height:210px;padding:20px;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;cursor:pointer;text-align:left;box-shadow:0 8px 30px #0004}
+.gamecard[href]{text-decoration:none;color:inherit}.gamecard:active{transform:translateY(2px)}
+.gamecard .emoji{font-size:64px;line-height:1}.gamecard h2{margin:8px 0 4px;/*diego-fallback*/font-size:2vw;/*end-fallback*/font-size:clamp(20px,2vw,30px)}.gamecard p{margin:0;color:var(--muted);font-size:15px;line-height:1.35}
+.gamewrap{max-width:1180px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;/*diego-fallback*/--diego-gap:18px;grid-gap:18px;/*end-fallback*/gap:18px}
+.gamehead{display:flex;align-items:center;justify-content:space-between;/*diego-fallback*/--diego-gap:14px;grid-gap:14px;/*end-fallback*/gap:14px}
+.gamehead h1{/*diego-fallback*/font-size:4vw;/*end-fallback*/font-size:clamp(28px,4vw,54px);margin:0}.sub{color:var(--muted);/*diego-fallback*/font-size:1.5vw;/*end-fallback*/font-size:clamp(15px,1.5vw,21px)}
+.score{display:flex;/*diego-fallback*/--diego-gap:8px;grid-gap:8px;/*end-fallback*/gap:8px;font-size:28px;white-space:nowrap}.star{opacity:.22}.star.on{opacity:1;color:var(--accent)}
+.stage{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+.biggrid{width:100%;display:grid;/*diego-fallback*/--diego-gap:16px;grid-gap:16px;/*end-fallback*/gap:16px}.cols2{grid-template-columns:1fr 1fr}.cols3{grid-template-columns:repeat(3,1fr)}.matchboard{height:100%;max-height:540px;min-height:0}.matchboard>.biggrid{height:100%;min-height:0;grid-template-rows:repeat(4,minmax(0,1fr))}.matchboard .tile{min-height:0;padding:8px}
+.tile{border:2px solid var(--line);background:var(--panel);border-radius:20px;min-height:100px;padding:16px;display:flex;align-items:center;justify-content:center;text-align:center;/*diego-fallback*/font-size:3vw;/*end-fallback*/font-size:clamp(24px,3vw,42px);font-weight:800;cursor:pointer;user-select:none}
+.tile.emojiTile{/*diego-fallback*/font-size:7vw;/*end-fallback*/font-size:clamp(54px,7vw,96px)}.tile.selected{border-color:var(--accent);box-shadow:0 0 0 3px #ffd34d33}.tile.ok{border-color:var(--ok);background:#193321}.tile.bad{border-color:var(--bad);animation:shake .18s linear 2}.tile.matched{opacity:.38;pointer-events:none}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.prompt{/*diego-fallback*/font-size:4vw;/*end-fallback*/font-size:clamp(26px,4vw,52px);font-weight:800;text-align:center;line-height:1.25}.objects{/*diego-fallback*/font-size:7vw;/*end-fallback*/font-size:clamp(48px,7vw,92px);text-align:center;line-height:1.25;letter-spacing:.08em;max-width:900px}.answers{display:grid;grid-template-columns:repeat(3,minmax(120px,220px));/*diego-fallback*/--diego-gap:18px;grid-gap:18px;/*end-fallback*/gap:18px;justify-content:center;width:100%}.answer{min-height:120px;border:2px solid var(--line);background:var(--panel);border-radius:24px;/*diego-fallback*/font-size:5vw;/*end-fallback*/font-size:clamp(38px,5vw,70px);font-weight:900;cursor:pointer}.answer:active{transform:scale(.98)}
+.sequence{display:flex;/*diego-fallback*/--diego-gap:14px;grid-gap:14px;/*end-fallback*/gap:14px;flex-wrap:wrap;justify-content:center;/*diego-fallback*/font-size:7vw;/*end-fallback*/font-size:clamp(54px,7vw,96px);align-items:center}.blank{display:inline-flex;width:1.2em;height:1.2em;border:3px dashed var(--accent);border-radius:18px;align-items:center;justify-content:center;color:var(--accent)}
+.memgrid{display:grid;grid-template-columns:repeat(4,minmax(110px,180px));/*diego-fallback*/--diego-gap:14px;grid-gap:14px;/*end-fallback*/gap:14px;justify-content:center;width:100%}.mem{aspect-ratio:1;border:2px solid var(--line);background:var(--panel);border-radius:20px;/*diego-fallback*/font-size:6vw;/*end-fallback*/font-size:clamp(44px,6vw,74px);cursor:pointer}.mem.closed{color:transparent;background:linear-gradient(145deg,#273039,#1a1f24)}.mem.closed::after{content:"?";color:var(--muted);font-size:44px}.mem.done{border-color:var(--ok);opacity:.35}
+.sortarea{display:grid;grid-template-columns:repeat(4,1fr);/*diego-fallback*/--diego-gap:16px;grid-gap:16px;/*end-fallback*/gap:16px;width:100%}.sortitem{min-height:150px;border:2px solid var(--line);background:var(--panel);border-radius:22px;/*diego-fallback*/font-size:7vw;/*end-fallback*/font-size:clamp(56px,7vw,92px);cursor:pointer}.sortitem span{display:block;font-size:16px;color:var(--muted);margin-top:8px}.sortitem.chosen{border-color:var(--accent)}
+.notice{position:fixed;left:50%;bottom:70px;transform:translateX(-50%) translateY(30px);padding:14px 22px;border-radius:16px;background:#f4f5f6;color:#111315;font-weight:900;font-size:20px;opacity:0;pointer-events:none;transition:.18s;z-index:10}.notice.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.nextbtn{align-self:center;border:0;border-radius:18px;background:var(--accent);color:#161616;font-weight:900;font-size:22px;padding:15px 24px;cursor:pointer;min-height:58px}.nextbtn[hidden]{display:none}.tiny{font-size:12px;color:var(--muted)}
+.samewrap{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;/*diego-fallback*/--diego-gap:26px;grid-gap:26px;/*end-fallback*/gap:26px}.sameexample{/*diego-fallback*/width:40vw;/*end-fallback*/width:min(260px,40vw);/*diego-fallback*/height:23vh;/*end-fallback*/height:clamp(150px,23vh,240px);border:3px solid var(--accent);border-radius:28px;display:flex;align-items:center;justify-content:center;/*diego-fallback*/font-size:10vw;/*end-fallback*/font-size:clamp(76px,10vw,135px);background:#262d32}.sameanswers .answer{/*diego-fallback*/font-size:7vw;/*end-fallback*/font-size:clamp(60px,7vw,95px)}
+.gamewrap.habitat-wide{max-width:none;width:100%;height:100%;min-height:0;overflow:hidden}.gamewrap.habitat-wide .stage{min-height:0;overflow:hidden}.habitatboard{width:100%;height:100%;min-height:0;display:grid;grid-template-rows:minmax(0,1.2fr) minmax(0,1fr);/*diego-fallback*/--diego-gap:16px;grid-gap:16px;/*end-fallback*/gap:16px;max-height:820px}
+.habitat-animal{min-height:0;position:relative;background:#121618;border:2px solid var(--line);border-radius:26px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.habitat-animal>img{width:100%;height:100%;object-fit:contain;user-select:none;pointer-events:none}
+.habitat-emoji{/*diego-fallback*/font-size:16vh;/*end-fallback*/font-size:min(16vh,180px)}.habitat-emoji[hidden]{display:none}
+.habitat-choices{min-height:0;display:grid;grid-template-columns:1fr 1fr;/*diego-fallback*/--diego-gap:16px;grid-gap:16px;/*end-fallback*/gap:16px}
+.habitat-zone{min-height:0;position:relative;overflow:hidden;border:5px solid #7a8792;border-radius:26px;background:#23313b;cursor:pointer;padding:0;touch-action:manipulation;box-shadow:0 8px 28px #0007}
+.habitat-zone img{width:100%;height:100%;object-fit:cover;pointer-events:none;user-select:none}
+.habitat-label{position:absolute;left:0;right:0;bottom:0;padding:16px 10px 20px;background:linear-gradient(transparent,#000b 25%,#000d);/*diego-fallback*/font-size:3.5vw;/*end-fallback*/font-size:clamp(26px,3.5vw,56px);font-weight:900;text-align:center;text-shadow:0 2px 8px #000}
+.habitat-zone.good{border-color:var(--ok);box-shadow:0 0 0 7px #77d68b70}
+.habitat-zone.wrong{border-color:var(--bad);box-shadow:0 0 0 7px #ff8b7a60}
+@media(max-height:800px){.habitatboard{/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px;grid-template-rows:minmax(0,1.1fr) minmax(0,1fr)}.habitat-zone{border-width:4px}.habitat-label{padding:9px}}
+@media(max-width:750px){.habitatboard{grid-template-rows:minmax(0,1fr) minmax(0,.9fr)}.habitat-choices{/*diego-fallback*/--diego-gap:8px;grid-gap:8px;/*end-fallback*/gap:8px}.habitat-label{font-size:22px}}
+@media(max-height:900px){.matchboard{/*diego-fallback*/height:calc(100vh - 300px);/*end-fallback*/height:min(340px,calc(100vh - 300px));max-height:340px;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px;align-content:center}.matchboard>.biggrid{height:100%;min-height:0;grid-template-rows:repeat(4,minmax(0,1fr));/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px}.matchboard .tile{min-height:0;/*diego-fallback*/font-size:2.4vw;/*end-fallback*/font-size:clamp(20px,2.4vw,34px);line-height:1.05;padding:4px}.matchboard .emojiTile{/*diego-fallback*/font-size:4.6vw;/*end-fallback*/font-size:clamp(42px,4.6vw,60px);line-height:1}}
+@media(max-width:1050px){.home{grid-template-columns:repeat(2,1fr);align-content:start}.gamecard{min-height:155px}.gamecard .emoji{font-size:48px}}
+@media(max-width:700px){header{padding:10px 12px}.brand{font-size:16px}.iconbtn{min-width:46px;min-height:46px}.home{grid-template-columns:1fr}.cols2,.cols3{grid-template-columns:1fr 1fr}.memgrid{grid-template-columns:repeat(3,1fr)}.sortarea{grid-template-columns:repeat(2,1fr)}main{padding:14px}}
+
+.colori-wide{max-width:none;width:100%;height:100%;min-height:0;overflow:hidden}
+.colori-wide .stage{min-height:0;overflow:hidden}
+.colori-board{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);/*diego-fallback*/--diego-gap:18px;grid-gap:18px;/*end-fallback*/gap:18px;width:100%;height:100%;min-height:0}
+.colori-figure{min-height:0;border:3px solid #5b839f;border-radius:28px;background:#f6fbff;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:10px}
+.colori-figure img{display:block;max-height:calc(100% - 72px);width:94%;object-fit:contain;min-height:0;flex:1;pointer-events:none;user-select:none}
+.colori-figure strong{color:#16354d;/*diego-fallback*/font-size:3.7vw;/*end-fallback*/font-size:clamp(26px,3.7vw,52px);font-weight:900;padding:4px}
+.colori-choices{min-height:0;display:grid;grid-template-rows:repeat(3,minmax(0,1fr));/*diego-fallback*/--diego-gap:16px;grid-gap:16px;/*end-fallback*/gap:16px}
+.colori-choice{min-height:0;border:4px solid #5b839f;border-radius:28px;background:#f7fbff;display:flex;/*diego-fallback*/gap:3vw;--diego-gap:3vw;grid-gap:3vw;/*end-fallback*/gap:clamp(18px,3vw,55px);align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}
+.colori-dot{/*diego-fallback*/width:9vw;/*end-fallback*/width:clamp(65px,9vw,128px);/*diego-fallback*/height:9vw;/*end-fallback*/height:clamp(65px,9vw,128px);max-height:80%;aspect-ratio:1;border-radius:50%;border:3px solid #777;flex-shrink:0}
+.colori-choice.good{border-color:var(--ok);background:#d8f5de}
+.colori-choice.wrong{border-color:var(--bad);background:#ffe1df}
+@media(max-width:740px){.colori-board{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) minmax(0,1fr)}.colori-choices{grid-template-columns:repeat(3,1fr);grid-template-rows:1fr}.colori-choice{/*diego-fallback*/--diego-gap:8px;grid-gap:8px;/*end-fallback*/gap:8px}.colori-dot{width:45px;height:45px}}
+.habitat-animal{flex-direction:column;padding:8px 10px 4px}
+.habitat-animal>img{flex:1;min-height:0;max-height:calc(100% - 55px);object-fit:contain}
+.habitat-name{/*diego-fallback*/font-size:3.5vw;/*end-fallback*/font-size:clamp(30px,3.5vw,56px);line-height:1.05;font-weight:900;letter-spacing:.05em;color:#fff;background:#111d27;padding:4px 22px;border-radius:12px;z-index:1}
+.habitatboard.level2 .habitat-choices{grid-template-columns:repeat(3,minmax(0,1fr))}
+.habitat-back{/*diego-fallback*/font-size:1.5vw;/*end-fallback*/font-size:clamp(15px,1.5vw,23px);min-width:140px;flex-shrink:0}
+@media(max-height:800px){.habitat-animal>img{max-height:calc(100% - 42px)}.habitat-name{font-size:30px}.habitat-back{min-width:105px}}
+@media(max-height:850px){.home{/*diego-fallback*/--diego-gap:12px;grid-gap:12px;/*end-fallback*/gap:12px}.home>.gamecard{min-height:145px;padding:13px}.home>.gamecard .emoji{font-size:40px}.home>.gamecard h2{font-size:23px}}
+/* Modalita a una parola e due fotografie: touch Flip 55 pollici */
+.gamewrap.match-wide{max-width:none;width:100%;height:100%;min-height:0;overflow:hidden}
+.match-wide .stage{min-height:0;overflow:hidden}
+.match-simple{width:100%;height:100%;min-height:0;display:flex;flex-direction:column;gap:14px}
+.match-word{flex:none;font-family:Arial,Helvetica,sans-serif;font-size:7.7vw;font-size:clamp(56px,7.7vw,128px);font-weight:950;letter-spacing:.045em;text-align:center;color:#ffe16c;line-height:1.12;text-shadow:0 3px 4px #0007}
+.match-photo-grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-gap:22px;gap:22px}
+.match-photo{min-height:0;min-width:0;border:6px solid #d1e7f6;border-radius:27px;background:#f6f9f7;overflow:hidden;cursor:pointer;padding:7px;touch-action:manipulation}
+.match-photo img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
+.match-photo-fallback{font-size:100px;color:#2d4550}
+.match-photo.good{border-color:#69d88b;box-shadow:0 0 0 7px #69d88b70}
+.match-photo.wrong{border-color:#ff8b7a;animation:shake .18s linear 2}
+#mini-celebrate{position:fixed;left:50%;top:45%;z-index:25;transform:translate(-50%,-50%);display:flex;gap:20px;align-items:center;pointer-events:none;filter:drop-shadow(0 7px 8px #0008)}
+#mini-celebrate span{display:inline-block;font-size:8vw;font-size:clamp(55px,8vw,140px);animation:mini-pop .75s ease-out forwards}
+#mini-celebrate span:nth-child(2){animation-delay:.08s}
+#mini-celebrate span:nth-child(3){animation-delay:.15s}
+@keyframes mini-pop{0%{opacity:0;transform:translateY(70px) scale(.3) rotate(-25deg)}35%{opacity:1;transform:translateY(-35px) scale(1.12) rotate(8deg)}100%{opacity:0;transform:translateY(-80px) scale(.8) rotate(25deg)}}
+@media(max-width:720px){.match-word{font-size:11vw;font-size:clamp(45px,11vw,72px)}.match-photo-grid{gap:9px}.match-photo{border-width:4px;padding:3px}}
+@media(prefers-reduced-motion:reduce){#mini-celebrate span{animation:none}}
+</style>
+<link rel="stylesheet" href="flip-ui.css">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="diego-runtime.css"><script src="diego-runtime.js"></script></head>
+<body>
+<div id="app">
+<header><div class="brand">GIOCHI <span>· FLIP</span></div><div class="toolbar"><button class="iconbtn" id="homeBtn" title="Home" aria-label="Home">⌂</button><button class="iconbtn" id="testBtn" title="Prova touch" aria-label="Prova touch">⊕</button><button class="iconbtn" id="fullBtn" title="Schermo intero" aria-label="Schermo intero">⛶</button></div></header>
+<main id="main"></main>
+<footer><span id="status">Scegli un gioco</span><span class="tiny">edizione Flip · nessun account · <a href="crediti-foto.html" style="color:var(--muted)">foto e licenze</a></span></footer>
+</div>
+<div class="notice" id="notice"></div>
+<script src="diego-audio.js"></script>
+<script>
+const games=[
+  {id:'pregrafismo',icon:'✏️',title:'Pregrafismo',desc:'56 percorsi · linee, onde, curve e cerchi'},
+  {id:'scacchi',icon:'⭐',title:'Scacchi Stellari',desc:'Re, torre e regina: cattura le stelle'},
+  {id:'match',icon:'🧩',title:'Abbina',desc:'Una parola grande · scegli fra due foto'},
+  {id:'count',icon:'🔢',title:'Conta',desc:'Conta e scegli il numero'},
+  {id:'unisci',icon:'🔗',title:'Unisci numeri e quantità',desc:'Collega i numeri ai pallini · 1–5'},
+  {id:'numeri',icon:'🔎',title:'Trova il numero',desc:'10 capitoli · Cerca i numeri da 0 a 9'},
+  {id:'same',icon:'👀',title:'Trova uguale',desc:'Tocca la figura identica'},
+  {id:'memory',icon:'🧠',title:'Memory',desc:'Trova le coppie'},
+  {id:'odd',icon:'🔎',title:'L’intruso',desc:'Trova quello diverso'},
+  {id:'habitat1',icon:'🐬',title:'Dove vive? — Livello 1',desc:'Mare e terra · 8 animali'},
+  {id:'habitat2',icon:'🦅',title:'Dove vive? — Livello 2',desc:'Mare, terra e cielo · 12 animali'},
+  {id:'colori',icon:'🎨',title:'I colori degli animali',desc:'Scegli uno o due colori · disegni grandi'},
+  {id:'acqua',icon:'🌊',title:'Splash! Il mondo dell’acqua',desc:'Schizzi, animali che nuotano e piscina'}
+];
+const pairs=[['🐶','CANE'],['☀️','SOLE'],['🍎','MELA'],['🚂','TRENO'],['🏠','CASA'],['🌙','LUNA'],['🐱','GATTO'],['🌳','ALBERO']];
+const matchItems=[
+ {name:'CANE',file:'assets/habitat/cane.webp'},
+ {name:'LEONE',file:'assets/habitat/leone.webp'},
+ {name:'DELFINO',file:'assets/habitat/delfino.webp'},
+ {name:'ELEFANTE',file:'assets/habitat/elefante.webp'},
+ {name:'CAVALLO',file:'assets/habitat/cavallo.webp'},
+ {name:'PAPPAGALLO',file:'assets/habitat/pappagallo.webp'},
+ {name:'MELA',file:'assets/associazioni/mela.webp'},
+ {name:'BANANA',file:'assets/associazioni/banana.webp'},
+ {name:'BICICLETTA',file:'assets/associazioni/bicicletta.webp'},
+ {name:'AUTO',file:'assets/associazioni/auto.webp'}
+];
+let matchDeck=[];
+const sameItems=['🐶','🐱','🍎','🍐','🚗','🚂','🏠','🌳','⚽','☀️'];
+// Sequenze remain in source for future activities; excluded from Diego home.
+const seqs=[
+  {s:['🔵','🟡','🔵','🟡'],a:'🔵',opts:['🔵','🟡','🟢']},
+  {s:['🍎','🍎','🍐','🍎','🍎','🍐'],a:'🍎',opts:['🍎','🍐','🍊']},
+  {s:['⭐','🌙','⭐','🌙'],a:'⭐',opts:['⭐','☀️','🌙']},
+  {s:['🚗','🚌','🚗','🚌'],a:'🚗',opts:['🚗','🚲','🚌']},
+  {s:['🔺','🔺','⚪','🔺','🔺','⚪'],a:'🔺',opts:['🔺','⚪','🟦']}
+];
+const habitatAnimals=[
+  {name:'DELFINO',file:'delfino',env:'mare',icon:'🐬'},
+  {name:'PESCE',file:'pesce',env:'mare',icon:'🐠'},
+  {name:'BALENA',file:'balena',env:'mare',icon:'🐋'},
+  {name:'POLPO',file:'polpo',env:'mare',icon:'🐙'},
+  {name:'LEONE',file:'leone',env:'terra',icon:'🦁'},
+  {name:'ELEFANTE',file:'elefante',env:'terra',icon:'🐘'},
+  {name:'GIRAFFA',file:'giraffa',env:'terra',icon:'🦒'},
+  {name:'CANE',file:'cane',env:'terra',icon:'🐶'}
+];
+const habitatAnimals2=[
+  ...habitatAnimals.filter(a=>['delfino','pesce','balena','leone','elefante','giraffa'].includes(a.file)),
+  {name:'SQUALO',file:'squalo',env:'mare',icon:'🦈'},
+  {name:'CAVALLO',file:'cavallo',env:'terra',icon:'🐴'},
+  {name:'AQUILA',file:'aquila',env:'cielo',icon:'🦅'},
+  {name:'PAPPAGALLO',file:'pappagallo',env:'cielo',icon:'🦜'},
+  {name:'GABBIANO',file:'gabbiano',env:'cielo',icon:'🐦'},
+  {name:'GUFO',file:'gufo',env:'cielo',icon:'🦉'}
+];
+let habitatDeck=[],lastHabitat='';
+const habitatUrl=n=>'assets/habitat/'+n+'.webp';
+function nextHabitat(){
+  if(!habitatDeck.length){
+    habitatDeck=shuffle(current==='habitat2'?habitatAnimals2:habitatAnimals);
+    if(habitatDeck.length>1 && habitatDeck[habitatDeck.length-1].file===lastHabitat)habitatDeck.reverse();
+  }
+  const animal=habitatDeck.pop();
+  lastHabitat=animal.file;
+  return animal;
+}
+const oddsets=[
+  {items:['🍎','🍐','🍊','🚗'],answer:'🚗',label:'Quale non è un frutto?'},
+  {items:['🐶','🐱','🐰','🌳'],answer:'🌳',label:'Quale non è un animale?'},
+  {items:['🚗','🚌','🚲','🍎'],answer:'🍎',label:'Quale non è un mezzo?'},
+  {items:['☀️','🌙','⭐','🐶'],answer:'🐶',label:'Quale non sta nel cielo?'},
+  {items:['👟','🧢','🧤','🍐'],answer:'🍐',label:'Quale non si indossa?'}
+];
+const main=document.getElementById('main'),statusEl=document.getElementById('status'),notice=document.getElementById('notice');
+let current=null,stars=0,roundToken=0;
+const gameScope=DiegoRuntime.createScope();
+function clearRound(){roundToken++;gameScope.reset();clearTimeout(say.t);notice.classList.remove('show');DiegoAudio.stop();main.scrollTop=0}
+function later(fn,ms){const token=roundToken;return gameScope.later(()=>{if(token===roundToken&&current)fn()},ms)}
+function shuffle(a){const result=a.slice();for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const v=result[i];result[i]=result[j];result[j]=v}return result}
+function say(t){notice.textContent=t;notice.classList.add('show');clearTimeout(say.t);say.t=setTimeout(()=>notice.classList.remove('show'),900)}
+function scoreHtml(){return `<div class="score">${[1,2,3,4,5].map(n=>`<span class="star ${n<=stars?'on':''}">★</span>`).join('')}</div>`}
+function shell(title,sub,body,next=false){clearRound();main.innerHTML=`<div class="gamewrap"><div class="gamehead"><div><h1>${title}</h1><div class="sub">${sub}</div></div><div id="scorebox">${scoreHtml()}</div></div><div class="stage">${body}</div><button class="nextbtn" id="nextBtn" ${next?'':'hidden'}>ANCORA →</button></div>`;}
+function refreshScore(){const b=document.getElementById('scorebox');if(b)b.innerHTML=scoreHtml()}
+function miniCelebration(){
+ const prior=document.getElementById('mini-celebrate');if(prior)prior.remove();
+ const f=document.createElement('div');f.id='mini-celebrate';
+ f.innerHTML='<span>⭐</span><span>✨</span><span>🌟</span>';
+ main.appendChild(f);
+ gameScope.later(()=>{if(f.parentNode)f.parentNode.removeChild(f)},800);
+}
+function point(){var completed=stars===4;stars=Math.min(5,stars+1);refreshScore();say(stars===5?'Fantastico! ★★★★★':'Bravo! ★');miniCelebration();DiegoAudio.play(completed?'fantastico':'bravo')}
+const topics=[
+  {id:'pregrafismo',icon:'✏️',title:'Pregrafismo',desc:'56 percorsi con dito, colori e suoni',ids:['pregrafismo']},
+  {id:'acqua',icon:'🌊',title:'Acqua',desc:'Splash! Giochi sensoriali',ids:['acqua']},
+  {id:'scacchi',icon:'♖',title:'Scacchi',desc:'Raccogli le stelle con re, torre e regina',ids:['scacchi']},
+  {id:'matematica',icon:'🔢',title:'Matematica',desc:'Numeri, quantità e conteggio',ids:['count','numeri','unisci']},
+  {id:'animali',icon:'🐬',title:'Animali e natura',desc:'Animali, colori e ambienti',ids:['habitat1','habitat2','colori']},
+  {id:'attenzione',icon:'👀',title:'Attenzione',desc:'Uguale, diverso e intruso',ids:['same','odd']},
+  {id:'associazioni',icon:'🧩',title:'Associazioni',desc:'Abbina figure e parole',ids:['match']},
+  {id:'memoria',icon:'🧠',title:'Memoria',desc:'Trova le coppie',ids:['memory']}
+];
+let topic=null;
+// EDIZIONE FLIP: navigazione visuale indipendente dalla versione PC.
+const flipVisual={
+  pregrafismo:'assets/icons/pregrafismo.svg',
+  acqua:'assets/icons/mare.jpg',
+  animali:'assets/icons/animali.jpg',
+  matematica:'assets/icons/matematica.png',
+  scacchi:'assets/icons/scacchi.png',
+  attenzione:'assets/icons/attenzione.png',
+  associazioni:'assets/icons/associazioni.png',
+  memoria:'assets/icons/memoria.png',
+  match:'assets/icons/associazioni.png',
+  count:'assets/icons/matematica.png',
+  numeri:'assets/icons/matematica.png',
+  unisci:'assets/icons/unisci.svg',
+  same:'assets/icons/attenzione.png',
+  odd:'assets/icons/attenzione.png',
+  habitat1:'assets/habitat/delfino.webp',
+  habitat2:'assets/habitat/aquila.webp',
+  colori:'assets/colori/tigre.svg'
+};
+function flipCard(title,desc,id,visual,kind,href){
+  const tag=href?'a':'button';
+  const attr=href?' href="'+href+'"':' type="button"';
+  const data=kind==='topic'?' data-topic="'+id+'"':kind==='other'?' data-other="'+id+'"':' data-game="'+id+'"';
+  return '<'+tag+' class="flip-card flip-'+id+'"'+attr+data+'><div class="flip-copy"><h2>'+title+'</h2><p>'+desc+'</p></div><div class="flip-visual"><img src="'+visual+'" alt="" draggable="false"></div></'+tag+'>';
+}
+function home(){
+  clearRound();current=null;topic=null;stars=0;
+  statusEl.textContent='Scegli un argomento';
+  const primaries=[
+    ['ANIMALI','Dove vive? · Colori','animali'],
+    ['MATEMATICA','Numeri · Conta · Unisci','matematica'],
+    ['ACQUA','Splash! · Piscina','acqua'],
+    ['SCACCHI','Re · Torre · Regina','scacchi'],
+    ['PREGRAFISMO','56 tracciati · 7 capitoli','pregrafismo']
+  ];
+  main.innerHTML='<div class="flip-home">'+primaries.map(function(a){return flipCard(a[0],a[1],a[2],flipVisual[a[2]],'topic')}).join('')+
+   '<button type="button" class="flip-other" id="otherBtn"><img src="assets/icons/altri.png" alt="">ALTRI GIOCHI <span>Attenzione · Associazioni · Memoria</span></button></div>';
+  main.querySelectorAll('[data-topic]').forEach(function(b){b.onclick=function(){openTopic(b.dataset.topic)}});
+  main.querySelector('#otherBtn').onclick=openOthers;
+}
+function flipGameCard(g){
+  const href=g.id==='numeri'?'trova-il-numero.html':null;
+  return flipCard(g.title,g.desc,g.id,flipVisual[g.id]||flipVisual.attenzione,'game',href);
+}
+function openTopic(id){
+  clearRound();current=null;topic=id;
+  const t=topics.find(function(x){return x.id===id});
+  if(!t){home();return;}
+  statusEl.textContent=t.title;
+  main.innerHTML='<div class="gamewrap flip-section"><div class="gamehead"><h1>'+t.title+'</h1><button type="button" class="flip-back" id="backTopic">← INDIETRO</button></div><div class="flip-games">'+games.filter(function(g){return t.ids.indexOf(g.id)!==-1}).map(flipGameCard).join('')+'</div></div>';
+  main.querySelector('#backTopic').onclick=home;
+  main.querySelectorAll('button[data-game]').forEach(function(b){b.onclick=function(){start(b.dataset.game)}});
+}
+function openOthers(){
+  clearRound();current=null;topic=null;stars=0;
+  const other=topics.filter(function(t){return ['attenzione','associazioni','memoria'].indexOf(t.id)!==-1});
+  statusEl.textContent='Altri giochi';
+  main.innerHTML='<div class="gamewrap flip-section"><div class="gamehead"><h1>ALTRI GIOCHI</h1><button type="button" class="flip-back" id="backOthers">← INDIETRO</button></div><div class="flip-games">'+other.map(function(t){return flipCard(t.title,t.desc,t.id,flipVisual[t.id],'topic')}).join('')+'</div></div>';
+  main.querySelector('#backOthers').onclick=home;
+  main.querySelectorAll('[data-topic]').forEach(function(b){b.onclick=function(){openTopic(b.dataset.topic)}});
+}
+
+function start(id){if(id==='pregrafismo'){location.href='pregrafismo.html';return}if(id==='scacchi'){location.href='scacchi-stelle.html';return}if(id==='acqua'){location.href='acqua.html';return}if(id==='numeri'){location.href='trova-il-numero.html';return}if(id==='unisci'){location.href='unisci-quantita.html';return}current=id;stars=0;statusEl.textContent=games.find(g=>g.id===id).title;if(id==='habitat1'||id==='habitat2')habitatDeck=[];render()}
+function render(){roundToken++;if(current==='match')renderMatch();if(current==='count')renderCount();if(current==='same')renderSame();if(current==='memory')renderMemory();if(current==='odd')renderOdd();if(current==='habitat1'||current==='habitat2')renderHabitat();if(current==='colori')renderColori()}
+function renderMatch(){
+ if(!matchDeck.length)matchDeck=shuffle(matchItems);
+ const target=matchDeck.pop();
+ const other=shuffle(matchItems.filter(x=>x.name!==target.name))[0];
+ const choices=shuffle([target,other]);
+ const cards=choices.map((v,i)=>'<button class="match-photo" type="button" data-choice="'+i+'" aria-label="Foto: '+v.name+'"><img src="'+v.file+'" draggable="false" alt=""><span class="match-photo-fallback" hidden>📷</span></button>').join('');
+ shell('Abbina','Leggi la parola e tocca la fotografia giusta',
+  '<div class="match-simple"><div class="match-word" aria-label="Trova '+target.name+'">'+target.name+'</div><div class="match-photo-grid">'+cards+'</div></div>');
+ main.querySelector('.gamewrap').classList.add('match-wide');
+ main.querySelectorAll('.match-photo img').forEach(img=>{
+  img.onerror=function(){this.hidden=true;this.nextElementSibling.hidden=false};
+ });
+ let answered=false;
+ main.querySelectorAll('.match-photo').forEach(b=>b.onclick=()=>{
+  if(answered)return;
+  if(choices[+b.dataset.choice].name===target.name){
+   answered=true;b.classList.add('good');point();later(renderMatch,1100);
+  }else{
+   b.classList.add('wrong');say('Riprova');
+   later(()=>b.classList.remove('wrong'),550);
+  }
+ });
+}
+
+function renderCount(){
+  const n=1+Math.floor(Math.random()*9);const icons=['🍎','⭐','🐞','⚽','🟦'];const icon=icons[Math.floor(Math.random()*icons.length)];const opts=shuffle([n,...shuffle([1,2,3,4,5,6,7,8,9,10].filter(x=>x!==n)).slice(0,2)]);
+  shell('Conta','Quanti sono?',`<div style="width:100%"><div class="objects">${Array(n).fill(icon).join(' ')}</div><div style="height:24px"></div><div class="answers">${shuffle(opts).map(x=>`<button class="answer" data-n="${x}">${x}</button>`).join('')}</div></div>`);
+  let answered=false;document.querySelectorAll('.answer').forEach(b=>b.onclick=()=>{if(answered)return;if(+b.dataset.n===n){answered=true;b.style.borderColor='var(--ok)';point();later(renderCount,750)}else{b.style.borderColor='var(--bad)';say('Conta ancora')}})
+}
+function renderSame(){
+  const target=sameItems[Math.floor(Math.random()*sameItems.length)];
+  const choices=shuffle([target,...shuffle(sameItems.filter(x=>x!==target)).slice(0,2)]);
+  shell('Trova uguale','Tocca la stessa figura',`<div class="samewrap"><div class="sameexample" aria-label="Figura da cercare">${target}</div><div class="answers sameanswers">${choices.map(x=>`<button class="answer" data-a="${x}" aria-label="Scegli ${x}">${x}</button>`).join('')}</div></div>`);
+  let answered=false;
+  document.querySelectorAll('.sameanswers .answer').forEach(b=>b.onclick=()=>{
+    if(answered)return;
+    if(b.dataset.a===target){
+      answered=true;b.style.borderColor='var(--ok)';point();later(renderSame,900);
+    }else{
+      b.style.borderColor='var(--bad)';say('Riprova');
+    }
+  });
+}
+function renderSequence(){
+  const q=seqs[Math.floor(Math.random()*seqs.length)];shell('Sequenze','Quale figura viene dopo?',`<div style="width:100%"><div class="sequence">${q.s.join(' ')} <span class="blank">?</span></div><div style="height:36px"></div><div class="answers">${shuffle(q.opts).map(x=>`<button class="answer" data-a="${x}">${x}</button>`).join('')}</div></div>`);
+  let answered=false;document.querySelectorAll('.answer').forEach(b=>b.onclick=()=>{if(answered)return;if(b.dataset.a===q.a){answered=true;point();later(renderSequence,750)}else{b.style.borderColor='var(--bad)';say('Guarda il ritmo')}})
+}
+function renderMemory(){
+  const vals=shuffle(pairs).slice(0,4).map(x=>x[0]);const deck=shuffle([...vals,...vals]);let open=[],lock=false,done=0;
+  shell('Memory','Trova le coppie uguali',`<div class="memgrid">${deck.map((v,i)=>`<button class="mem closed" data-v="${v}" data-i="${i}">${v}</button>`).join('')}</div>`);
+  document.querySelectorAll('.mem').forEach(b=>b.onclick=()=>{if(lock||!b.classList.contains('closed'))return;b.classList.remove('closed');open.push(b);if(open.length===2){lock=true;if(open[0].dataset.v===open[1].dataset.v){later(()=>{open.forEach(x=>x.classList.add('done'));open=[];lock=false;done++;point();if(done===4)later(renderMemory,900)},350)}else{later(()=>{open.forEach(x=>x.classList.add('closed'));open=[];lock=false},650)}}})
+}
+function renderHabitat(){
+  const level=current==='habitat2'?2:1;
+  const animal=nextHabitat();
+  const environments=level===2?['mare','terra','cielo']:['mare','terra'];
+  const labels={mare:'🌊 MARE',terra:'🌳 TERRA',cielo:'☁️ CIELO'};
+  shell('Dove vive? — Livello '+level,'Guarda l’animale e tocca il suo ambiente',
+    `<div class="habitatboard level${level}">
+      <div class="habitat-animal">
+        <img src="${habitatUrl(animal.file)}" alt="${animal.name}" draggable="false"
+          onerror="this.style.display='none';this.nextElementSibling.hidden=false">
+        <span class="habitat-emoji" hidden>${animal.icon}</span>
+        <strong class="habitat-name">${animal.name}</strong>
+      </div>
+      <div class="habitat-choices">${environments.map(env=>`
+        <button class="habitat-zone" data-env="${env}" aria-label="${env}">
+          <img src="${habitatUrl(env)}" alt="" draggable="false">
+          <span class="habitat-label">${labels[env]}</span>
+        </button>`).join('')}
+      </div>
+    </div>`);
+  main.querySelector('.gamewrap').classList.add('habitat-wide');
+  const back=document.createElement('button');back.className='iconbtn habitat-back';back.textContent='← LIVELLI';back.onclick=()=>openTopic('animali');
+  main.querySelector('.gamehead').append(back);
+  let answered=false;
+  document.querySelectorAll('.habitat-zone').forEach(b=>b.onclick=()=>{
+    if(answered)return;
+    if(b.dataset.env===animal.env){
+      answered=true;b.classList.add('good');point();
+      later(renderHabitat,1300);
+    }else{
+      b.classList.add('wrong');say('Riprova');
+      later(()=>b.classList.remove('wrong'),650);
+    }
+  });
+}
+
+const coloriPalette={arancione:'#ff9000',nero:'#161616',giallo:'#ffe600',marrone:'#99522a',bianco:'#ffffff',grigio:'#979da4',verde:'#43b447',rosa:'#f5a5be',blu:'#328de0',rosso:'#e53838'};
+const coloriAnimals=[
+ {name:'TIGRE',file:'tigre',answer:['arancione','nero'],wrong:[['giallo','marrone'],['bianco','grigio']]},
+ {name:'PANDA',file:'panda',answer:['bianco','nero'],wrong:[['grigio','rosa'],['giallo','marrone']]},
+ {name:'LEONE',file:'leone',answer:['giallo','marrone'],wrong:[['arancione','nero'],['bianco','grigio']]},
+ {name:'RANA',file:'rana',answer:['verde'],wrong:[['rosso'],['blu']]},
+ {name:'ELEFANTE',file:'elefante',answer:['grigio'],wrong:[['rosa'],['verde']]},
+ {name:'ZEBRA',file:'zebra',answer:['bianco','nero'],wrong:[['giallo','marrone'],['grigio','rosa']]},
+ {name:'FENICOTTERO',file:'fenicottero',answer:['rosa'],wrong:[['verde'],['blu']]},
+ {name:'COCCINELLA',file:'coccinella',answer:['rosso','nero'],wrong:[['giallo','marrone'],['blu','bianco']]},
+ {name:'PINGUINO',file:'pinguino',answer:['nero','bianco'],wrong:[['verde','giallo'],['rosa','marrone']]},
+ {name:'VOLPE',file:'volpe',answer:['arancione','bianco'],wrong:[['verde','nero'],['blu','grigio']]}
+];
+let coloriDeck=[];
+function renderColori(){
+ if(!coloriDeck.length)coloriDeck=shuffle(coloriAnimals);
+ const a=coloriDeck.pop();
+ const choices=shuffle([{colors:a.answer,right:true},...a.wrong.map(colors=>({colors,right:false}))]);
+ shell('I colori degli animali','Tocca i colori che vedi nel disegno',
+ `<div class="colori-board">
+   <div class="colori-figure"><img src="assets/colori/${a.file}.svg" alt="${a.name}" draggable="false"><strong>${a.name}</strong></div>
+   <div class="colori-choices">${choices.map((v,i)=>`<button class="colori-choice" data-choice="${i}" aria-label="${v.colors.join(' e ')}">${v.colors.map(c=>`<span class="colori-dot" style="background:${coloriPalette[c]}"></span>`).join('')}</button>`).join('')}</div>
+ </div>`);
+ main.querySelector('.gamewrap').classList.add('colori-wide');
+ let answered=false;
+ main.querySelectorAll('.colori-choice').forEach(b=>b.onclick=()=>{
+  if(answered)return;
+  if(choices[+b.dataset.choice].right){
+   answered=true;b.classList.add('good');point();later(renderColori,1250)
+  }else{
+   b.classList.add('wrong');say('Riprova');later(()=>b.classList.remove('wrong'),600)
+  }
+ });
+}
+
+function renderOdd(){
+  const q=oddsets[Math.floor(Math.random()*oddsets.length)];shell('L’intruso',q.label,`<div class="sortarea">${shuffle(q.items).map(x=>`<button class="sortitem" data-v="${x}">${x}</button>`).join('')}</div>`);
+  let answered=false;document.querySelectorAll('.sortitem').forEach(b=>b.onclick=()=>{if(answered)return;if(b.dataset.v===q.answer){answered=true;b.style.borderColor='var(--ok)';point();later(renderOdd,750)}else{b.style.borderColor='var(--bad)';say('Non è lui')}})
+}
+document.getElementById('testBtn').onclick=()=>{location.href='test-lim.html'};
+document.getElementById('homeBtn').onclick=home;
+document.getElementById('fullBtn').onclick=()=>{if(!DiegoRuntime.fullscreen())say('Schermo intero: usa il menu del browser')};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&current)home()});
+const startupGame=new URLSearchParams(location.search).get('game');
+if(games.some(g=>g.id===startupGame))start(startupGame);else {const requestedTopic=new URLSearchParams(location.search).get('topic');if(topics.some(t=>t.id===requestedTopic))openTopic(requestedTopic);else home()}
+</script>
+</body>
+</html>
