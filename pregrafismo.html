@@ -73,6 +73,8 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
   <div id="play" hidden>
     <div class="hud"><div><h1 id="ex-title"></h1><p id="ex-subtitle"></p></div><div class="hud-right"><span class="counter" id="ex-counter"></span><div class="meter" aria-label="Avanzamento del disegno"><span id="trace-progress"></span></div></div></div>
     <div class="board-wrap">
+      <div class="illustration-wing left-wing" aria-hidden="true"><svg id="scene-side-left" viewBox="0 0 220 500"></svg></div>
+      <div class="illustration-wing right-wing" aria-hidden="true"><svg id="scene-side-right" viewBox="0 0 220 500"></svg></div>
       <svg id="board" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Percorso da seguire con un dito">
         <g id="tracks"></g>
         <g id="markers"></g>
@@ -83,7 +85,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
       </svg>
       <div id="zoom-readout" aria-hidden="true">100%</div>
       <div id="message" role="status" aria-live="polite">👆 Segui i puntini!</div>
-      <div id="celebrate" hidden><div id="confetti"></div><div class="sea-bubbles" aria-hidden="true">🫧</div><div class="bigstar" aria-hidden="true">★</div><div class="sea-friend" aria-hidden="true">🐬🌊</div><span class="yay">🌟</span></div>
+      <div id="celebrate" hidden><div id="confetti"></div><div class="sea-bubbles" aria-hidden="true">🫧</div><div class="bigstar" aria-hidden="true">★</div><svg class="reward-dolphin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 145" aria-hidden="true"><path d="M 29 93 Q 75 21 154 45 Q 187 53 217 41 L 241 32 L 226 65 Q 212 84 177 86 Q 132 91 93 123 L 87 88 Q 55 107 29 93 Z" fill="#49bbd6" stroke="#237d9f" stroke-width="7" stroke-linejoin="round"/><path d="M 105 49 L 123 9 L 154 47" fill="#49bbd6" stroke="#237d9f" stroke-width="6" stroke-linejoin="round"/><path d="M 32 92 L 2 54 L 5 124 Z" fill="#69cee3" stroke="#237d9f" stroke-width="6"/><circle cx="186" cy="62" r="10" fill="#fff"/><circle cx="189" cy="60" r="5" fill="#205674"/><path d="M 205 79 Q 217 93 229 78" fill="none" stroke="#205674" stroke-width="4"/><ellipse cx="125" cy="89" rx="40" ry="12" fill="#d9f8fa" opacity=".55"/></svg><div class="reward-water" aria-hidden="true"><span></span><span></span><span></span></div><span class="yay">🌟</span></div>
     </div>
     <div class="board-tools">
       <button id="chaptersBtn" type="button" class="btn">☷ CAPITOLI</button>
@@ -96,6 +98,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
   </div>
 </div>
 <script src="diego-audio.js"></script>
+<script src="pregrafismo-scene.js"></script>
 <script>
 (function(){
 'use strict';
@@ -190,7 +193,7 @@ function chapterMenu(){state.session++;clearTimers();state.down=false;state.done
 function stopDemo(){if(demoTimer){clearInterval(demoTimer);demoTimer=0}guide.setAttribute('visibility','hidden')}
 function showDemo(){if(state.chapter<0||state.done||state.down)return;stopDemo();var data=state.parts[state.stroke];if(!data)return;var t0=Date.now(),duration=Math.max(2100,Math.min(4200,data.length*4));guide.setAttribute('visibility','visible');setMessage('Guarda il pallino, poi prova tu!');demoTimer=setInterval(function(){if(state.down||state.done){stopDemo();return}var p=Math.min(1,(Date.now()-t0)/duration),point=data.path.getPointAtLength(p*data.length);document.getElementById('guide-halo').setAttribute('cx',point.x);document.getElementById('guide-halo').setAttribute('cy',point.y);document.getElementById('guide-hand').setAttribute('x',point.x);document.getElementById('guide-hand').setAttribute('y',point.y);if(p>=1){stopDemo();setMessage('Adesso tocca il cerchio luminoso') }},40)}
 function openLevel(ci,li){state.session++;clearTimers();state.chapter=ci;state.level=(li+chapters[ci].levels.length)%chapters[ci].levels.length;state.stroke=0;state.index=0;state.down=false;state.id=null;state.done=false;celebrate.hidden=true;menu.hidden=true;play.hidden=false;labelButtons();draw();board.setAttribute('viewBox','0 0 1000 600');state.zoom=1;document.getElementById('zoom-readout').textContent='100%';document.getElementById('trace-progress').style.width='0%';setMessage('👆 Segui i puntini!');if(state.level===0)later(function(){if(!state.down&&!state.done)showDemo()},800)}
-function draw(){clear(tracks);clear(markers);state.parts=[];var raw=chapters[state.chapter].levels[state.level][1];
+function draw(){clear(tracks);clear(markers);if(window.PregrafismoScene){PregrafismoScene.render(state.chapter,state.level,board);PregrafismoScene.renderSides(state.chapter)}state.parts=[];var raw=chapters[state.chapter].levels[state.level][1];
 raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#ffc978','stroke-width':'51','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.53'},tracks);var p=svg('path',{d:d,fill:'none',stroke:'#e8a13e','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':'3 26'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#21a9d7','stroke-width':'34','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});activate()}
 function samplePart(data){var samples=[],n=Math.max(3,Math.ceil(data.length/5));for(var i=0;i<=n;i++)samples.push(data.path.getPointAtLength(data.length*i/n));return samples}
 function activate(){clear(markers);if(state.stroke>=state.parts.length)return;state.parts.forEach(function(d,i){var o=i===state.stroke||d.completed?'1':'.22';d.path.setAttribute('opacity',o);d.outer.setAttribute('opacity',i===state.stroke?'.76':'.22')});state.samples=samplePart(state.parts[state.stroke]);state.index=0;state.lastBell=0;state.down=false;
@@ -200,13 +203,14 @@ function activate(){clear(markers);if(state.stroke>=state.parts.length)return;st
  svg('circle',{cx:first.x,cy:first.y,r:38,fill:'#d7ffe2',stroke:'#33ac80','stroke-width':7},markers);
  svg('circle',{cx:first.x,cy:first.y,r:17,fill:'#23bc88'},markers);
  svg('circle',{id:'cursor',cx:first.x,cy:first.y,r:23,fill:'#fff',stroke:'#218eb7','stroke-width':5},markers);
+ if(window.PregrafismoScene)PregrafismoScene.placeTraveler(state.chapter,markers,first);
  document.getElementById('trace-progress').style.width=Math.round(100*state.stroke/state.parts.length)+'%';setMessage('👆 → ⭐  '+(state.stroke+1)+' / '+state.parts.length);
 }
 function mapEvent(e){var rect=board.getBoundingClientRect(),x=e.clientX,y=e.clientY;try{var pt=board.createSVGPoint();pt.x=x;pt.y=y;var m=board.getScreenCTM();if(m){var r=pt.matrixTransform(m.inverse());return{x:r.x,y:r.y}}}catch(ignore){}var scale=Math.min(rect.width/1000,rect.height/600),offX=(rect.width-1000*scale)/2,offY=(rect.height-600*scale)/2;return{x:(x-rect.left-offX)/scale,y:(y-rect.top-offY)/scale}}
 function dist(a,b){var x=a.x-b.x,y=a.y-b.y;return Math.sqrt(x*x+y*y)}
 function startGesture(ev,id){if(state.chapter<0||state.done||state.down)return;var pt=mapEvent(ev),target=state.samples[state.index];if(!target||dist(pt,target)>(state.easy?41:29)){setMessage('👆 Tocca il verde');return}stopDemo();state.down=true;state.id=id;state.index=Math.max(0,state.index);setMessage('✨ → ⭐');moveGesture(ev,id)}
 function moveGesture(ev,id){if(!state.down||state.id!==id||state.done)return;var pt=mapEvent(ev),lo=Math.max(0,state.index-10),hi=Math.min(state.samples.length-1,state.index+36),best=-1,bestDist=1e9;for(var i=lo;i<=hi;i++){var di=dist(pt,state.samples[i]);if(di<bestDist){bestDist=di;best=i}}if(bestDist>(state.easy?30:19))return;state.index=Math.max(state.index,best);
- var data=state.parts[state.stroke],r=state.index/(state.samples.length-1),point=state.samples[state.index];data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+r)/state.parts.length)+'%';var phase=Math.min(3,Math.floor(r*4));if(phase>state.lastBell){state.lastBell=phase;chirp()}var cursor=document.getElementById('cursor');if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y)}if(r>=.985||(r>.90&&dist(pt,state.samples[state.samples.length-1])<90))completeStroke()}
+ var data=state.parts[state.stroke],r=state.index/(state.samples.length-1),point=state.samples[state.index];data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+r)/state.parts.length)+'%';var phase=Math.min(3,Math.floor(r*4));if(phase>state.lastBell){state.lastBell=phase;chirp()}var cursor=document.getElementById('cursor');if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y)}if(window.PregrafismoScene)PregrafismoScene.moveTraveler(point);if(r>=.985||(r>.90&&dist(pt,state.samples[state.samples.length-1])<90))completeStroke()}
 function endGesture(id){if(!state.down||state.id!==id)return;state.down=false;state.id=null;if(!state.done)setMessage('👆 Segui i puntini!')}
 function completeStroke(){state.down=false;state.id=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+1)/state.parts.length)+'%';if(window.DiegoAudio)DiegoAudio.play('stella');state.stroke++;
  if(state.stroke<state.parts.length){var token=state.session;setMessage('⭐');later(function(){if(state.session!==token)return;activate()},520)}else finishLevel()}
