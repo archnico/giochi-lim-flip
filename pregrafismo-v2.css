@@ -125,3 +125,41 @@ html,body{background:var(--sky)!important;color:var(--ink)!important}
 #trace-progress{display:block;width:0;height:100%;background:linear-gradient(90deg,#41b5e1,#33d1a5);border-radius:30px;transition:width .1s linear}
 @media(max-width:720px){.hud-right{min-width:75px;gap:4px}.meter{height:11px;min-width:75px}}
 @media(prefers-reduced-motion:reduce){#trace-progress{transition:none}}
+
+/* V4: illustrated worlds, larger responsive drawings and a readable trace. */
+#play{background:linear-gradient(180deg,#e4f4ff 0%,#d7edff 100%)}
+.board-wrap{border-width:8px;border-color:#83c6ea;box-shadow:0 8px 0 #9dd5ec,0 16px 31px #639ebe2b}
+.world-viaggio{border-color:#8bd6b3}
+.world-monti{border-color:#92badc}
+.world-arcobaleno{border-color:#eab1ce}
+.world-mare,.world-acqua{border-color:#72cbd9}
+.world-bolle{border-color:#bdb4e3}
+.world-forme{border-color:#e6cf9b}
+#board #scene-illustration{pointer-events:none}
+#board #scene-illustration path,#board #scene-illustration circle{vector-effect:none}
+#board #tracks path{stroke-linecap:round;stroke-linejoin:round}
+#celebrate{background:#e7faffcf;gap:0}
+#celebrate .bigstar{font-size:clamp(83px,10vw,175px);z-index:2}
+#celebrate .reward-dolphin{width:clamp(160px,22vw,320px);height:clamp(95px,11vw,180px);
+ margin-top:-25px;z-index:2;overflow:visible;animation:pregra-splash 1.4s ease-in-out both}
+#celebrate .reward-water{position:relative;margin-top:-16px;display:flex;gap:6px;z-index:1}
+#celebrate .reward-water span{width:75px;height:15px;border-top:7px solid #57bddd;
+ border-radius:50%;animation:reward-ripple 1s ease-in-out infinite}
+#celebrate .reward-water span:nth-child(2){animation-delay:.18s}
+#celebrate .reward-water span:nth-child(3){animation-delay:.35s}
+@keyframes reward-ripple{from{transform:translateY(0)}to{transform:translateY(6px)}}
+@media(max-width:720px){.board-wrap{border-width:4px}}
+@media(prefers-reduced-motion:reduce){#celebrate .reward-dolphin,#celebrate .reward-water span{animation:none}}
+
+/* Illustrations fill the unused letterbox wings on wide interactive displays. */
+.illustration-wing{display:none;position:absolute;top:13%;bottom:11%;height:76%;width:14%;
+ pointer-events:none;z-index:2}
+.illustration-wing.left-wing{left:1%}
+.illustration-wing.right-wing{right:1%}
+.illustration-wing svg{width:100%;height:100%;display:block;overflow:visible}
+#traveler{pointer-events:none}
+#traveler path,#traveler ellipse{vector-effect:none}
+@media(min-width:1400px) and (min-height:600px) and (min-aspect-ratio:18/11){
+ .illustration-wing{display:block}
+}
+@media(prefers-reduced-motion:reduce){.illustration-wing{animation:none}}
