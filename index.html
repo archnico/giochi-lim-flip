@@ -193,11 +193,11 @@ function refreshScore(){const b=document.getElementById('scorebox');if(b)b.inner
 function miniCelebration(){
  const prior=document.getElementById('mini-celebrate');if(prior)prior.remove();
  const f=document.createElement('div');f.id='mini-celebrate';
- f.innerHTML='<span class="reward-spark a">✦</span><span class="reward-spark b">✦</span><span class="reward-spark c">✦</span><div class="reward-inner"><span class="reward-star">★</span><strong>BRAVO!</strong></div>';
+ f.innerHTML='<span class="reward-spark a">✦</span><span class="reward-spark b">✦</span><span class="reward-spark c">✦</span><div class="reward-inner" aria-label="Risposta corretta"><span class="reward-star" aria-hidden="true">★</span></div>';
  main.appendChild(f);
  gameScope.later(()=>{if(f.parentNode)f.parentNode.removeChild(f)},930);
 }
-function point(){var completed=stars===4;stars=Math.min(5,stars+1);refreshScore();say(stars===5?'Fantastico! ★★★★★':'Bravo! ★');miniCelebration();DiegoAudio.play(completed?'fantastico':'bravo')}
+function point(){var completed=stars===4;stars=Math.min(5,stars+1);refreshScore();miniCelebration();DiegoAudio.play(completed?'fantastico':'bravo')}
 const topics=[
   {id:'pregrafismo',icon:'✏️',title:'Pregrafismo',desc:'56 percorsi con dito, colori e suoni',ids:['pregrafismo']},
   {id:'acqua',icon:'🌊',title:'Acqua',desc:'Splash! Giochi sensoriali',ids:['acqua']},
