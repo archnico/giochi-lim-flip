@@ -111,7 +111,7 @@ footer{min-height:52px;border-top:1px solid var(--line);padding:10px 20px;displa
 <script src="diego-audio.js"></script>
 <script>
 const games=[
-  {id:'pregrafismo',icon:'✏️',title:'Pregrafismo',desc:'56 percorsi · linee, onde, curve e cerchi'},
+  {id:'pregrafismo',icon:'✏️',title:'Pregrafismo',desc:'88 percorsi · 32 classici PC + 56 altri'},
   {id:'scacchi',icon:'⭐',title:'Scacchi Stellari',desc:'Re, torre e regina: cattura le stelle'},
   {id:'match',icon:'🧩',title:'Abbina',desc:'Una parola grande · scegli fra due foto'},
   {id:'count',icon:'🔢',title:'Conta',desc:'Conta e scegli il numero'},
@@ -204,7 +204,7 @@ function miniCelebration(){
 }
 function point(){var completed=stars===4;stars=Math.min(5,stars+1);refreshScore();miniCelebration();DiegoAudio.play(completed?'fantastico':'bravo')}
 const topics=[
-  {id:'pregrafismo',icon:'✏️',title:'Pregrafismo',desc:'56 percorsi con dito, colori e suoni',ids:['pregrafismo']},
+  {id:'pregrafismo',icon:'✏️',title:'Pregrafismo',desc:'32 classici PC + 56 percorsi · traccia col dito',ids:['pregrafismo']},
   {id:'acqua',icon:'🌊',title:'Acqua',desc:'Splash! Giochi sensoriali',ids:['acqua']},
   {id:'scacchi',icon:'♖',title:'Scacchi',desc:'Raccogli le stelle con re, torre e regina',ids:['scacchi']},
   {id:'matematica',icon:'🔢',title:'Matematica',desc:'Numeri, quantità e conteggio',ids:['count','numeri','unisci']},
@@ -248,7 +248,7 @@ function home(){
     ['MATEMATICA','Numeri · Conta · Unisci','matematica'],
     ['ACQUA','Splash! · Piscina','acqua'],
     ['SCACCHI','Re · Torre · Regina','scacchi'],
-    ['PREGRAFISMO','56 tracciati · 7 capitoli','pregrafismo']
+    ['PREGRAFISMO','32 classici PC + 56 altri · 11 capitoli','pregrafismo']
   ];
   main.innerHTML='<div class="flip-home">'+primaries.map(function(a){return flipCard(a[0],a[1],a[2],flipVisual[a[2]],'topic')}).join('')+
    '<button type="button" class="flip-other" id="otherBtn"><img src="assets/icons/kit-v2/altri.svg" alt="">ALTRI GIOCHI <span>Attenzione · Associazioni · Memoria</span></button></div>';
