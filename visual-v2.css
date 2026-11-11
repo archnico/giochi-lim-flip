@@ -130,3 +130,118 @@ body,html{background:#102536}
   .flip-card,.flip-other,.match-photo{transition:none}
   #mini-celebrate,#mini-celebrate .reward-spark{animation:none}
 }
+
+/* FLIP TOUCH POLISH 2026-11-11
+   Grandi bersagli, gerarchia visiva, feedback caldo. Nessuna dipendenza remota.
+   Un valore vw/px precede ogni clamp, compatibile anche con browser Tizen 5. */
+#app header{background:#15374d;border-bottom:3px solid #578699;padding:8px 22px}
+#app .brand{font-family:Arial,Helvetica,sans-serif;font-weight:900;letter-spacing:.04em;text-shadow:0 2px 3px #041a2d}
+#app .toolbar{grid-gap:12px;gap:12px}
+#app .iconbtn{display:inline-flex;align-items:center;justify-content:center;grid-gap:9px;gap:9px;
+  min-width:103px;min-height:57px;padding:7px 13px;border:3px solid #8bafbb;
+  background:#204b63;color:#fffdf0;font:900 29px Arial,Helvetica,sans-serif;
+  box-shadow:0 4px 0 #071b2c;border-radius:16px;white-space:nowrap}
+#app .iconbtn .tool-label{font:900 17px Arial,Helvetica,sans-serif;letter-spacing:.03em}
+#app .iconbtn#homeBtn{background:#f9dfa2;color:#183c4e;border-color:#fff4cf}
+#app .iconbtn#testBtn{background:#26495c;border-color:#7394a2}
+#app .iconbtn:active{transform:translateY(3px);box-shadow:0 1px 0 #071b2c}
+#app .iconbtn:focus{outline:5px solid #ffe57c;outline-offset:2px}
+#app footer{font-family:Arial,Helvetica,sans-serif;font-weight:700}
+#app main{background:radial-gradient(ellipse at 18% 16%,#2b546b,#17354b 68%,#0b2537)}
+.flip-home,.flip-games{grid-gap:18px;gap:18px}
+.flip-home .flip-card,.flip-home .flip-other{border-width:5px;box-shadow:0 7px 0 #071c296b,0 12px 28px #06192888}
+.flip-home .flip-card{padding:18px 18px 17px 23px}
+.flip-home .flip-card h2{font-size:2.45vw;font-size:clamp(30px,2.45vw,48px);
+  line-height:1.07;margin-bottom:10px;letter-spacing:-.01em}
+.flip-home .flip-card p{font-size:1.35vw;font-size:clamp(17px,1.35vw,25px);line-height:1.2;font-weight:800}
+.flip-card .flip-visual img{filter:drop-shadow(0 6px 4px #123b3c2b)}
+.flip-card:active .flip-visual img{transform:scale(.94)}
+.flip-home .flip-other{border-color:#e7f7e6}
+.flip-home .flip-other img{height:55%;max-height:175px}
+.flip-other:active{transform:scale(.985)}
+/* Titolo, istruzione e stelle: struttura leggibile in un colpo d'occhio. */
+.gamewrap:not(.flip-section) .gamehead{padding:9px 16px 10px;background:#24465a;
+  border:2px solid #54788b;border-radius:23px;min-height:100px}
+.gamewrap:not(.flip-section) .gamehead h1{color:#fff8de;font-family:Arial,Helvetica,sans-serif;
+  font-size:3vw;font-size:clamp(32px,3vw,54px);line-height:1.08}
+.gamewrap .gamehead .sub{color:#ecf7f7;font-size:1.4vw;font-size:clamp(19px,1.4vw,26px);
+  font-weight:700;line-height:1.2;margin-top:6px}
+.score{align-items:center;grid-gap:4px;gap:4px;font-size:2.45vw;font-size:clamp(25px,2.45vw,47px)}
+.score .star{color:#fff7dd;opacity:.25;text-shadow:0 2px 2px #061c28}
+.score .star.on{color:#ffcc51;opacity:1;text-shadow:0 0 8px #ffe9a888}
+.stage{padding:3px 2px;min-height:0}
+/* Risposte grandi, contrasto forte, conferma evidente con bordo e colore. */
+.answer,.tile,.sortitem,.mem{border:4px solid #b6d0dd;border-radius:27px;color:#174158;background:#fffdf2;
+  box-shadow:0 5px 0 #061c2e66;font-family:Arial,Helvetica,sans-serif}
+.answer,.sortitem,.mem{touch-action:manipulation}
+.answer{font-size:5.6vw;font-size:clamp(50px,5.6vw,90px);min-height:132px;font-weight:900}
+.tile{font-size:3.2vw;font-size:clamp(27px,3.2vw,55px)}
+.tile.emojiTile,.sortitem{font-size:7vw;font-size:clamp(58px,7vw,108px)}
+.sortitem{min-height:165px}
+.mem{font-size:6vw;font-size:clamp(50px,6vw,86px)}
+.mem.closed{background:linear-gradient(155deg,#e1f0f4,#bfdce7);border-color:#ecf9f3}
+.mem.closed::after{color:#28556c;font-size:55px}
+.answer:active,.tile:active,.sortitem:active,.mem:active{transform:translateY(3px);box-shadow:0 2px 0 #061c2e66}
+.answer:focus,.tile:focus,.sortitem:focus,.mem:focus{outline:5px solid #ffe074;outline-offset:1px}
+.answer.good,.tile.good,.sortitem.good{border-color:#2cc07a;background:#d7f9e6;
+  box-shadow:0 0 0 5px #5bdd9c70;color:#105c43}
+.answer.bad,.tile.bad,.sortitem.bad{border-color:#fa816e;background:#ffe1d9;animation:shake .18s linear 2}
+.objects{color:#fffdf0;max-width:1300px;margin:auto;font-size:7vw;font-size:clamp(64px,7vw,110px);
+  line-height:1.26;letter-spacing:.02em;overflow-wrap:break-word}
+.prompt{color:#fffdf0}
+.sameexample{border:6px solid #ffe7aa;background:#f8faf4;color:#1a3d55;box-shadow:0 6px 0 #071e2f88}
+.nextbtn{font-family:Arial,Helvetica,sans-serif}
+.habitat-animal{border:5px solid #eaf9f4;background:#f5fbf6}
+.habitat-name{border-radius:16px;background:#ffe9ad;color:#17394b;letter-spacing:.02em;
+  text-shadow:none;box-shadow:0 3px 0 #d4bd72}
+.habitat-zone{border-color:#eaf9f4}
+.habitat-zone:active{transform:scale(.99)}
+.habitat-label{background:linear-gradient(transparent,#061d2ace 35%,#041722f2);letter-spacing:.025em}
+.colori-figure{border:6px solid #f5fff4;background:#fffdf4}
+.colori-choice{border-color:#f5fff4;box-shadow:0 6px 0 #071f2c66}
+.colori-choice:active{transform:translateY(3px)}
+.notice{max-width:90vw;text-align:center;box-shadow:0 7px 0 #051e2b60,0 11px 22px #0005}
+/* Proporzioni per la lavagna Samsung 55 pollici, 1920×1080. */
+@media(min-width:1300px) and (min-height:740px){
+ .gamewrap.match-wide .gamehead{min-height:94px}
+ .match-photo-grid{grid-gap:22px;gap:22px}
+ .habitatboard{grid-template-rows:minmax(0,1.3fr) minmax(0,1fr)}
+ .flip-games .flip-card{min-height:210px}
+}
+@media(max-height:780px) and (min-width:801px){
+ #app header{padding:5px 15px}
+ #app .iconbtn{min-height:49px;font-size:24px}
+ .gamewrap:not(.flip-section) .gamehead{min-height:75px;padding:5px 12px}
+ .gamewrap .gamehead .sub{font-size:18px;margin-top:3px}
+ .answer{min-height:90px}
+ .sortitem{min-height:120px}
+ .objects{font-size:6.3vw}
+}
+@media(max-width:800px){
+ #app header{padding:6px 9px}
+ #app .brand{font-size:17px}
+ #app .toolbar{grid-gap:5px;gap:5px}
+ #app .iconbtn{min-height:44px;min-width:44px;padding:5px 7px;border-width:2px;font-size:23px}
+ #app .tool-label{display:none}
+ #app footer{font-size:11px}
+ .flip-home{grid-gap:11px;gap:11px}
+ .flip-home .flip-card{padding:11px 13px;border-width:3px}
+ .flip-home .flip-card h2{font-size:30px;line-height:1.05;margin-bottom:6px}
+ .flip-home .flip-card p{font-size:16px}
+ .gamewrap:not(.flip-section) .gamehead{min-height:70px;padding:8px 10px}
+ .gamewrap:not(.flip-section) .gamehead h1{font-size:27px}
+ .gamewrap .gamehead .sub{font-size:15px}
+ .score{font-size:21px}
+ .answer{min-height:88px;font-size:44px;border-width:3px}
+ .sortitem{min-height:100px;font-size:54px}
+ .objects{font-size:52px}
+ .habitat-animal{border-width:3px}
+ .habitat-zone{border-width:3px}
+ .habitat-name{font-size:26px}
+ .habitat-label{font-size:20px}
+ .match-photo-grid{gap:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ .answer,.tile,.sortitem,.mem,.habitat-zone,.colori-choice{animation:none;transition:none}
+}
+
