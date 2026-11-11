@@ -134,10 +134,10 @@ h1{/*diego-fallback*/font-size:3.2vw;/*end-fallback*/font-size:clamp(28px,3.2vw,
     DiegoAudio.play(countDone()===level?'fantastico':'bravo');draw();
     if(countDone()===level){
       complete=true;page.classList.add('complete');
-      feedback.textContent='Bravissimo! Tutti collegati! ★';
+      feedback.textContent='⭐ ⭐ ⭐';
       again.textContent='★ NUOVA SCHEDA';
     }else{
-      feedback.textContent='Bravo! Scegli un altro numero';
+      feedback.textContent='⭐';
     }
   }
   function draw(){
