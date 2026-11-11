@@ -67,11 +67,11 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
     <div class="toolbar"><button id="sound" type="button" class="btn" aria-pressed="true">SUONI</button></div>
   </div>
   <div id="menu">
-    <div class="intro"><h1>Segui il percorso con il dito!</h1><p>Parti dal cerchio luminoso e arriva alla stella. Nessuna fretta.</p></div>
+    <div class="intro"><h1>Disegniamo con il dito! 🌟</h1><p>Dal pallino verde alla stella: segui i puntini.</p></div>
     <div id="chapters" class="chapters"></div>
   </div>
   <div id="play" hidden>
-    <div class="hud"><div><h1 id="ex-title"></h1><p id="ex-subtitle"></p></div><span class="counter" id="ex-counter"></span></div>
+    <div class="hud"><div><h1 id="ex-title"></h1><p id="ex-subtitle"></p></div><div class="hud-right"><span class="counter" id="ex-counter"></span><div class="meter" aria-label="Avanzamento del disegno"><span id="trace-progress"></span></div></div></div>
     <div class="board-wrap">
       <svg id="board" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Percorso da seguire con un dito">
         <g id="tracks"></g>
@@ -81,8 +81,9 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
           <text id="guide-hand" x="0" y="0" text-anchor="middle" dy="13" font-size="75" fill="#fffdf0">●</text>
         </g>
       </svg>
-      <div id="message" role="status" aria-live="polite">Parti dal cerchio e segui la linea</div>
-      <div id="celebrate" hidden><div id="confetti"></div><div class="bigstar">★</div></div>
+      <div id="zoom-readout" aria-hidden="true">100%</div>
+      <div id="message" role="status" aria-live="polite">👆 Segui i puntini!</div>
+      <div id="celebrate" hidden><div id="confetti"></div><div class="sea-bubbles" aria-hidden="true">🫧</div><div class="bigstar" aria-hidden="true">★</div><div class="sea-friend" aria-hidden="true">🐬🌊</div><span class="yay">🌟</span></div>
     </div>
     <div class="board-tools">
       <button id="chaptersBtn" type="button" class="btn">☷ CAPITOLI</button>
@@ -102,7 +103,7 @@ var S='http://www.w3.org/2000/svg',root=document.getElementById('app'),menu=docu
 var tracks=document.getElementById('tracks'),markers=document.getElementById('markers'),guide=document.getElementById('guide'),message=document.getElementById('message'),celebrate=document.getElementById('celebrate');
 var chapters=[
 {id:'rette',title:'Linee dritte',icon:'📏',detail:'Orizzontali e verticali',levels:[
-['Tre strade colorate',['M130 160 L870 160','M130 300 L870 300','M130 440 L870 440']],
+['Tre strade luminose',['M130 160 L870 160','M130 300 L870 300','M130 440 L870 440']],
 ['Piccole strade',['M230 170 L770 170','M230 300 L770 300','M230 430 L770 430']],
 ['Dall’alto in basso',['M240 110 L240 510','M500 110 L500 510','M760 110 L760 510']],
 ['Da destra a sinistra',['M870 160 L130 160','M870 300 L130 300','M870 440 L130 440']],
@@ -182,34 +183,34 @@ function svg(tag,attr,parent){var n=document.createElementNS(S,tag);Object.keys(
 function clear(node){while(node.firstChild)node.removeChild(node.firstChild)}
 function setMessage(text){message.textContent=text}
 function title(){return chapters[state.chapter].levels[state.level][0]}
-function labelButtons(){var c=chapters[state.chapter];document.getElementById('ex-title').textContent=title();document.getElementById('ex-subtitle').textContent=c.title+' · Vai dal cerchio alla stella';document.getElementById('ex-counter').textContent=(state.level+1)+' / '+c.levels.length;document.getElementById('easy').textContent=state.easy?'☺ FACILE':'◎ PRECISO';document.getElementById('easy').setAttribute('aria-pressed',String(state.easy))}
+function labelButtons(){var c=chapters[state.chapter];document.getElementById('ex-title').textContent=title();document.getElementById('ex-subtitle').textContent=c.title+' · 👆 → ⭐';document.getElementById('ex-counter').textContent=(state.level+1)+' / '+c.levels.length;document.getElementById('easy').textContent=state.easy?'☺ FACILE':'◎ PRECISO';document.getElementById('easy').setAttribute('aria-pressed',String(state.easy))}
 function chapterMenu(){state.session++;clearTimers();state.down=false;state.done=false;state.chapter=-1;menu.hidden=false;play.hidden=true;celebrate.hidden=true;var box=document.getElementById('chapters');clear(box);
  chapters.forEach(function(c,ci){var b=document.createElement('button');b.type='button';b.className='chapter';var done=(progress[c.id]||[]).length;b.innerHTML='<span class="symbol"><img src="assets/icons/kit-v2/traccia-'+c.id+'.svg" alt=""></span><span class="name">'+c.title+'</span><span class="detail">'+c.detail+'</span><span class="stars">'+done+' / '+c.levels.length+' ★</span>';b.addEventListener('click',function(){var p=progress[c.id]||[],n=0;while(n<c.levels.length-1&&p.indexOf(n)>=0)n++;openLevel(ci,n)});box.appendChild(b)})
 }
 function stopDemo(){if(demoTimer){clearInterval(demoTimer);demoTimer=0}guide.setAttribute('visibility','hidden')}
 function showDemo(){if(state.chapter<0||state.done||state.down)return;stopDemo();var data=state.parts[state.stroke];if(!data)return;var t0=Date.now(),duration=Math.max(2100,Math.min(4200,data.length*4));guide.setAttribute('visibility','visible');setMessage('Guarda il pallino, poi prova tu!');demoTimer=setInterval(function(){if(state.down||state.done){stopDemo();return}var p=Math.min(1,(Date.now()-t0)/duration),point=data.path.getPointAtLength(p*data.length);document.getElementById('guide-halo').setAttribute('cx',point.x);document.getElementById('guide-halo').setAttribute('cy',point.y);document.getElementById('guide-hand').setAttribute('x',point.x);document.getElementById('guide-hand').setAttribute('y',point.y);if(p>=1){stopDemo();setMessage('Adesso tocca il cerchio luminoso') }},40)}
-function openLevel(ci,li){state.session++;clearTimers();state.chapter=ci;state.level=(li+chapters[ci].levels.length)%chapters[ci].levels.length;state.stroke=0;state.index=0;state.down=false;state.id=null;state.done=false;celebrate.hidden=true;menu.hidden=true;play.hidden=false;labelButtons();draw();setMessage('Tocca il cerchio luminoso e segui la linea');if(state.level===0)later(function(){if(!state.down&&!state.done)showDemo()},800)}
-function draw(){clear(tracks);clear(markers);state.parts=[];var raw=chapters[state.chapter].levels[state.level][1],colors=['#ffe778','#fa7aa4','#7a85f7','#b2f27f'];
-raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#12476a','stroke-width':'48','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.72'},tracks);var p=svg('path',{d:d,fill:'none',stroke:colors[i%colors.length],'stroke-width':'30','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#fff9e5','stroke-width':'17','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});activate()}
+function openLevel(ci,li){state.session++;clearTimers();state.chapter=ci;state.level=(li+chapters[ci].levels.length)%chapters[ci].levels.length;state.stroke=0;state.index=0;state.down=false;state.id=null;state.done=false;celebrate.hidden=true;menu.hidden=true;play.hidden=false;labelButtons();draw();board.setAttribute('viewBox','0 0 1000 600');state.zoom=1;document.getElementById('zoom-readout').textContent='100%';document.getElementById('trace-progress').style.width='0%';setMessage('👆 Segui i puntini!');if(state.level===0)later(function(){if(!state.down&&!state.done)showDemo()},800)}
+function draw(){clear(tracks);clear(markers);state.parts=[];var raw=chapters[state.chapter].levels[state.level][1];
+raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#ffc978','stroke-width':'51','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.53'},tracks);var p=svg('path',{d:d,fill:'none',stroke:'#e8a13e','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':'3 26'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#21a9d7','stroke-width':'34','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});activate()}
 function samplePart(data){var samples=[],n=Math.max(3,Math.ceil(data.length/5));for(var i=0;i<=n;i++)samples.push(data.path.getPointAtLength(data.length*i/n));return samples}
-function activate(){clear(markers);if(state.stroke>=state.parts.length)return;state.parts.forEach(function(d,i){var o=i===state.stroke||d.completed?'1':'.22';d.path.setAttribute('opacity',o);d.outer.setAttribute('opacity',i===state.stroke?'.78':'.13')});state.samples=samplePart(state.parts[state.stroke]);state.index=0;state.lastBell=0;state.down=false;
+function activate(){clear(markers);if(state.stroke>=state.parts.length)return;state.parts.forEach(function(d,i){var o=i===state.stroke||d.completed?'1':'.22';d.path.setAttribute('opacity',o);d.outer.setAttribute('opacity',i===state.stroke?'.76':'.22')});state.samples=samplePart(state.parts[state.stroke]);state.index=0;state.lastBell=0;state.down=false;
  var first=state.samples[0],last=state.samples[state.samples.length-1];
- svg('circle',{cx:last.x,cy:last.y,r:43,fill:'#fff9b8',stroke:'#f8b744','stroke-width':7},markers);
- svg('text',{x:last.x,y:last.y+19,'text-anchor':'middle','font-size':64},markers).textContent='★';
- svg('circle',{cx:first.x,cy:first.y,r:47,fill:'#e6ffbc',stroke:'#287c67','stroke-width':8},markers);
- svg('circle',{cx:first.x,cy:first.y,r:19,fill:'#1b946f'},markers);
- svg('circle',{id:'cursor',cx:first.x,cy:first.y,r:26,fill:'#fff',stroke:'#0a5065','stroke-width':5},markers);
- setMessage('Dal cerchio alla stella · '+(state.stroke+1)+' / '+state.parts.length);
+ svg('circle',{cx:last.x,cy:last.y,r:38,fill:'#fff1a5',stroke:'#dca02b','stroke-width':6},markers);
+ svg('text',{x:last.x,y:last.y+17,'text-anchor':'middle','font-size':53,fill:'#b77a12'},markers).textContent='★';
+ svg('circle',{cx:first.x,cy:first.y,r:38,fill:'#d7ffe2',stroke:'#33ac80','stroke-width':7},markers);
+ svg('circle',{cx:first.x,cy:first.y,r:17,fill:'#23bc88'},markers);
+ svg('circle',{id:'cursor',cx:first.x,cy:first.y,r:23,fill:'#fff',stroke:'#218eb7','stroke-width':5},markers);
+ document.getElementById('trace-progress').style.width=Math.round(100*state.stroke/state.parts.length)+'%';setMessage('👆 → ⭐  '+(state.stroke+1)+' / '+state.parts.length);
 }
 function mapEvent(e){var rect=board.getBoundingClientRect(),x=e.clientX,y=e.clientY;try{var pt=board.createSVGPoint();pt.x=x;pt.y=y;var m=board.getScreenCTM();if(m){var r=pt.matrixTransform(m.inverse());return{x:r.x,y:r.y}}}catch(ignore){}var scale=Math.min(rect.width/1000,rect.height/600),offX=(rect.width-1000*scale)/2,offY=(rect.height-600*scale)/2;return{x:(x-rect.left-offX)/scale,y:(y-rect.top-offY)/scale}}
 function dist(a,b){var x=a.x-b.x,y=a.y-b.y;return Math.sqrt(x*x+y*y)}
-function startGesture(ev,id){if(state.chapter<0||state.done||state.down)return;var pt=mapEvent(ev),target=state.samples[state.index];if(!target||dist(pt,target)>(state.easy?48:30)){setMessage('Cerca il pallino bianco per cominciare');return}stopDemo();state.down=true;state.id=id;state.index=Math.max(0,state.index);setMessage('Benissimo! Continua fino alla stella');moveGesture(ev,id)}
-function moveGesture(ev,id){if(!state.down||state.id!==id||state.done)return;var pt=mapEvent(ev),lo=Math.max(0,state.index-10),hi=Math.min(state.samples.length-1,state.index+36),best=-1,bestDist=1e9;for(var i=lo;i<=hi;i++){var di=dist(pt,state.samples[i]);if(di<bestDist){bestDist=di;best=i}}if(bestDist>(state.easy?36:22))return;state.index=Math.max(state.index,best);
- var data=state.parts[state.stroke],r=state.index/(state.samples.length-1),point=state.samples[state.index];data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));var phase=Math.min(3,Math.floor(r*4));if(phase>state.lastBell){state.lastBell=phase;chirp()}var cursor=document.getElementById('cursor');if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y)}if(r>=.985||(r>.90&&dist(pt,state.samples[state.samples.length-1])<90))completeStroke()}
-function endGesture(id){if(!state.down||state.id!==id)return;state.down=false;state.id=null;if(!state.done)setMessage('Bravo! Riparti dal pallino bianco')}
-function completeStroke(){state.down=false;state.id=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';if(window.DiegoAudio)DiegoAudio.play('stella');state.stroke++;
+function startGesture(ev,id){if(state.chapter<0||state.done||state.down)return;var pt=mapEvent(ev),target=state.samples[state.index];if(!target||dist(pt,target)>(state.easy?41:29)){setMessage('👆 Tocca il verde');return}stopDemo();state.down=true;state.id=id;state.index=Math.max(0,state.index);setMessage('✨ → ⭐');moveGesture(ev,id)}
+function moveGesture(ev,id){if(!state.down||state.id!==id||state.done)return;var pt=mapEvent(ev),lo=Math.max(0,state.index-10),hi=Math.min(state.samples.length-1,state.index+36),best=-1,bestDist=1e9;for(var i=lo;i<=hi;i++){var di=dist(pt,state.samples[i]);if(di<bestDist){bestDist=di;best=i}}if(bestDist>(state.easy?30:19))return;state.index=Math.max(state.index,best);
+ var data=state.parts[state.stroke],r=state.index/(state.samples.length-1),point=state.samples[state.index];data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+r)/state.parts.length)+'%';var phase=Math.min(3,Math.floor(r*4));if(phase>state.lastBell){state.lastBell=phase;chirp()}var cursor=document.getElementById('cursor');if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y)}if(r>=.985||(r>.90&&dist(pt,state.samples[state.samples.length-1])<90))completeStroke()}
+function endGesture(id){if(!state.down||state.id!==id)return;state.down=false;state.id=null;if(!state.done)setMessage('👆 Segui i puntini!')}
+function completeStroke(){state.down=false;state.id=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+1)/state.parts.length)+'%';if(window.DiegoAudio)DiegoAudio.play('stella');state.stroke++;
  if(state.stroke<state.parts.length){var token=state.session;setMessage('⭐');later(function(){if(state.session!==token)return;activate()},520)}else finishLevel()}
-function finishLevel(){state.done=true;celebrate.hidden=false;var p=progress[chapters[state.chapter].id]||[];if(p.indexOf(state.level)<0){p.push(state.level);progress[chapters[state.chapter].id]=p;save()}
+function finishLevel(){state.done=true;celebrate.hidden=false;document.getElementById('trace-progress').style.width='100%';var p=progress[chapters[state.chapter].id]||[];if(p.indexOf(state.level)<0){p.push(state.level);progress[chapters[state.chapter].id]=p;save()}
  var confetti=document.getElementById('confetti');clear(confetti);for(var i=0;i<27;i++){var el=document.createElement('span');el.className='particle';el.style.left=(5+((i*37)%90))+'%';el.style.background=['#ffdc4a','#ff79a8','#88f6ec','#c6a2ff'][i%4];el.style.animationDelay=(i%8)*.11+'s';confetti.appendChild(el)}
  if(window.DiegoAudio)DiegoAudio.play(state.level===7?'fantastico':'bravo');setMessage('🌟');var token=state.session;later(function(){if(state.session===token&&state.done)nextLevel()},1850)}
 function nextLevel(){if(state.chapter<0)return;var n=state.level+1;if(n>=chapters[state.chapter].levels.length){chapterMenu()}else openLevel(state.chapter,n)}
@@ -221,11 +222,11 @@ function panBoard(dx,dy){
 }
 function zoomBoard(delta){
  var old=board.viewBox.baseVal,cx=old.x+old.width/2,cy=old.y+old.height/2;
- state.zoom=Math.max(1,Math.min(1.45,Math.round((state.zoom+delta)*100)/100));
+ state.zoom=Math.max(1,Math.min(2,Math.round((state.zoom+delta)*100)/100));
  var w=1000/state.zoom,h=600/state.zoom;
  var x=Math.max(0,Math.min(1000-w,cx-w/2)),y=Math.max(0,Math.min(600-h,cy-h/2));
  board.setAttribute('viewBox',x+' '+y+' '+w+' '+h);
- setMessage('Ingrandimento '+Math.round(state.zoom*100)+'%');
+ document.getElementById('zoom-readout').textContent=Math.round(state.zoom*100)+'%';
 }
 function chirp(){if(!window.DiegoAudio||!DiegoAudio.isEnabled())return;try{var AudioContext=window.AudioContext||window.webkitAudioContext;if(!AudioContext)return;if(!audioCtx)audioCtx=new AudioContext();var osc=audioCtx.createOscillator(),gain=audioCtx.createGain(),t=audioCtx.currentTime;osc.type='sine';osc.frequency.setValueAtTime(600,t);osc.frequency.exponentialRampToValueAtTime(880,t+.12);gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.05,t+.02);gain.gain.exponentialRampToValueAtTime(.0001,t+.18);osc.connect(gain);gain.connect(audioCtx.destination);osc.start(t);osc.stop(t+.19)}catch(ignore){}}
 var sound=document.getElementById('sound');function syncSound(){var enabled=window.DiegoAudio?DiegoAudio.isEnabled():false;sound.textContent=enabled?'SUONI':'MUTO';sound.setAttribute('aria-pressed',String(enabled))}
@@ -249,6 +250,10 @@ document.addEventListener('keydown',function(e){
  else if(key==='j'&&state.chapter>=0){e.preventDefault();nextLevel()}
  else if(key==='k'&&state.chapter>=0){e.preventDefault();if(state.level===0)chapterMenu();else openLevel(state.chapter,state.level-1)}
  else if(key==='escape'&&state.chapter>=0){e.preventDefault();chapterMenu()}
+ else if(key==='0'){e.preventDefault();zoomBoard(1-state.zoom)}
+ else if(key==='i'&&state.chapter>=0){e.preventDefault();openLevel(state.chapter,state.level)}
+ else if(key==='r'){e.preventDefault();location.reload()}
+ else if(key==='f'){e.preventDefault();try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen();else if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen()}catch(ignore){}}
 });
 document.getElementById('easy').onclick=function(){state.easy=!state.easy;labelButtons();setMessage(state.easy?'Modalità facile: percorsi più tolleranti':'Modalità precisa: segui la linea più da vicino')};
 var usePointer=!!window.PointerEvent;
