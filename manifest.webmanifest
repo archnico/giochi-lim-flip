@@ -1,24 +1,31 @@
 {
-  "name": "Giochi LIM — Samsung Flip",
-  "short_name": "Giochi LIM",
+  "name": "Giochi interattivi",
+  "short_name": "Giochi",
   "lang": "it",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#131a21",
-  "theme_color": "#152c42",
+  "background_color": "#102536",
+  "theme_color": "#15374d",
   "icons": [
     {
-      "src": "assets/icons/matematica.png",
-      "sizes": "600x600",
+      "src": "assets/icons/app-192.png",
+      "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "assets/icons/scacchi.png",
-      "sizes": "600x600",
+      "src": "assets/icons/app-512.png",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     }
+  ],
+  "description": "Giochi educativi tattili per telefono, tablet, computer e lavagna",
+  "id": "./",
+  "orientation": "any",
+  "categories": [
+    "education",
+    "games"
   ]
 }

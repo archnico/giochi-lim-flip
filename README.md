@@ -1,15 +1,26 @@
-# Giochi LIM — edizione web offline
+# Giochi interattivi — sito web principale
 
-Versione statica dei giochi touch per Samsung Flip, senza dati personali,
-tracker, registrazioni o backend. Le fotografie e i suoni sono file locali.
-Il Service Worker precarica le risorse e permette l'uso offline **soltanto**
-nei browser che supportano SW/CacheStorage e mantengono la memoria dopo il riavvio.
+Giochi educativi tattili che funzionano direttamente nel browser:
+telefono, tablet, computer o lavagna interattiva.
 
-**Prova tecnica:** aprire /offline-check.html dopo la prima visita.
+**Indirizzo facile:** https://archnico.github.io/g/
+**Indirizzo effettivo del sito:** https://archnico.github.io/giochi-lim-flip/
 
-Il sito è pubblico, ma chiede di non essere indicizzato. La limitazione
-non equivale a un controllo degli accessi.
+Il sito è interamente statico e senza account, pubblicità, tracker o
+servizi di terzi a runtime. Fotografie, grafica e suoni sono locali.
 
-Licenza codice: MIT (LICENSE). Diritti di foto e illustrazioni:
+- Android: aprire con Chrome, poi dal menu scegliere «Aggiungi a schermata Home»
+  o «Installa app» se disponibile.
+- iPhone/iPad: aprire con Safari, Condividi → «Aggiungi alla schermata Home».
+- PC/tablet/LIM: aprire l'indirizzo nel browser e salvarlo nei preferiti.
+- Offline: aprire una volta con Internet e visitare `offline-check.html`.
+  Servono Service Worker, CacheStorage e spazio conservato dal browser;
+  l'offline non è garantito su tutte le lavagne né dopo cancellazione dati.
+- Aggiornamenti: riconnettersi a Internet e riaprire il sito.
+
+Il sito è **pubblico** pur chiedendo la non indicizzazione; non è protetto
+da password. La release non include dati personali o file di lavoro.
+
+Licenza codice: MIT (LICENSE). Crediti per foto e illustrazioni:
 FOTOGRAFIE-E-LICENZE.md, FOTO-ASSOCIAZIONI-E-LICENZE.md,
 ILLUSTRAZIONI-E-LICENZE.md e crediti-foto.html.
