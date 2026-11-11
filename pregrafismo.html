@@ -62,12 +62,20 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 <body>
 <div id="app">
   <div class="top">
-    <button type="button" id="home" class="btn">⌂ GIOCHI</button>
-    <strong class="pregra-brand"><img src="assets/icons/kit-v2/pregrafismo.svg" alt="">PREGRAFISMO</strong>
-    <div class="toolbar"><button id="sound" type="button" class="btn" aria-pressed="true">SUONI</button></div>
+    <strong class="pregra-brand"><img src="assets/icons/kit-v2/pregrafismo.svg" alt=""> PREGRAFISMO</strong>
+    <div class="toolbar">
+      <button type="button" id="home" class="btn">⌂ GIOCHI</button>
+      <button id="fullscreen" type="button" class="btn">⛶ SCHERMO</button>
+      <button id="sound" type="button" class="btn" aria-pressed="true">SUONI</button>
+      <button id="toolToggle" type="button" class="btn" aria-expanded="false" aria-controls="teacherTools">⚙</button>
+    </div>
   </div>
   <div id="menu">
-    <div class="intro"><h1>Disegniamo con il dito! 🌟</h1><p>Dal pallino verde alla stella: segui i puntini.</p></div>
+    <div class="intro"><h1>Disegniamo con il dito! 🌟</h1><p>Dal verde alla stella, segui il percorso.</p></div>
+    <div class="deck-tabs" role="group" aria-label="Scegli i percorsi">
+      <button id="deckPC" type="button" class="deck-tab selected" aria-pressed="true">✏️ CLASSICI PC · 32</button>
+      <button id="deckExtra" type="button" class="deck-tab" aria-pressed="false">⭐ ALTRI PERCORSI · 56</button>
+    </div>
     <div id="chapters" class="chapters"></div>
   </div>
   <div id="play" hidden>
@@ -77,33 +85,43 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
       <div class="illustration-wing right-wing" aria-hidden="true"><svg id="scene-side-right" viewBox="0 0 220 500"></svg></div>
       <svg id="board" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Percorso da seguire con un dito">
         <g id="tracks"></g>
+        <g id="drawn-ink"></g>
         <g id="markers"></g>
         <g id="guide" visibility="hidden">
           <circle id="guide-halo" cx="0" cy="0" r="50" fill="#ffffff55" stroke="#fff" stroke-width="3"></circle>
           <text id="guide-hand" x="0" y="0" text-anchor="middle" dy="13" font-size="75" fill="#fffdf0">●</text>
         </g>
       </svg>
+      <div id="decorA" class="pc-corner corner-a" aria-hidden="true"></div>
+      <div id="decorB" class="pc-corner corner-b" aria-hidden="true"></div>
       <div id="zoom-readout" aria-hidden="true">100%</div>
       <div id="message" role="status" aria-live="polite">👆 Segui i puntini!</div>
       <div id="celebrate" hidden><div id="confetti"></div><div class="sea-bubbles" aria-hidden="true">🫧</div><div class="bigstar" aria-hidden="true">★</div><svg class="reward-dolphin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 145" aria-hidden="true"><path d="M 29 93 Q 75 21 154 45 Q 187 53 217 41 L 241 32 L 226 65 Q 212 84 177 86 Q 132 91 93 123 L 87 88 Q 55 107 29 93 Z" fill="#49bbd6" stroke="#237d9f" stroke-width="7" stroke-linejoin="round"/><path d="M 105 49 L 123 9 L 154 47" fill="#49bbd6" stroke="#237d9f" stroke-width="6" stroke-linejoin="round"/><path d="M 32 92 L 2 54 L 5 124 Z" fill="#69cee3" stroke="#237d9f" stroke-width="6"/><circle cx="186" cy="62" r="10" fill="#fff"/><circle cx="189" cy="60" r="5" fill="#205674"/><path d="M 205 79 Q 217 93 229 78" fill="none" stroke="#205674" stroke-width="4"/><ellipse cx="125" cy="89" rx="40" ry="12" fill="#d9f8fa" opacity=".55"/></svg><div class="reward-water" aria-hidden="true"><span></span><span></span><span></span></div><span class="yay">🌟</span></div>
     </div>
     <div class="board-tools">
-      <button id="chaptersBtn" type="button" class="btn">☷ CAPITOLI</button>
-      <button id="prev" type="button" class="btn">← PRIMA</button>
+      <button id="chaptersBtn" type="button" class="btn">← PERCORSI</button>
       <button id="again" type="button" class="btn">↻ RIPROVA</button>
-      <button id="hint" type="button" class="btn">MOSTRA</button>
-      <button id="easy" type="button" class="btn" aria-pressed="true">☺ FACILE</button>
-      <button id="next" type="button" class="btn light">DOPO →</button>
+      <span class="bottom-hint" aria-hidden="true">👆 Segui i puntini</span>
+      <button id="next" type="button" class="btn light">AVANTI ➜</button>
+    </div>
+    <div id="teacherTools" class="teacher-tools" hidden>
+      <button id="prev" type="button" class="btn">← PRIMA</button>
+      <button id="hint" type="button" class="btn">▶ MOSTRA</button>
+      <button id="easy" type="button" class="btn" aria-pressed="false">◎ PRECISO</button>
+      <button id="decor" type="button" class="btn" aria-pressed="false">☆ SCENARI</button>
+      <button id="zoomOut" type="button" class="btn">−</button>
+      <button id="zoomIn" type="button" class="btn">+</button>
     </div>
   </div>
 </div>
 <script src="diego-audio.js"></script>
 <script src="pregrafismo-scene.js"></script>
+<script src="pregrafismo-pc-data.js"></script>
 <script>
 (function(){
 'use strict';
 var S='http://www.w3.org/2000/svg',root=document.getElementById('app'),menu=document.getElementById('menu'),play=document.getElementById('play'),board=document.getElementById('board');
-var tracks=document.getElementById('tracks'),markers=document.getElementById('markers'),guide=document.getElementById('guide'),message=document.getElementById('message'),celebrate=document.getElementById('celebrate');
+var tracks=document.getElementById('tracks'),markers=document.getElementById('markers'),drawnInk=document.getElementById('drawn-ink'),guide=document.getElementById('guide'),message=document.getElementById('message'),celebrate=document.getElementById('celebrate');
 var chapters=[
 {id:'rette',title:'Linee dritte',icon:'📏',detail:'Orizzontali e verticali',levels:[
 ['Tre strade luminose',['M130 160 L870 160','M130 300 L870 300','M130 440 L870 440']],
@@ -176,7 +194,9 @@ var chapters=[
 ['Il mare infinito',['M80 320 C210 120 340 500 470 320 S730 120 920 320']]
 ]}
 ];
-var state={chapter:-1,level:0,stroke:0,parts:[],samples:[],index:0,down:false,id:null,lastTouch:0,done:false,easy:true,session:0,zoom:1};
+if(!window.PregrafismoPCChapters||window.PregrafismoPCChapters.length!==4)throw new Error('Percorsi PC mancanti');
+chapters=window.PregrafismoPCChapters.concat(chapters);
+var state={deck:'pc',chapter:-1,level:0,stroke:0,parts:[],samples:[],index:0,down:false,id:null,lastTouch:0,done:false,easy:false,decorated:false,session:0,zoom:1,inputLast:null,activeBrush:null,brushLast:null};
 var sessionTimers=[],demoTimer=0,audioCtx=null,progress={};
 try{progress=JSON.parse(localStorage.getItem('diego-pregrafismo-progress-v1')||'{}')||{}}catch(e){progress={}}
 function save(){try{localStorage.setItem('diego-pregrafismo-progress-v1',JSON.stringify(progress))}catch(e){}}
@@ -186,15 +206,38 @@ function svg(tag,attr,parent){var n=document.createElementNS(S,tag);Object.keys(
 function clear(node){while(node.firstChild)node.removeChild(node.firstChild)}
 function setMessage(text){message.textContent=text}
 function title(){return chapters[state.chapter].levels[state.level][0]}
-function labelButtons(){var c=chapters[state.chapter];document.getElementById('ex-title').textContent=title();document.getElementById('ex-subtitle').textContent=c.title+' · 👆 → ⭐';document.getElementById('ex-counter').textContent=(state.level+1)+' / '+c.levels.length;document.getElementById('easy').textContent=state.easy?'☺ FACILE':'◎ PRECISO';document.getElementById('easy').setAttribute('aria-pressed',String(state.easy))}
-function chapterMenu(){state.session++;clearTimers();state.down=false;state.done=false;state.chapter=-1;menu.hidden=false;play.hidden=true;celebrate.hidden=true;var box=document.getElementById('chapters');clear(box);
- chapters.forEach(function(c,ci){var b=document.createElement('button');b.type='button';b.className='chapter';var done=(progress[c.id]||[]).length;b.innerHTML='<span class="symbol"><img src="assets/icons/kit-v2/traccia-'+c.id+'.svg" alt=""></span><span class="name">'+c.title+'</span><span class="detail">'+c.detail+'</span><span class="stars">'+done+' / '+c.levels.length+' ★</span>';b.addEventListener('click',function(){var p=progress[c.id]||[],n=0;while(n<c.levels.length-1&&p.indexOf(n)>=0)n++;openLevel(ci,n)});box.appendChild(b)})
+function themeIndex(){return state.chapter<4?[0,2,5,6][state.chapter]:state.chapter-4}
+function deckButtons(){
+ var pc=state.deck==='pc',a=document.getElementById('deckPC'),b=document.getElementById('deckExtra');
+ a.className='deck-tab'+(pc?' selected':'');b.className='deck-tab'+(pc?'':' selected');
+ a.setAttribute('aria-pressed',String(pc));b.setAttribute('aria-pressed',String(!pc));menu.className=pc?'pc-deck':'extra-deck'
+}
+function setDeck(name){state.deck=name;chapterMenu()}
+document.getElementById('deckPC').onclick=function(){setDeck('pc')};
+document.getElementById('deckExtra').onclick=function(){setDeck('extra')};
+
+function labelButtons(){var c=chapters[state.chapter];document.getElementById('ex-title').textContent=title();document.getElementById('ex-subtitle').textContent=(c.levels[state.level][4]||c.title)+' · 👆 → ⭐';document.getElementById('ex-counter').textContent=(state.level+1)+' / '+c.levels.length;document.getElementById('easy').textContent=state.easy?'☺ FACILE':'◎ PRECISO';document.getElementById('easy').setAttribute('aria-pressed',String(state.easy))}
+function chapterMenu(){state.session++;clearTimers();state.down=false;state.done=false;state.chapter=-1;menu.hidden=false;play.hidden=true;celebrate.hidden=true;var box=document.getElementById('chapters');clear(box);deckButtons();
+ chapters.forEach(function(c,ci){
+  if((state.deck==='pc')!==(c.kind==='pc'))return;
+  var b=document.createElement('button');b.type='button';b.className='chapter';var done=(progress[c.id]||[]).length;
+  var picture=c.kind==='pc'?('<span class="classic-icon">'+c.icon+'</span>'):('<img src="assets/icons/kit-v2/traccia-'+c.id+'.svg" alt="">');
+  b.innerHTML='<span class="symbol">'+picture+'</span><span class="name">'+c.title+'</span><span class="detail">'+c.detail+'</span><span class="stars">'+done+' / '+c.levels.length+' ★</span>';
+  b.addEventListener('click',function(){var p=progress[c.id]||[],n=0;while(n<c.levels.length-1&&p.indexOf(n)>=0)n++;openLevel(ci,n)});box.appendChild(b);
+ });
 }
 function stopDemo(){if(demoTimer){clearInterval(demoTimer);demoTimer=0}guide.setAttribute('visibility','hidden')}
 function showDemo(){if(state.chapter<0||state.done||state.down)return;stopDemo();var data=state.parts[state.stroke];if(!data)return;var t0=Date.now(),duration=Math.max(2100,Math.min(4200,data.length*4));guide.setAttribute('visibility','visible');setMessage('Guarda il pallino, poi prova tu!');demoTimer=setInterval(function(){if(state.down||state.done){stopDemo();return}var p=Math.min(1,(Date.now()-t0)/duration),point=data.path.getPointAtLength(p*data.length);document.getElementById('guide-halo').setAttribute('cx',point.x);document.getElementById('guide-halo').setAttribute('cy',point.y);document.getElementById('guide-hand').setAttribute('x',point.x);document.getElementById('guide-hand').setAttribute('y',point.y);if(p>=1){stopDemo();setMessage('Adesso tocca il cerchio luminoso') }},40)}
-function openLevel(ci,li){state.session++;clearTimers();state.chapter=ci;state.level=(li+chapters[ci].levels.length)%chapters[ci].levels.length;state.stroke=0;state.index=0;state.down=false;state.id=null;state.done=false;celebrate.hidden=true;menu.hidden=true;play.hidden=false;labelButtons();draw();board.setAttribute('viewBox','0 0 1000 600');state.zoom=1;document.getElementById('zoom-readout').textContent='100%';document.getElementById('trace-progress').style.width='0%';setMessage('👆 Segui i puntini!');if(state.level===0)later(function(){if(!state.down&&!state.done)showDemo()},800)}
-function draw(){clear(tracks);clear(markers);if(window.PregrafismoScene){PregrafismoScene.render(state.chapter,state.level,board);PregrafismoScene.renderSides(state.chapter)}state.parts=[];var raw=chapters[state.chapter].levels[state.level][1];
-raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#ffc978','stroke-width':'51','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.53'},tracks);var p=svg('path',{d:d,fill:'none',stroke:'#e8a13e','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':'3 26'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#21a9d7','stroke-width':'34','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});activate()}
+function openLevel(ci,li){state.session++;clearTimers();state.chapter=ci;state.deck=chapters[ci].kind==='pc'?'pc':'extra';state.level=(li+chapters[ci].levels.length)%chapters[ci].levels.length;state.stroke=0;state.index=0;state.down=false;state.id=null;state.done=false;celebrate.hidden=true;menu.hidden=true;play.hidden=false;labelButtons();draw();board.setAttribute('viewBox','0 0 1000 600');state.zoom=1;document.getElementById('zoom-readout').textContent='100%';document.getElementById('trace-progress').style.width='0%';setMessage('👆 Segui i puntini!');}
+function draw(){clear(tracks);clear(markers);clear(drawnInk);state.activeBrush=null;state.brushLast=null;state.inputLast=null;
+ var scene=document.getElementById('scene-illustration');
+ if(state.decorated&&window.PregrafismoScene){PregrafismoScene.render(themeIndex(),state.level,board);PregrafismoScene.renderSides(themeIndex())}
+ else {if(scene)clear(scene);clear(document.getElementById('scene-side-left'));clear(document.getElementById('scene-side-right'));}
+ var lesson=chapters[state.chapter].levels[state.level];
+ document.getElementById('decorA').textContent=lesson[2]||'';
+ document.getElementById('decorB').textContent=lesson[3]||'';
+ state.parts=[];var raw=lesson[1];
+raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#ffc978','stroke-width':'51','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.53'},tracks);var p=svg('path',{d:d,fill:'none',stroke:'#e8a13e','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':'3 26'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#60d1e9','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});activate()}
 function samplePart(data){var samples=[],n=Math.max(3,Math.ceil(data.length/5));for(var i=0;i<=n;i++)samples.push(data.path.getPointAtLength(data.length*i/n));return samples}
 function activate(){clear(markers);if(state.stroke>=state.parts.length)return;state.parts.forEach(function(d,i){var o=i===state.stroke||d.completed?'1':'.22';d.path.setAttribute('opacity',o);d.outer.setAttribute('opacity',i===state.stroke?'.76':'.22')});state.samples=samplePart(state.parts[state.stroke]);state.index=0;state.lastBell=0;state.down=false;
  var first=state.samples[0],last=state.samples[state.samples.length-1];
@@ -203,16 +246,64 @@ function activate(){clear(markers);if(state.stroke>=state.parts.length)return;st
  svg('circle',{cx:first.x,cy:first.y,r:38,fill:'#d7ffe2',stroke:'#33ac80','stroke-width':7},markers);
  svg('circle',{cx:first.x,cy:first.y,r:17,fill:'#23bc88'},markers);
  svg('circle',{id:'cursor',cx:first.x,cy:first.y,r:23,fill:'#fff',stroke:'#218eb7','stroke-width':5},markers);
- if(window.PregrafismoScene)PregrafismoScene.placeTraveler(state.chapter,markers,first);
+ if(state.decorated&&window.PregrafismoScene)PregrafismoScene.placeTraveler(themeIndex(),markers,first);
  document.getElementById('trace-progress').style.width=Math.round(100*state.stroke/state.parts.length)+'%';setMessage('👆 → ⭐  '+(state.stroke+1)+' / '+state.parts.length);
 }
 function mapEvent(e){var rect=board.getBoundingClientRect(),x=e.clientX,y=e.clientY;try{var pt=board.createSVGPoint();pt.x=x;pt.y=y;var m=board.getScreenCTM();if(m){var r=pt.matrixTransform(m.inverse());return{x:r.x,y:r.y}}}catch(ignore){}var scale=Math.min(rect.width/1000,rect.height/600),offX=(rect.width-1000*scale)/2,offY=(rect.height-600*scale)/2;return{x:(x-rect.left-offX)/scale,y:(y-rect.top-offY)/scale}}
 function dist(a,b){var x=a.x-b.x,y=a.y-b.y;return Math.sqrt(x*x+y*y)}
-function startGesture(ev,id){if(state.chapter<0||state.done||state.down)return;var pt=mapEvent(ev),target=state.samples[state.index];if(!target||dist(pt,target)>(state.easy?41:29)){setMessage('👆 Tocca il verde');return}stopDemo();state.down=true;state.id=id;state.index=Math.max(0,state.index);setMessage('✨ → ⭐');moveGesture(ev,id)}
-function moveGesture(ev,id){if(!state.down||state.id!==id||state.done)return;var pt=mapEvent(ev),lo=Math.max(0,state.index-10),hi=Math.min(state.samples.length-1,state.index+36),best=-1,bestDist=1e9;for(var i=lo;i<=hi;i++){var di=dist(pt,state.samples[i]);if(di<bestDist){bestDist=di;best=i}}if(bestDist>(state.easy?30:19))return;state.index=Math.max(state.index,best);
- var data=state.parts[state.stroke],r=state.index/(state.samples.length-1),point=state.samples[state.index];data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+r)/state.parts.length)+'%';var phase=Math.min(3,Math.floor(r*4));if(phase>state.lastBell){state.lastBell=phase;chirp()}var cursor=document.getElementById('cursor');if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y)}if(window.PregrafismoScene)PregrafismoScene.moveTraveler(point);if(r>=.985||(r>.90&&dist(pt,state.samples[state.samples.length-1])<90))completeStroke()}
-function endGesture(id){if(!state.down||state.id!==id)return;state.down=false;state.id=null;if(!state.done)setMessage('👆 Segui i puntini!')}
-function completeStroke(){state.down=false;state.id=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+1)/state.parts.length)+'%';if(window.DiegoAudio)DiegoAudio.play('stella');state.stroke++;
+function startGesture(ev,id){if(state.chapter<0||state.done||state.down)return;
+ var pt=mapEvent(ev),target=state.samples[state.index];
+ if(!target||dist(pt,target)>(state.easy?39:28)){setMessage('👆 Parti dal verde');return}
+ stopDemo();state.down=true;state.id=id;state.inputLast=pt;state.activeBrush=null;state.brushLast=null;
+ moveStep(pt);
+}
+/* Real ink: only touch points that advance sequential path checkpoints can paint.
+   Splitting sparse touch events into short steps keeps Samsung Tizen responsive. */
+function paintPoint(pt){
+ var last=state.brushLast;
+ if(last&&dist(last,pt)<4)return;
+ if(!state.activeBrush){
+  state.activeBrush=svg('path',{'class':'live-ink',d:'M '+Math.round(pt.x)+' '+Math.round(pt.y)},drawnInk);
+ }else{
+  var existing=state.activeBrush.getAttribute('d');
+  if(existing.length<16000)state.activeBrush.setAttribute('d',existing+' L '+Math.round(pt.x)+' '+Math.round(pt.y));
+  else state.activeBrush=null; // bounds SVG attribute growth on slow old browsers
+ }
+ state.brushLast=pt;
+}
+function moveStep(pt){
+ if(!state.down||state.done)return;
+ var lo=Math.max(0,state.index-3),hi=Math.min(state.samples.length-1,state.index+9);
+ var best=-1,bestDist=1e9;
+ for(var i=lo;i<=hi;i++){var di=dist(pt,state.samples[i]);if(di<bestDist){bestDist=di;best=i}}
+ if(bestDist>(state.easy?30:23)){state.activeBrush=null;state.brushLast=null;return}if(best<state.index)return;
+ if(best>state.index){
+  state.index=best;paintPoint(pt);
+  var data=state.parts[state.stroke],r=state.index/(state.samples.length-1);
+  data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));
+  document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+r)/state.parts.length)+'%';
+  var phase=Math.min(3,Math.floor(r*4));
+  if(phase>state.lastBell){state.lastBell=phase;chirp()}
+  var point=state.samples[state.index],cursor=document.getElementById('cursor');
+  if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y)}
+  if(state.decorated&&window.PregrafismoScene)PregrafismoScene.moveTraveler(point);
+  if(r>=.985||(r>.94&&dist(pt,state.samples[state.samples.length-1])<23))completeStroke();
+ }
+}
+function moveGesture(ev,id){
+ if(!state.down||state.id!==id||state.done)return;
+ var pt=mapEvent(ev),last=state.inputLast||pt,dd=dist(last,pt);
+ // A discontinuity cannot earn a completed path. Lost frames get interpolation.
+ if(dd>240){state.inputLast=pt;state.activeBrush=null;state.brushLast=null;return}
+ var count=Math.max(1,Math.min(36,Math.ceil(dd/9)));
+ for(var k=1;k<=count;k++){
+  moveStep({x:last.x+(pt.x-last.x)*k/count,y:last.y+(pt.y-last.y)*k/count});
+  if(!state.down||state.done)break;
+ }
+ state.inputLast=pt;
+}
+function endGesture(id){if(!state.down||state.id!==id)return;state.down=false;state.id=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;if(!state.done)setMessage('👆 Segui i puntini!')}
+function completeStroke(){state.down=false;state.id=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+1)/state.parts.length)+'%';if(window.DiegoAudio)DiegoAudio.play('stella');state.stroke++;
  if(state.stroke<state.parts.length){var token=state.session;setMessage('⭐');later(function(){if(state.session!==token)return;activate()},520)}else finishLevel()}
 function finishLevel(){state.done=true;celebrate.hidden=false;document.getElementById('trace-progress').style.width='100%';var p=progress[chapters[state.chapter].id]||[];if(p.indexOf(state.level)<0){p.push(state.level);progress[chapters[state.chapter].id]=p;save()}
  var confetti=document.getElementById('confetti');clear(confetti);for(var i=0;i<27;i++){var el=document.createElement('span');el.className='particle';el.style.left=(5+((i*37)%90))+'%';el.style.background=['#ffdc4a','#ff79a8','#88f6ec','#c6a2ff'][i%4];el.style.animationDelay=(i%8)*.11+'s';confetti.appendChild(el)}
@@ -242,6 +333,21 @@ document.getElementById('prev').onclick=function(){if(state.level===0)chapterMen
 document.getElementById('next').onclick=nextLevel;
 document.getElementById('again').onclick=function(){if(state.chapter>=0)openLevel(state.chapter,state.level)};
 document.getElementById('hint').onclick=showDemo;
+document.getElementById('toolToggle').onclick=function(){
+ var p=document.getElementById('teacherTools');
+ p.hidden=!p.hidden;this.setAttribute('aria-expanded',String(!p.hidden));
+};
+document.getElementById('fullscreen').onclick=function(){
+ try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen();
+ else if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen()}catch(ignore){}
+};
+document.getElementById('zoomIn').onclick=function(){zoomBoard(.2)};
+document.getElementById('zoomOut').onclick=function(){zoomBoard(-.2)};
+document.getElementById('decor').onclick=function(){
+ state.decorated=!state.decorated;this.setAttribute('aria-pressed',String(state.decorated));
+ this.textContent=state.decorated?'★ SCENARI':'☆ SCENARI';
+ if(state.chapter>=0)openLevel(state.chapter,state.level);
+};
 document.addEventListener('keydown',function(e){
  var t=e.target&&e.target.tagName;if(t==='INPUT'||t==='TEXTAREA'||t==='SELECT'||e.ctrlKey||e.altKey||e.metaKey)return;
  var key=(e.key||'').toLowerCase();
@@ -259,7 +365,7 @@ document.addEventListener('keydown',function(e){
  else if(key==='r'){e.preventDefault();location.reload()}
  else if(key==='f'){e.preventDefault();try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen();else if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen()}catch(ignore){}}
 });
-document.getElementById('easy').onclick=function(){state.easy=!state.easy;labelButtons();setMessage(state.easy?'Modalità facile: percorsi più tolleranti':'Modalità precisa: segui la linea più da vicino')};
+document.getElementById('easy').onclick=function(){state.easy=!state.easy;labelButtons();setMessage(state.easy?'☺ Facile':'◎ Preciso')};
 var usePointer=!!window.PointerEvent;
 if(usePointer){
  board.addEventListener('pointerdown',function(e){if(e.button!==undefined&&e.button!==0)return;if(e.cancelable)e.preventDefault();startGesture(e,e.pointerId);try{board.setPointerCapture(e.pointerId)}catch(ignore){}});
