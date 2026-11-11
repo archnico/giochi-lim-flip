@@ -40,7 +40,7 @@ footer{display:flex;justify-content:space-between;align-items:center;/*diego-fal
 #reset{background:#ffd65c;border-color:#ffd65c;color:#212835;min-width:120px}
 #mode{background:#fbedd0;border-color:#f4d98c;color:#253447;white-space:nowrap}
 #next{background:#95f0aa;border-color:#95f0aa;color:#153526;min-width:170px}
-#celebration{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);background:#fef8e9;border:5px solid #2b9e5a;color:#16552f;padding:20px 38px;border-radius:30px;text-align:center;/*diego-fallback*/font-size:3vw;/*end-fallback*/font-size:clamp(28px,3vw,48px);font-weight:950;box-shadow:0 10px 65px #0005;opacity:0;pointer-events:none;transition:.28s;z-index:2;white-space:nowrap}
+#celebration{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);background:#fef8e9;border:5px solid #2b9e5a;color:#16552f;padding:20px 38px;border-radius:30px;text-align:center;/*diego-fallback*/font-size:3vw;/*end-fallback*/font-size:clamp(86px,9vw,160px);font-weight:950;box-shadow:0 10px 65px #0005;opacity:0;pointer-events:none;transition:.28s;z-index:2;white-space:nowrap}
 #celebration.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
 .chooser{flex:1;min-height:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));/*diego-fallback*/gap:1.5vw;--diego-gap:1.5vw;grid-gap:1.5vw;/*end-fallback*/gap:clamp(8px,1.5vw,24px);/*diego-fallback*/padding:2vw;/*end-fallback*/padding:clamp(8px,2vw,24px);background:#fffdf6;border-radius:27px;border:5px solid #e1e7ed}
 .chapter{min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px;border:5px solid #42546a;border-radius:26px;color:#25374c;background:#e9f2ff;/*diego-fallback*/font-size:12vh;/*end-fallback*/font-size:clamp(70px,12vh,156px);font-weight:950;line-height:1;box-shadow:0 7px 18px #1523332c}
@@ -72,7 +72,7 @@ footer{display:flex;justify-content:space-between;align-items:center;/*diego-fal
 <text class="model" id="model" x="731" y="535" aria-hidden="true">1</text>
 <g id="circles"></g>
 </svg>
-<div id="celebration" aria-live="polite">🌟 BRAVISSIMO! 🌟<div id="completeText" style="font-size:.55em;margin-top:8px"></div></div>
+<div id="celebration" aria-live="polite">🌟</div>
 </div>
 </main>
 <footer id="footer" hidden>
@@ -145,7 +145,7 @@ function beep(success){
 function update(){
  progress.textContent='TROVATI: '+found+' / '+total;
  document.getElementById('fill').style.width=(found*100/total)+'%';
- message.textContent=found===total?'TUTTI TROVATI! 🌟':found?'BRAVO! CONTINUA!':'CERCA IL '+target+'!';
+ message.textContent=found===total?'🌟':found?'✓':'CERCA IL '+target+'!';
  document.getElementById('celebration').classList.toggle('show',found===total);
  document.getElementById('next').hidden=found!==total;
 }
@@ -165,7 +165,7 @@ function choose(g,value,x,y){
   const activeChapter=target;
   g._wrongTimer=numberScope.later(()=>{
    g.classList.remove('wrong');
-   if(target===activeChapter&&found!==total)message.textContent=found?'BRAVO! CONTINUA!':'CERCA IL '+target+'!';
+   if(target===activeChapter&&found!==total)message.textContent=found?'✓':'CERCA IL '+target+'!';
   },580);
  }
 }
@@ -183,7 +183,7 @@ function draw(){
  document.getElementById('model').textContent=target;
  document.querySelector('.modelback').style.fill=colorMode?digitColors[target]:'';
  document.getElementById('model').style.fill=colorMode?'#192b3e':'';
- document.getElementById('completeText').textContent='Hai trovato tutti i '+target+'!';
+ document.getElementById('celebration').setAttribute('aria-label','Esercizio completato');
  cells.forEach(([x,y],i)=>{
   const v=digits[i];
   const g=node('g',{class:'number',role:'button',tabindex:0,'data-number':v,'aria-label':'Numero '+v,'aria-pressed':'false'},layer);
