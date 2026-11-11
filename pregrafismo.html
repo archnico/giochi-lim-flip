@@ -82,7 +82,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
         </g>
       </svg>
       <div id="message" role="status" aria-live="polite">Parti dal cerchio e segui la linea</div>
-      <div id="celebrate" hidden><div id="confetti"></div><div class="bigstar">★</div><div class="yay">BRAVISSIMO!</div></div>
+      <div id="celebrate" hidden><div id="confetti"></div><div class="bigstar">★</div></div>
     </div>
     <div class="board-tools">
       <button id="chaptersBtn" type="button" class="btn">☷ CAPITOLI</button>
@@ -208,10 +208,10 @@ function moveGesture(ev,id){if(!state.down||state.id!==id||state.done)return;var
  var data=state.parts[state.stroke],r=state.index/(state.samples.length-1),point=state.samples[state.index];data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));var phase=Math.min(3,Math.floor(r*4));if(phase>state.lastBell){state.lastBell=phase;chirp()}var cursor=document.getElementById('cursor');if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y)}if(r>=.985||(r>.90&&dist(pt,state.samples[state.samples.length-1])<90))completeStroke()}
 function endGesture(id){if(!state.down||state.id!==id)return;state.down=false;state.id=null;if(!state.done)setMessage('Bravo! Riparti dal pallino bianco')}
 function completeStroke(){state.down=false;state.id=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';if(window.DiegoAudio)DiegoAudio.play('stella');state.stroke++;
- if(state.stroke<state.parts.length){var token=state.session;setMessage('Ottimo! Ecco un’altra linea!');later(function(){if(state.session!==token)return;activate()},520)}else finishLevel()}
+ if(state.stroke<state.parts.length){var token=state.session;setMessage('⭐');later(function(){if(state.session!==token)return;activate()},520)}else finishLevel()}
 function finishLevel(){state.done=true;celebrate.hidden=false;var p=progress[chapters[state.chapter].id]||[];if(p.indexOf(state.level)<0){p.push(state.level);progress[chapters[state.chapter].id]=p;save()}
  var confetti=document.getElementById('confetti');clear(confetti);for(var i=0;i<27;i++){var el=document.createElement('span');el.className='particle';el.style.left=(5+((i*37)%90))+'%';el.style.background=['#ffdc4a','#ff79a8','#88f6ec','#c6a2ff'][i%4];el.style.animationDelay=(i%8)*.11+'s';confetti.appendChild(el)}
- if(window.DiegoAudio)DiegoAudio.play(state.level===7?'fantastico':'bravo');setMessage('Bravissimo! Hai completato il percorso 🌟');var token=state.session;later(function(){if(state.session===token&&state.done)nextLevel()},1850)}
+ if(window.DiegoAudio)DiegoAudio.play(state.level===7?'fantastico':'bravo');setMessage('🌟');var token=state.session;later(function(){if(state.session===token&&state.done)nextLevel()},1850)}
 function nextLevel(){if(state.chapter<0)return;var n=state.level+1;if(n>=chapters[state.chapter].levels.length){chapterMenu()}else openLevel(state.chapter,n)}
 function panBoard(dx,dy){
  if(state.zoom<=1)return;
