@@ -98,7 +98,7 @@ footer{min-height:52px;border-top:1px solid var(--line);padding:10px 20px;displa
 <link rel="stylesheet" href="diego-runtime.css"><script src="diego-runtime.js"></script></head>
 <body>
 <div id="app">
-<header><div class="brand">GIOCHI <span>· FLIP</span></div><div class="toolbar"><button class="iconbtn" id="homeBtn" title="Home" aria-label="Home">⌂</button><button class="iconbtn" id="testBtn" title="Prova touch" aria-label="Prova touch">⊕</button><button class="iconbtn" id="fullBtn" title="Schermo intero" aria-label="Schermo intero">⛶</button></div></header>
+<header><div class="brand">GIOCHI <span>· FLIP</span></div><div class="toolbar"><button class="iconbtn" id="homeBtn" title="Torna al menu" aria-label="Torna al menu">⌂ <span class="tool-label">MENU</span></button><button class="iconbtn" id="testBtn" title="Prova il touch" aria-label="Prova il touch">⊕ <span class="tool-label">TEST</span></button><button class="iconbtn" id="fullBtn" title="Schermo intero" aria-label="Schermo intero">⛶ <span class="tool-label">SCHERMO</span></button></div></header>
 <main id="main"></main>
 <footer><span id="status">Scegli un gioco</span><span class="tiny">edizione Flip · nessun account · <a href="crediti-foto.html" style="color:var(--muted)">foto e licenze</a></span></footer>
 </div>
@@ -187,7 +187,7 @@ function clearRound(){roundToken++;gameScope.reset();clearTimeout(say.t);notice.
 function later(fn,ms){const token=roundToken;return gameScope.later(()=>{if(token===roundToken&&current)fn()},ms)}
 function shuffle(a){const result=a.slice();for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const v=result[i];result[i]=result[j];result[j]=v}return result}
 function say(t){notice.textContent=t;notice.classList.add('show');clearTimeout(say.t);say.t=setTimeout(()=>notice.classList.remove('show'),900)}
-function scoreHtml(){return `<div class="score">${[1,2,3,4,5].map(n=>`<span class="star ${n<=stars?'on':''}">★</span>`).join('')}</div>`}
+function scoreHtml(){return `<div class="score" aria-label="Stelle ottenute su cinque">${[1,2,3,4,5].map(n=>`<span class="star ${n<=stars?'on':''}">★</span>`).join('')}</div>`}
 function shell(title,sub,body,next=false){clearRound();main.innerHTML=`<div class="gamewrap"><div class="gamehead"><div><h1>${title}</h1><div class="sub">${sub}</div></div><div id="scorebox">${scoreHtml()}</div></div><div class="stage">${body}</div><button class="nextbtn" id="nextBtn" ${next?'':'hidden'}>ANCORA →</button></div>`;}
 function refreshScore(){const b=document.getElementById('scorebox');if(b)b.innerHTML=scoreHtml()}
 function miniCelebration(){
@@ -301,7 +301,7 @@ function renderMatch(){
 function renderCount(){
   const n=1+Math.floor(Math.random()*9);const icons=['🍎','⭐','🐞','⚽','🟦'];const icon=icons[Math.floor(Math.random()*icons.length)];const opts=shuffle([n,...shuffle([1,2,3,4,5,6,7,8,9,10].filter(x=>x!==n)).slice(0,2)]);
   shell('Conta','Quanti sono?',`<div style="width:100%"><div class="objects">${Array(n).fill(icon).join(' ')}</div><div style="height:24px"></div><div class="answers">${shuffle(opts).map(x=>`<button class="answer" data-n="${x}">${x}</button>`).join('')}</div></div>`);
-  let answered=false;document.querySelectorAll('.answer').forEach(b=>b.onclick=()=>{if(answered)return;if(+b.dataset.n===n){answered=true;b.style.borderColor='var(--ok)';point();later(renderCount,750)}else{b.style.borderColor='var(--bad)';say('Conta ancora')}})
+  let answered=false;document.querySelectorAll('.answer').forEach(b=>b.onclick=()=>{if(answered)return;if(+b.dataset.n===n){answered=true;b.classList.add('good');point();later(renderCount,900)}else{b.classList.add('bad');say('Conta ancora');later(()=>b.classList.remove('bad'),550)}})
 }
 function renderSame(){
   const target=sameItems[Math.floor(Math.random()*sameItems.length)];
@@ -311,9 +311,9 @@ function renderSame(){
   document.querySelectorAll('.sameanswers .answer').forEach(b=>b.onclick=()=>{
     if(answered)return;
     if(b.dataset.a===target){
-      answered=true;b.style.borderColor='var(--ok)';point();later(renderSame,900);
+      answered=true;b.classList.add('good');point();later(renderSame,950);
     }else{
-      b.style.borderColor='var(--bad)';say('Riprova');
+      b.classList.add('bad');say('Riprova');later(()=>b.classList.remove('bad'),550);
     }
   });
 }
@@ -399,7 +399,7 @@ function renderColori(){
 
 function renderOdd(){
   const q=oddsets[Math.floor(Math.random()*oddsets.length)];shell('L’intruso',q.label,`<div class="sortarea">${shuffle(q.items).map(x=>`<button class="sortitem" data-v="${x}">${x}</button>`).join('')}</div>`);
-  let answered=false;document.querySelectorAll('.sortitem').forEach(b=>b.onclick=()=>{if(answered)return;if(b.dataset.v===q.answer){answered=true;b.style.borderColor='var(--ok)';point();later(renderOdd,750)}else{b.style.borderColor='var(--bad)';say('Non è lui')}})
+  let answered=false;document.querySelectorAll('.sortitem').forEach(b=>b.onclick=()=>{if(answered)return;if(b.dataset.v===q.answer){answered=true;b.classList.add('good');point();later(renderOdd,900)}else{b.classList.add('bad');say('Prova ancora');later(()=>b.classList.remove('bad'),550)}})
 }
 document.getElementById('testBtn').onclick=()=>{location.href='test-lim.html'};
 document.getElementById('homeBtn').onclick=home;
