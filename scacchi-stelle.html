@@ -93,7 +93,7 @@ function tap(r,c){
  if(!same(dest,plans[piece].targets[step])){instruction.textContent='CERCA LA STELLA!';return;}
  if(!allowed(position,dest)){instruction.textContent='QUESTA MOSSA NON VA BENE';return;}
  position=dest;step++;selected=mode==='easy';
- instruction.textContent=step===3?'BRAVISSIMO! TUTTE LE STELLE!':'BRAVO! ⭐';
+ instruction.textContent=step===3?'⭐ ⭐ ⭐':'⭐';
  DiegoAudio.play(step===3?'fantastico':'stella');
  draw();
  if(step<3){
