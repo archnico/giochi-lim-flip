@@ -1,4 +1,4 @@
-# Giochi interattivi — sito web principale
+# Diego — sito web principale
 
 Giochi educativi tattili che funzionano direttamente nel browser:
 telefono, tablet, computer o lavagna interattiva.
