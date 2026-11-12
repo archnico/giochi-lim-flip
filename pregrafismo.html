@@ -96,7 +96,17 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
       <div id="decorB" class="pc-corner corner-b" aria-hidden="true"></div>
       <div id="zoom-readout" aria-hidden="true">100%</div>
       <div id="message" role="status" aria-live="polite">👆 Segui i puntini!</div>
-      <div id="celebrate" hidden><div id="confetti"></div><div class="sea-bubbles" aria-hidden="true">🫧</div><div class="bigstar" aria-hidden="true">★</div><svg class="reward-dolphin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 145" aria-hidden="true"><path d="M 29 93 Q 75 21 154 45 Q 187 53 217 41 L 241 32 L 226 65 Q 212 84 177 86 Q 132 91 93 123 L 87 88 Q 55 107 29 93 Z" fill="#49bbd6" stroke="#237d9f" stroke-width="7" stroke-linejoin="round"/><path d="M 105 49 L 123 9 L 154 47" fill="#49bbd6" stroke="#237d9f" stroke-width="6" stroke-linejoin="round"/><path d="M 32 92 L 2 54 L 5 124 Z" fill="#69cee3" stroke="#237d9f" stroke-width="6"/><circle cx="186" cy="62" r="10" fill="#fff"/><circle cx="189" cy="60" r="5" fill="#205674"/><path d="M 205 79 Q 217 93 229 78" fill="none" stroke="#205674" stroke-width="4"/><ellipse cx="125" cy="89" rx="40" ry="12" fill="#d9f8fa" opacity=".55"/></svg><div class="reward-water" aria-hidden="true"><span></span><span></span><span></span></div><span class="yay">🌟</span></div>
+      <div id="celebrate" hidden aria-label="Percorso completato">
+        <svg class="reward-medal" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 360" aria-hidden="true">
+          <circle cx="220" cy="180" r="153" fill="#f8ffff" stroke="#a5e3eb" stroke-width="13"/>
+          <circle cx="220" cy="180" r="133" fill="#e3f8ed" stroke="#74cfac" stroke-width="7"/>
+          <path d="M220 67 L253 133 L326 143 L273 196 L285 271 L220 237 L154 271 L167 196 L114 143 L187 133 Z" fill="#ffd34e" stroke="#d69123" stroke-width="11" stroke-linejoin="round"/>
+          <path d="M108 287 Q166 267 220 287 T332 287" fill="none" stroke="#47b7df" stroke-width="13" stroke-linecap="round"/>
+          <circle cx="97" cy="111" r="11" fill="#50b7da"/>
+          <circle cx="345" cy="105" r="15" fill="#73cbaa"/>
+          <circle cx="365" cy="211" r="8" fill="#50b7da"/>
+        </svg>
+      </div>
     </div>
     <div class="board-tools">
       <button id="chaptersBtn" type="button" class="btn">← PERCORSI</button>
@@ -237,7 +247,7 @@ function draw(){clear(tracks);clear(markers);clear(drawnInk);state.activeBrush=n
  document.getElementById('decorA').textContent=lesson[2]||'';
  document.getElementById('decorB').textContent=lesson[3]||'';
  state.parts=[];var raw=lesson[1];
-raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#ffc978','stroke-width':'51','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.53'},tracks);var p=svg('path',{d:d,fill:'none',stroke:'#e8a13e','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':'3 26'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#60d1e9','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});fitLesson();activate()}
+raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#ffc978','stroke-width':'51','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.53'},tracks);var p=svg('path',{d:d,fill:'none',stroke:'#e8a13e','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':'3 26'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#20a8d8','stroke-width':'27','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});fitLesson();activate()}
 /* A compact lesson viewBox gives the drawn path more of the interactive surface.
    Coordinates remain in original SVG space: touch mapping and checkpoints stay exact. */
 function fitLesson(){
@@ -263,9 +273,11 @@ function activate(){clear(markers);if(state.stroke>=state.parts.length)return;st
  var first=state.samples[0],last=state.samples[state.samples.length-1];
  svg('circle',{cx:last.x,cy:last.y,r:38,fill:'#fff1a5',stroke:'#dca02b','stroke-width':6},markers);
  svg('text',{x:last.x,y:last.y+17,'text-anchor':'middle','font-size':53,fill:'#b77a12'},markers).textContent='★';
+ svg('circle',{cx:first.x,cy:first.y,r:67,fill:'#beffde',opacity:'.28'},markers);
+ svg('circle',{cx:first.x,cy:first.y,r:52,fill:'#e7fff3',stroke:'#39ad82','stroke-width':5,opacity:'.88'},markers);
  svg('circle',{cx:first.x,cy:first.y,r:38,fill:'#d7ffe2',stroke:'#33ac80','stroke-width':7},markers);
  svg('circle',{cx:first.x,cy:first.y,r:17,fill:'#23bc88'},markers);
- svg('circle',{id:'cursor',cx:first.x,cy:first.y,r:23,fill:'#fff',stroke:'#218eb7','stroke-width':5},markers);
+ svg('circle',{id:'cursor',cx:first.x,cy:first.y,r:32,fill:'#fff',stroke:'#218eb7','stroke-width':6},markers);
  if(state.decorated&&window.PregrafismoScene)PregrafismoScene.placeTraveler(themeIndex(),markers,first);
  document.getElementById('trace-progress').style.width=Math.round(100*state.stroke/state.parts.length)+'%';setMessage('👆 → ⭐  '+(state.stroke+1)+' / '+state.parts.length);
 }
@@ -273,52 +285,35 @@ function mapEvent(e){var rect=board.getBoundingClientRect(),x=e.clientX,y=e.clie
 function dist(a,b){var x=a.x-b.x,y=a.y-b.y;return Math.sqrt(x*x+y*y)}
 function startGesture(ev,id){if(state.chapter<0||state.done||state.down)return;
  var pt=mapEvent(ev),target=state.samples[state.index];
- if(!target||dist(pt,target)>(state.easy?44:33)){setMessage('👆 Parti dal verde');return}
+ if(!target||dist(pt,target)>(state.easy?96:76)){setMessage('👆 Tocca il cerchio bianco');return false}
  stopDemo();state.down=true;state.id=id;state.inputLast=pt;state.activeBrush=null;state.brushLast=null;
- moveStep(pt);
+ renderTrace();return true;
 }
 /* Real ink: only touch points that advance sequential path checkpoints can paint.
    Splitting sparse touch events into short steps keeps Samsung Tizen responsive. */
-function paintPoint(pt){
-  // Sul Flip evitare getAttribute('d') + setAttribute ad ogni campione:
-  // il costo cresceva col quadrato della lunghezza del tratto.
-  var last=state.brushLast;
-  if(last&&dist(last,pt)<9)return;
-  var pos=Math.round(pt.x)+' '+Math.round(pt.y),now=Date.now();
-  if(!state.activeBrush){
-    state.activeBrush=svg('path',{'class':'live-ink',d:'M '+pos},drawnInk);
-    state.activeBrush._diegoPath='M '+pos;
-    state.brushUpdatedAt=now;
-  }else{
-    var path=state.activeBrush._diegoPath;
-    if(path.length<2600){
-      state.activeBrush._diegoPath=path+' L '+pos;
-      if(now-state.brushUpdatedAt>38){
-        state.activeBrush.setAttribute('d',state.activeBrush._diegoPath);
-        state.brushUpdatedAt=now;
-      }
-    }else{
-      state.activeBrush=null;
-    }
-  }
-  state.brushLast=pt;
+// Un unico tratto SVG predefinito: niente percorsi dinamici duplicati nella Flip.
+function renderTrace(){
+ if(state.chapter<0||state.done||state.stroke>=state.parts.length)return;
+ var data=state.parts[state.stroke];
+ var r=state.index/Math.max(1,state.samples.length-1);
+ data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));
+ document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+r)/state.parts.length)+'%';
+ var point=state.samples[state.index],cursor=document.getElementById('cursor');
+ if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y)}
+ if(state.decorated&&window.PregrafismoScene)PregrafismoScene.moveTraveler(point);
 }
+
 function moveStep(pt){
  if(!state.down||state.done)return;
  var lo=Math.max(0,state.index-3),hi=Math.min(state.samples.length-1,state.index+9);
  var best=-1,bestDist=1e9;
  for(var i=lo;i<=hi;i++){var di=dist(pt,state.samples[i]);if(di<bestDist){bestDist=di;best=i}}
- if(bestDist>(state.easy?35:27)){state.activeBrush=null;state.brushLast=null;return}if(best<state.index)return;
+ if(bestDist>(state.easy?35:27))return;if(best<state.index)return;
  if(best>state.index){
-  state.index=best;paintPoint(pt);
-  var data=state.parts[state.stroke],r=state.index/(state.samples.length-1);
-  data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));
-  document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+r)/state.parts.length)+'%';
+  state.index=best;
+  var r=state.index/(state.samples.length-1);
   var phase=Math.min(3,Math.floor(r*4));
   if(phase>state.lastBell){state.lastBell=phase;chirp()}
-  var point=state.samples[state.index],cursor=document.getElementById('cursor');
-  if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y)}
-  if(state.decorated&&window.PregrafismoScene)PregrafismoScene.moveTraveler(point);
   if(r>=.985||(r>.94&&dist(pt,state.samples[state.samples.length-1])<28))completeStroke();
  }
 }
@@ -326,19 +321,20 @@ function moveGesture(ev,id){
  if(!state.down||state.id!==id||state.done)return;
  var pt=mapEvent(ev),last=state.inputLast||pt,dd=dist(last,pt);
  // A discontinuity cannot earn a completed path. Lost frames get interpolation.
- if(dd>240){state.inputLast=pt;state.activeBrush=null;state.brushLast=null;return}
- var count=Math.max(1,Math.min(36,Math.ceil(dd/9)));
+ if(dd>240){state.inputLast=pt;return}
+ var count=Math.max(1,Math.min(22,Math.ceil(dd/12)));
  for(var k=1;k<=count;k++){
   moveStep({x:last.x+(pt.x-last.x)*k/count,y:last.y+(pt.y-last.y)*k/count});
   if(!state.down||state.done)break;
  }
+ if(state.down&&!state.done)renderTrace();
  state.inputLast=pt;
 }
 function endGesture(id){if(!state.down||state.id!==id)return;state.down=false;state.id=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;if(!state.done)setMessage('👆 Segui i puntini!')}
 function completeStroke(){state.down=false;state.id=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+1)/state.parts.length)+'%';state.stroke++;
  if(state.stroke<state.parts.length){if(window.DiegoAudio)DiegoAudio.play('stella');var token=state.session;setMessage('⭐');later(function(){if(state.session!==token)return;activate()},520)}else finishLevel()}
 function finishLevel(){state.done=true;celebrate.hidden=false;document.getElementById('trace-progress').style.width='100%';var p=progress[chapters[state.chapter].id]||[];if(p.indexOf(state.level)<0){p.push(state.level);progress[chapters[state.chapter].id]=p;save()}  // Nessuna pioggia di 27 elementi: una stella grande e il delfino bastano.
- if(window.DiegoAudio)DiegoAudio.play('successo');setMessage('🌟');var token=state.session;later(function(){if(state.session===token&&state.done)nextLevel()},1850)}
+ if(window.DiegoAudio)DiegoAudio.play('successo');setMessage('⭐');var token=state.session;later(function(){if(state.session===token&&state.done)nextLevel()},1850)}
 function nextLevel(){if(state.chapter<0)return;var n=state.level+1;if(n>=chapters[state.chapter].levels.length){chapterMenu()}else openLevel(state.chapter,n)}
 function panBoard(dx,dy){
  if(state.zoom<=1)return;
@@ -404,7 +400,7 @@ document.addEventListener('keydown',function(e){
 document.getElementById('easy').onclick=function(){state.easy=!state.easy;labelButtons();setMessage(state.easy?'☺ Facile':'◎ Preciso')};
 var usePointer=!!window.PointerEvent;
 if(usePointer){
- board.addEventListener('pointerdown',function(e){if(e.button!==undefined&&e.button!==0)return;if(e.cancelable)e.preventDefault();startGesture(e,e.pointerId);try{board.setPointerCapture(e.pointerId)}catch(ignore){}});
+ board.addEventListener('pointerdown',function(e){if(e.button!==undefined&&e.button!==0)return;if(e.cancelable)e.preventDefault();if(startGesture(e,e.pointerId)){try{board.setPointerCapture(e.pointerId)}catch(ignore){}}});
  window.addEventListener('pointermove',function(e){if(e.cancelable&&state.down)e.preventDefault();moveGesture(e,e.pointerId)});
  window.addEventListener('pointerup',function(e){endGesture(e.pointerId)});
  window.addEventListener('pointercancel',function(e){endGesture(e.pointerId)});

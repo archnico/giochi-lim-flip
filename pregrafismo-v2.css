@@ -385,3 +385,24 @@ html,body,#app{width:100%;max-width:none;margin:0}
  .board-tools{min-height:49px}
  #play{padding:4px 8px 6px}
 }
+
+
+/* Diego Flip 2026-11-12: un solo premio SVG, nitido e senza emoji animate.
+   Nessun filtro, ombra pesante o animazione infinita sul vecchio Tizen. */
+#celebrate{top:0;right:0;bottom:0;left:0;background:rgba(232,250,255,.83)!important;overflow:hidden;gap:0}
+#celebrate .reward-medal{display:block;width:540px;height:auto;max-width:68%;max-height:76%;
+  overflow:visible;animation:diego-medal-pop .56s ease-out 1 both}
+@keyframes diego-medal-pop{
+  0%{opacity:0;transform:scale(.86)}
+  55%{opacity:1;transform:scale(1.045)}
+  100%{opacity:1;transform:scale(1)}
+}
+#message{top:auto!important;bottom:12px!important;height:auto!important;line-height:1.15;max-height:72px;
+  z-index:2;box-shadow:none!important}
+#board #markers circle{pointer-events:none}
+#board #tracks path,#board #drawn-ink path{pointer-events:none}
+@media(max-width:720px){
+ #celebrate .reward-medal{width:330px;max-width:78%;max-height:73%}
+ #message{bottom:5px!important}
+}
+@media(prefers-reduced-motion:reduce){#celebrate .reward-medal{animation:none!important}}
