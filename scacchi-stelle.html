@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="it" data-diego-edition="flip"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<html lang="it" data-diego-edition="flip" data-diego-game="scacchi"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Scacchi Stellari — Diego</title>
 <style>
 :root{font-family:system-ui,-apple-system,sans-serif;color:#f7f8fa;background:#101519}
@@ -20,7 +20,7 @@ main{max-width:1500px;margin:auto;padding:10px 24px;display:grid;grid-template-c
 .again{min-height:68px;border:0;background:#ffd34d;color:#1b1b1b;border-radius:18px;font-size:26px;font-weight:900}
 .progress{font-size:25px;font-weight:800}.hint{font-size:19px;color:#aebcc4}
 @media(max-width:850px){main{grid-template-columns:1fr;justify-items:center;padding:12px;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px}.board{/*diego-fallback*/width:90vw;/*end-fallback*/width:min(90vw,62vh)}.controls{width:100%;max-width:620px}.controls h1{font-size:26px}.instruction{min-height:0;font-size:25px}.pick button{min-height:57px}.pick span{display:inline;font-size:29px}.modes button{min-height:55px}.hint{font-size:15px}}
-</style><link rel="stylesheet" href="diego-runtime.css"><script src="diego-runtime.js"></script></head><body>
+</style><link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script></head><body>
 <header><strong>DIEGO · LIM · SCACCHI</strong><a href="index.html">⌂ GIOCHI</a></header>
 <main>
 <div class="board" id="board" aria-label="Scacchiera interattiva"></div>
@@ -104,5 +104,18 @@ function tap(r,c){
 document.querySelectorAll('[data-piece]').forEach(b=>b.addEventListener('click',()=>{piece=b.dataset.piece;reset()}));
 document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;reset()}));
 document.getElementById('again').addEventListener('click',reset);
+/* TASTI DIEGO: J/K cambia esercizio fra RE/TORRE/REGINA, R ricomincia. */
+document.addEventListener('keydown',e=>{
+ if(e.ctrlKey||e.metaKey||e.altKey||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;
+ const k=(e.key||'').toLowerCase();
+ if(k==='r'){e.preventDefault();reset()}
+ else if(k==='j'||k==='k'){
+  e.preventDefault();
+  const order=['king','rook','queen'];
+  const i=order.indexOf(piece);
+  piece=order[(i+(k==='j'?1:order.length-1))%order.length];
+  reset();
+ }
+});
 reset();
 </script></body></html>

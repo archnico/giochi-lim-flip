@@ -1,0 +1,205 @@
+/* DIEGOLAND / giochi autonomi · 2026-11-12
+   Stessi pigmenti di diegoland.css; si carica DOPO esso.
+   Solo superfici, nessuna modifica a geometrie, hit target o colori diagnostici. */
+html[data-diego-game] {
+  --land-deep:#12354E; --land-ocean:#0093A5; --land-lagoon:#B4CDC2;
+  --land-sun:#F99D1B; --land-pale:#FFEFAE; --land-coral:#F48067;
+  --land-paper:#FFF9EC; --land-success:#08795E; --land-fail:#B94030;
+}
+html[data-diego-game] button:focus-visible,
+html[data-diego-game] a:focus-visible {
+  outline:5px solid var(--land-sun); outline-offset:3px;
+}
+/* ACQUA · ogni gesto conserva il proprio spazio; il mare domina. */
+html[data-diego-game=acqua] #app header {
+  background:var(--land-deep); border-bottom:3px solid var(--land-ocean);
+}
+html[data-diego-game=acqua] header button {
+  background:#235E72; color:var(--land-paper);border-color:var(--land-lagoon);
+}
+html[data-diego-game=acqua] #menu {
+  background:radial-gradient(ellipse at 50% 0%,#327F8D,#145269 57%,#12354E);
+  color:var(--land-paper);
+}
+html[data-diego-game=acqua] #menu>p{color:#D4EEE6}
+html[data-diego-game=acqua] .mode {
+  background:linear-gradient(145deg,#DAF4F1,#A7DCD8 60%,#8CCDD1);
+  border-color:var(--land-paper);color:var(--land-deep);
+  box-shadow:0 7px 0 #061B3180,0 12px 22px #05123066;
+}
+html[data-diego-game=acqua] .mode:nth-child(2) {
+  background:linear-gradient(145deg,#FFF8DB,#FFEFAE 67%,#F5D99B);
+}
+html[data-diego-game=acqua] .mode:nth-child(3) {
+  background:linear-gradient(145deg,#FFE7DC,#F7C3B1 67%,#EFAC9A);
+}
+html[data-diego-game=acqua] #splash {
+  background:linear-gradient(180deg,#83D9DD 0%,#199EB2 35%,#136A88 70%,#12354E 100%);
+}
+html[data-diego-game=acqua] #choice {
+  background:linear-gradient(180deg,#167F91 0%,#145369 100%);
+}
+html[data-diego-game=acqua] #choice .animal {
+  background:var(--land-paper);border-color:#D8F1EC;
+}
+html[data-diego-game=acqua] #choice .animal.good {
+  border-color:#57E1AB;background:#D6F4E5;
+}
+html[data-diego-game=acqua] #choice .animal.wrong {
+  border-color:var(--land-fail);background:#FBE4DC;
+}
+html[data-diego-game=acqua] #pool{
+  background:linear-gradient(180deg,#DDF4F1 0%,#A7DCD8 100%);
+  color:var(--land-deep);
+}
+html[data-diego-game=acqua] .poolscene {border-color:var(--land-paper)}
+html[data-diego-game=acqua] .tapbtn {
+  background:linear-gradient(#FEEEB2,#F7CB69);color:var(--land-deep);
+  border-color:var(--land-ocean);box-shadow:0 5px 0 #0C6577;
+}
+html[data-diego-game=acqua] .tapbtn:active,
+html[data-diego-game=acqua] .tapbtn.pressing {background:#F6CB6F;box-shadow:0 2px 0 #0C6577}
+/* COLORI DEGLI ANIMALI · non alterare i cerchi campione! */
+html[data-diego-game=colori] body{
+  background:linear-gradient(140deg,#E8F4EF,#C6E5E1);color:var(--land-deep);
+}
+html[data-diego-game=colori] header {
+  background:var(--land-deep);color:var(--land-paper);
+  border-bottom:3px solid var(--land-ocean);
+}
+html[data-diego-game=colori] .nav button {
+  background:var(--land-pale);color:var(--land-deep);
+  border:2px solid var(--land-paper);border-radius:14px;
+}
+html[data-diego-game=colori] .animal {
+  background:var(--land-paper);color:var(--land-deep);
+  border-color:#D1E7DF;
+}
+html[data-diego-game=colori] .choice {
+  background:var(--land-paper);border-color:#91BDBA;
+}
+html[data-diego-game=colori] .choice.good{
+  background:#DEF4E7;border-color:var(--land-success);
+}
+html[data-diego-game=colori] .choice.bad{
+  background:#FCE1D9;border-color:var(--land-fail);
+}
+html[data-diego-game=colori] #message{
+  background:#E3F0E8;color:var(--land-deep);border-top:2px solid #B4CDC2;
+}
+/* SCACCHI STELLARI · restano distinguibili le due case e le stelle. */
+html[data-diego-game=scacchi] body{
+  background:radial-gradient(ellipse at 78% 4%,#28788A,#174960 45%,#12354E 100%);
+  color:var(--land-paper);
+}
+html[data-diego-game=scacchi] header {
+  background:#09273F;border-bottom:3px solid var(--land-ocean);
+}
+html[data-diego-game=scacchi] header a {
+  background:var(--land-pale);color:var(--land-deep);border-color:var(--land-paper);
+}
+html[data-diego-game=scacchi] .board {
+  border-color:var(--land-paper);box-shadow:0 8px 0 #071D3380,0 16px 30px #05123099;
+}
+html[data-diego-game=scacchi] .sq.light{background:#F3ECD7}
+html[data-diego-game=scacchi] .sq.dark{background:#84B4AD}
+html[data-diego-game=scacchi] .sq.active{box-shadow:inset 0 0 0 7px var(--land-sun)}
+html[data-diego-game=scacchi] .instruction{color:var(--land-pale)}
+html[data-diego-game=scacchi] .pick button,
+html[data-diego-game=scacchi] .modes button {
+  background:#1D5165;color:var(--land-paper);border-color:#7CA9A8;
+}
+html[data-diego-game=scacchi] .pick button.on,
+html[data-diego-game=scacchi] .modes button.on{
+  background:var(--land-pale);color:var(--land-deep);border-color:var(--land-sun);
+}
+html[data-diego-game=scacchi] .again{
+  background:var(--land-sun);color:var(--land-deep);
+}
+html[data-diego-game=scacchi] .hint{color:#DBEAE6}
+/* TROVA NUMERO · carta avorio, capitoli giallo/laguna/corallo. */
+html[data-diego-game=numeri] body{background:var(--land-deep);color:var(--land-paper)}
+html[data-diego-game=numeri] header,
+html[data-diego-game=numeri] footer{
+  background:#102F46;border-color:#1C7585;
+}
+html[data-diego-game=numeri] .control{
+  background:#23586B;color:var(--land-paper);border-color:#8CB8B5;
+}
+html[data-diego-game=numeri] #home,
+html[data-diego-game=numeri] #mode{
+  background:var(--land-pale);color:var(--land-deep);border-color:var(--land-paper);
+}
+html[data-diego-game=numeri] .chooser,
+html[data-diego-game=numeri] .board{
+  background:var(--land-paper);border-color:#D9EAE5;
+}
+html[data-diego-game=numeri] .chapter{
+  color:var(--land-deep);border-color:#83B8AD;
+  background:linear-gradient(135deg,#EDF8EE,#C8E5DD);
+}
+html[data-diego-game=numeri] .chapter:nth-child(2n) {
+  background:linear-gradient(135deg,#FFF8DE,#FFEFAE);
+}
+html[data-diego-game=numeri] .chapter:nth-child(3n) {
+  background:linear-gradient(135deg,#FCEDE8,#F9D1BF);
+}
+html[data-diego-game=numeri] .number circle{stroke:var(--land-deep)}
+html[data-diego-game=numeri] .number text{fill:var(--land-deep)}
+html[data-diego-game=numeri] .number.found circle{
+  fill:#D9F3E3;stroke:var(--land-success);
+}
+html[data-diego-game=numeri] .number.wrong circle {
+  fill:#FCE1D8;stroke:var(--land-fail);
+}
+html[data-diego-game=numeri] #message {
+  background:transparent;color:var(--land-pale);border-color:transparent;
+}
+html[data-diego-game=numeri] #reset {
+  background:var(--land-sun);color:var(--land-deep);border-color:var(--land-pale);
+}
+html[data-diego-game=numeri] #next{
+  background:#D7F3E2;color:#075B43;border-color:var(--land-paper);
+}
+html[data-diego-game=numeri] #fill {background:var(--land-sun)}
+/* UNISCI · grandi tessere chiare, messaggi chiari, sfondo profondo. */
+html[data-diego-game=unisci] {
+  --bg:#12354E;--panel:#1A5C73;--ink:#FFF9EC;
+  --muted:#D6EAE7;--gold:#FFEFAE;--green:#72DCA5;--red:#F48067;
+}
+html[data-diego-game=unisci] body {
+  color:var(--land-paper);
+  background:radial-gradient(ellipse at 15% 5%,#246F7F,#184E67 52%,#12354E);
+}
+html[data-diego-game=unisci] .top{
+  background:transparent;border-bottom:0;
+}
+html[data-diego-game=unisci] .back,
+html[data-diego-game=unisci] .setting,
+html[data-diego-game=unisci] .again{
+  background:#1D5D70;color:var(--land-paper);border-color:var(--land-lagoon);
+}
+html[data-diego-game=unisci] .setting.active {
+  background:var(--land-pale);color:var(--land-deep);border-color:var(--land-sun);
+}
+html[data-diego-game=unisci] .pair-tile {
+  background:var(--land-paper);color:var(--land-deep);border-color:#8FBDB6;
+}
+html[data-diego-game=unisci] .dot{background:var(--land-deep)}
+html[data-diego-game=unisci] .pair-tile.selected,
+html[data-diego-game=unisci] .pair-tile:focus-visible{
+  border-color:var(--land-sun);box-shadow:0 0 0 5px #FFEFAE88;
+}
+html[data-diego-game=unisci] .pair-tile.matched {
+  background:#DEF4E7;border-color:var(--land-success);
+}
+html[data-diego-game=unisci] .pair-tile.wrong {
+  background:#FCE1D9;border-color:var(--land-fail);
+}
+html[data-diego-game=unisci] .complete .again{
+  background:#C6EFDB;color:#075B43;border-color:var(--land-paper);
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-diego-game] .mode,
+  html[data-diego-game] .chapter{transition:none}
+}

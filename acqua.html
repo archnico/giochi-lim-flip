@@ -1,4 +1,4 @@
-<!doctype html><html lang="it" data-diego-edition="flip"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>Diego · Il mondo dell'acqua</title>
+<!doctype html><html lang="it" data-diego-edition="flip" data-diego-game="acqua"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>Diego · Il mondo dell'acqua</title>
 <style>
 :root{--navy:#082f4b;--cyan:#62d9fa;--white:#f9fdff;--green:#74eaab}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{height:100%;width:100%;margin:0;overflow:hidden;background:#093957;color:var(--white);font-family:system-ui,"DejaVu Sans",sans-serif;touch-action:manipulation}button{font:inherit;cursor:pointer;color:inherit;touch-action:manipulation}button:focus-visible{outline:6px solid #ffe17b;outline-offset:4px}
@@ -10,7 +10,7 @@ main{position:relative;min-height:0;overflow:hidden}.view{display:none;width:100
 @media(max-width:720px){#app{grid-template-rows:62px minmax(0,1fr)}header button{min-height:42px;padding:5px 10px}.menu-grid{grid-template-columns:1fr;overflow:auto}.mode{min-height:100px;flex-direction:row}.mode .art{font-size:60px}.animal{border-width:4px}.animal .name{font-size:22px}.poolscene{border-width:7px}}
 @media(max-height:650px){.menu h1{font-size:44px}.menu>p{font-size:18px}.mode{min-height:150px}.mode .art{font-size:65px}.tapbtn{min-height:70px}.pooltitle{font-size:27px}}
 .feedback{font-size:clamp(48px,5.5vw,88px);line-height:1;height:1.1em}
-</style><link rel="stylesheet" href="diego-runtime.css"><script src="diego-runtime.js"></script></head><body><div id="app"><header><strong>🌊 DIEGO · ACQUA</strong><div class="right"><button id="sound" aria-pressed="true">🔊 SUONO</button><button id="back">⌂ MENU</button></div></header><main>
+</style><link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script></head><body><div id="app"><header><strong>🌊 DIEGO · ACQUA</strong><div class="right"><button id="sound" aria-pressed="true">🔊 SUONO</button><button id="back">⌂ MENU</button></div></header><main>
 <section id="menu" class="view menu active"><h1>🌊 IL MONDO DELL'ACQUA</h1><p>TOCCA · ASCOLTA · GIOCA</p><div class="menu-grid">
 <button class="mode" data-go="splash"><span class="art">💦</span>TOCCA L'ACQUA</button><button class="mode" data-go="choice"><span class="art">🐬</span>CHI NUOTA?</button><button class="mode" data-go="pool"><span class="art">🏊</span>LA PISCINA</button></div></section>
 <section id="splash" class="view"><canvas id="sea" aria-label="Tocca o trascina il dito sull'acqua per creare onde"></canvas><div class="overlay">FAI SPLASH! 💦</div><div class="bubblehint">TOCCA O MUOVI IL DITO NELL'ACQUA</div></section>
@@ -49,6 +49,11 @@ function playMarine(key,loop){
  }catch(e){return false}
 }
 function waterSound(secs=.55){
+ /* Mantenere completi gli schizzi: durante il trascinamento non riavviare
+    il campione ogni mezzo secondo (il risultato era un rumore tronco). */
+ if(view==='splash' &&
+    ((marinePlayers.schizzo1&&!marinePlayers.schizzo1.paused)||
+     (marinePlayers.schizzo2&&!marinePlayers.schizzo2.paused)))return;
  let key=view==='choice'?'bolle':(marineStep++%2?'schizzo2':'schizzo1');
  if(playMarine(key,false))return;
  syntheticWaterSound(secs);
@@ -78,5 +83,17 @@ window.addEventListener('blur',()=>{stopHold();stopAllMarine()});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){stopHold();stopAllMarine();stopSea();waterNodes.slice().forEach(s=>{try{s.stop()}catch(e){}})}else if(view==='splash'&&!seaFrame){resizeSea();seaFrame=requestAnimationFrame(frame)}});
 window.addEventListener('pagehide',()=>{stopHold();stopAllMarine();stopSea()});
 
+/* TASTI DIEGO: J/K cambia ambiente, R riavvia senza ricaricare la pagina. */
+document.addEventListener('keydown',e=>{
+ if(e.ctrlKey||e.metaKey||e.altKey||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;
+ const k=(e.key||'').toLowerCase();
+ if(k==='r'){e.preventDefault();show(view)}
+ else if(k==='j'||k==='k'){
+  e.preventDefault();
+  const modes=['splash','choice','pool'];
+  const i=modes.indexOf(view);
+  show(modes[(i+(k==='j'?1:modes.length-1)+modes.length)%modes.length]);
+ }
+});
 const requested=new URLSearchParams(location.search).get('game');if(['splash','choice','pool'].includes(requested))show(requested);
 </script></body></html>
