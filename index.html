@@ -112,6 +112,7 @@ footer{min-height:52px;border-top:1px solid var(--line);padding:10px 20px;displa
 <script>
 const games=[
   {id:'pregrafismo',icon:'✏️',title:'Pregrafismo',desc:'88 percorsi · 32 classici PC + 56 altri'},
+  {id:'parole',icon:'🔤',title:'Componi la parola',desc:'Ascolta e ordina le lettere · senza intrusi'},
   {id:'scacchi',icon:'⭐',title:'Scacchi Stellari',desc:'Re, torre e regina: cattura le stelle'},
   {id:'match',icon:'🧩',title:'Abbina',desc:'Una parola grande · scegli fra due foto'},
   {id:'count',icon:'🔢',title:'Conta',desc:'Conta e scegli il numero'},
@@ -206,7 +207,7 @@ function miniCelebration(){
 }
 function point(){var completed=stars===4;stars=Math.min(5,stars+1);refreshScore();miniCelebration();DiegoAudio.play(completed?'fantastico':'bravo')}
 const topics=[
-  {id:'pregrafismo',icon:'✏️',title:'Pregrafismo',desc:'32 classici PC + 56 percorsi · traccia col dito',ids:['pregrafismo']},
+  {id:'pregrafismo',icon:'✏️',title:'Segni e parole',desc:'Traccia, ascolta, componi',ids:['pregrafismo','parole']},
   {id:'acqua',icon:'🌊',title:'Acqua',desc:'Splash! Giochi sensoriali',ids:['acqua']},
   {id:'scacchi',icon:'♖',title:'Scacchi',desc:'Raccogli le stelle con re, torre e regina',ids:['scacchi']},
   {id:'matematica',icon:'🔢',title:'Matematica',desc:'Numeri, quantità e conteggio',ids:['count','numeri','unisci']},
@@ -219,6 +220,7 @@ let topic=null;
 // EDIZIONE FLIP: navigazione visuale indipendente dalla versione PC.
 const flipVisual={
   pregrafismo:'assets/icons/kit-v2/pregrafismo.svg',
+  parole:'assets/icons/kit-v2/pregrafismo.svg',
   acqua:'assets/icons/kit-v2/acqua.svg',
   animali:'assets/icons/kit-v2/animali.svg',
   matematica:'assets/icons/kit-v2/matematica.svg',
@@ -250,7 +252,7 @@ function home(){
     ['MATEMATICA','Numeri · Conta · Unisci','matematica'],
     ['ACQUA','Splash! · Piscina','acqua'],
     ['SCACCHI','Re · Torre · Regina','scacchi'],
-    ['PREGRAFISMO','32 classici PC + 56 altri · 11 capitoli','pregrafismo']
+    ['SEGNI E PAROLE','Disegna · Ascolta · Componi','pregrafismo']
   ];
   main.innerHTML='<div class="flip-home">'+primaries.map(function(a){return flipCard(a[0],a[1],a[2],flipVisual[a[2]],'topic')}).join('')+
    '<button type="button" class="flip-other" id="otherBtn"><img src="assets/icons/kit-v2/altri.svg" alt="">ALTRI GIOCHI <span>Attenzione · Associazioni · Memoria</span></button></div>';
@@ -279,7 +281,7 @@ function openOthers(){
   main.querySelectorAll('[data-topic]').forEach(function(b){b.onclick=function(){openTopic(b.dataset.topic)}});
 }
 
-function start(id){if(id==='pregrafismo'){location.href='pregrafismo.html';return}if(id==='scacchi'){location.href='scacchi-stelle.html';return}if(id==='acqua'){location.href='acqua.html';return}if(id==='numeri'){location.href='trova-il-numero.html';return}if(id==='unisci'){location.href='unisci-quantita.html';return}current=id;stars=0;statusEl.textContent=games.find(g=>g.id===id).title;if(id==='habitat1'||id==='habitat2')habitatDeck=[];render()}
+function start(id){if(id==='pregrafismo'){location.href='pregrafismo.html';return}if(id==='parole'){location.href='parole.html';return}if(id==='scacchi'){location.href='scacchi-stelle.html';return}if(id==='acqua'){location.href='acqua.html';return}if(id==='numeri'){location.href='trova-il-numero.html';return}if(id==='unisci'){location.href='unisci-quantita.html';return}current=id;stars=0;statusEl.textContent=games.find(g=>g.id===id).title;if(id==='habitat1'||id==='habitat2')habitatDeck=[];render()}
 function render(){roundToken++;if(current==='match')renderMatch();if(current==='count')renderCount();if(current==='same')renderSame();if(current==='memory')renderMemory();if(current==='odd')renderOdd();if(current==='habitat1'||current==='habitat2')renderHabitat();if(current==='colori')renderColori()}
 function renderMatch(){
  if(!matchDeck.length)matchDeck=shuffle(matchItems);

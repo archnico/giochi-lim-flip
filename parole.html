@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="it" data-diego-edition="web">
+<head><meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#137b86">
+<title>Componi la parola — Diego</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,Helvetica,sans-serif;background:#0e526d;color:#fff}
+button{font-family:inherit;cursor:pointer;touch-action:manipulation}
+button:focus-visible{outline:5px solid #fff07e;outline-offset:3px}
+[hidden]{display:none!important}
+#app{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;
+ background:radial-gradient(circle at 85% 7%,#72ced0 0,#33b8ab 21%,transparent 45%),
+ linear-gradient(135deg,#114f74 0%,#127d93 48%,#3aa886 100%)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 20px;
+ background:#0b4764dd;border-bottom:3px solid #8ae6dc;min-height:76px;flex:none}
+.brand{font-weight:900;font-size:clamp(28px,2.6vw,46px);letter-spacing:.04em}
+.brand small{font-size:.58em;font-weight:700;color:#d3ffff;letter-spacing:0}
+.toolbar{display:flex;gap:12px;align-items:center}
+.tool{min-height:53px;min-width:105px;border-radius:17px;border:3px solid #b2eeea;
+ background:#17677b;color:#fff;font-size:clamp(17px,1.25vw,23px);font-weight:800;padding:8px 15px}
+.tool:active,.tile:active{transform:scale(.97)}
+.tool.light{color:#17364e;background:#fff1a3;border-color:#fffbd7}
+#screen{flex:1;min-height:0;display:flex;align-items:stretch;justify-content:center;padding:16px 24px}
+#intro{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px;
+ width:100%;max-width:1100px;text-align:center}
+#intro .land{font-size:clamp(96px,16vw,230px);filter:drop-shadow(0 14px 12px #03425c55);line-height:1}
+#intro h1{font-size:clamp(43px,5vw,82px);margin:0;line-height:1.06}
+#intro p{font-size:clamp(20px,2vw,34px);margin:0}
+.bigbtn{border:4px solid #fff6ca;border-radius:25px;background:#ffe589;color:#233b4e;
+ font-size:clamp(24px,2.35vw,39px);font-weight:900;padding:17px 40px;min-height:79px;
+ box-shadow:0 9px 0 #b27d31,0 15px 25px #00455f45}
+.bigbtn:active{box-shadow:0 3px 0 #b27d31;transform:translateY(5px)}
+#game{width:100%;max-width:1800px;display:flex;flex-direction:column;gap:10px;min-height:0}
+.heading{display:flex;align-items:center;justify-content:space-between;gap:14px;flex:none}
+.heading h1{margin:0;font-size:clamp(30px,3.1vw,55px);line-height:1.1}
+#counter{font-size:clamp(19px,1.7vw,30px);font-weight:800;white-space:nowrap}
+.playfield{flex:1;min-height:0;display:grid;grid-template-columns:minmax(220px,.9fr) minmax(0,1.55fr);gap:20px}
+.scene{position:relative;min-height:0;border-radius:32px;border:5px solid #d7fff7;background:
+ radial-gradient(circle at 80% 17%,#fff2a8 0 9%,transparent 9.5%),
+ linear-gradient(180deg,#a7edf1 0 57%,#61c5aa 57% 73%,#2d9c8e 73%);
+ display:flex;align-items:center;justify-content:center;box-shadow:0 8px 25px #05405260;overflow:hidden}
+.scene:before{content:"";position:absolute;bottom:-22%;left:-12%;width:74%;height:44%;background:#36aa98;border-radius:50%;opacity:.9}
+.scene:after{content:"";position:absolute;bottom:-23%;right:-20%;width:90%;height:47%;background:#50c0ab;border-radius:50%;opacity:.8}
+#picture{display:flex;align-items:center;justify-content:center;width:88%;height:87%;z-index:1;
+ font-size:clamp(130px,18vw,310px);filter:drop-shadow(0 13px 11px #18526a40)}
+#picture img{display:block;max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain;
+ background:#f7fcf9;border-radius:25px;border:5px solid #fff;box-shadow:0 10px 25px #18506c50}
+.wordside{min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:clamp(12px,3vh,28px);padding:16px 12px;border-radius:32px;background:#0b456692;
+ border:4px solid #a6e6e4;box-shadow:0 8px 25px #04405155}
+.instruction{font-size:clamp(23px,2.1vw,37px);font-weight:900;text-align:center}
+#slots,#tiles{display:flex;gap:clamp(5px,.75vw,16px);align-items:center;justify-content:center;width:100%}
+.slot,.tile{flex:1 1 0;max-width:155px;min-width:0;height:clamp(79px,12.5vh,150px);border-radius:23px;
+ display:flex;align-items:center;justify-content:center;font-size:clamp(48px,6.2vw,112px);
+ font-weight:900;line-height:1;user-select:none;-webkit-user-select:none}
+.slot{border:4px dashed #f9e5aa;background:#ffffff22;color:#fff}
+.slot.filled{border:4px solid #eafcf9;background:#d9faed;color:#1a586a;box-shadow:0 6px 0 #118d89}
+.tile{background:#ffe6a1;color:#214e64;border:4px solid #fff8cd;box-shadow:0 8px 0 #b6814e;
+ padding:0;transition:background .12s,opacity .12s}
+.tile:nth-child(2n){background:#b8e8f5;border-color:#e7fdff;box-shadow:0 8px 0 #6c9cb0}
+.tile:nth-child(3n){background:#e0d4ff;border-color:#f6efff;box-shadow:0 8px 0 #9584c9}
+.tile:nth-child(4n){background:#ffccd5;border-color:#ffeaf0;box-shadow:0 8px 0 #c68198}
+.tile.used{visibility:hidden;pointer-events:none}
+.tile.hint{animation:glow .7s ease-in-out 2}
+@keyframes glow{0%,100%{filter:none}50%{filter:brightness(1.25);transform:translateY(-7px)}}
+#tiles.locked{visibility:hidden}
+.controls{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;flex:none}
+.controls .tool{min-height:62px;min-width:130px}
+#reward{font-size:clamp(62px,7vw,132px);text-align:center;line-height:1;color:#ffe984;
+ text-shadow:0 5px 22px #fff7;animation:rewardpop .5s ease-out}
+@keyframes rewardpop{0%{transform:scale(.35);opacity:0}75%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+#next{background:#b4f0ae;color:#16564a;border-color:#ecffea;box-shadow:0 6px 0 #40977d}
+@media(max-width:950px){#screen{padding:9px}.playfield{gap:10px;grid-template-columns:minmax(160px,.75fr) minmax(0,1.5fr)}.scene,.wordside{border-radius:21px;border-width:3px}.slot,.tile{border-radius:15px;height:clamp(67px,12vh,110px);font-size:clamp(38px,6.4vw,75px);border-width:3px}.wordside{padding:8px}}
+@media(max-width:650px){.top{min-height:62px;padding:6px 9px}.brand{font-size:22px}.brand small{display:none}.toolbar{gap:5px}.tool{min-height:44px;min-width:70px;font-size:14px;padding:5px 8px;border-radius:12px;border-width:2px}
+#game{gap:5px}.heading h1{font-size:22px}.playfield{display:flex;flex-direction:column;gap:7px}.scene{flex:1 1 37%;min-height:0}.wordside{flex:1 1 63%;gap:10px;padding:9px}.slot,.tile{height:clamp(55px,10vh,88px);font-size:clamp(31px,10vw,60px);border-radius:12px}.controls{gap:6px}.controls .tool{min-width:85px;min-height:48px}.instruction{font-size:20px}#reward{font-size:56px}#picture{font-size:115px}#picture img{width:auto;max-width:90%;object-fit:contain}}
+@media(max-height:600px){#screen{padding:5px}.top{min-height:53px;padding:4px 9px}.slot,.tile{height:69px}.wordside{gap:8px;padding:7px}.controls .tool{min-height:43px}.instruction{font-size:20px}}
+@media(prefers-reduced-motion:reduce){#reward,.tile.hint{animation:none}}
+</style>
+</head>
+<body>
+<div id="app">
+<header class="top">
+  <div class="brand">DIEGO <small>· LE PAROLE</small></div>
+  <div class="toolbar">
+    <button type="button" class="tool" id="home">⌂ GIOCHI</button>
+    <button type="button" class="tool" id="sound" aria-pressed="true">SUONI</button>
+    <button type="button" class="tool" id="fullscreen">⛶ SCHERMO</button>
+  </div>
+</header>
+<main id="screen">
+<section id="intro">
+  <div class="land" aria-hidden="true">🌈</div>
+  <h1>Componi la parola</h1>
+  <p>Ascolta e tocca le lettere!</p>
+  <button type="button" class="bigbtn" id="start">▶ COMINCIAMO!</button>
+</section>
+<section id="game" hidden>
+  <div class="heading"><h1>Ascolta e componi</h1><div id="counter"></div></div>
+  <div class="playfield">
+    <div class="scene"><div id="picture" aria-hidden="true"></div></div>
+    <div class="wordside">
+      <div class="instruction" id="instruction">Ascolta la parola</div>
+      <div id="slots" aria-label="Parola da comporre"></div>
+      <div id="tiles" class="locked" aria-label="Lettere disponibili"></div>
+      <div id="reward" hidden aria-label="Bravo">★</div>
+    </div>
+  </div>
+  <div class="controls">
+    <button type="button" class="tool light" id="listen">◀)) ASCOLTA</button>
+    <button type="button" class="tool" id="undo">↶ ANNULLA</button>
+    <button type="button" class="tool" id="reset">↻ RIPROVA</button>
+    <button type="button" class="tool light" id="prev">← PRIMA</button>
+    <button type="button" class="tool" id="next">DOPO →</button>
+  </div>
+</section>
+</main>
+</div>
+<script src="diego-audio.js"></script>
+<script>
+(function(){
+'use strict';
+var words=[
+ {word:'APE',emoji:'🐝'}, {word:'UVA',emoji:'🍇'},
+ {word:'CANE',image:'assets/habitat/cane.webp',emoji:'🐶'},
+ {word:'RANA',image:'assets/colori/rana.svg',emoji:'🐸'},
+ {word:'TOPO',emoji:'🐭'}, {word:'MARE',image:'assets/habitat/mare.webp',emoji:'🌊'},
+ {word:'SOLE',emoji:'☀️'}, {word:'GATTO',emoji:'🐱'},
+ {word:'MAMMA',emoji:'💗'}, {word:'BABBO',emoji:'💛'},
+ {word:'NONNO',emoji:'🌻'}, {word:'NONNA',emoji:'🌸'},
+ {word:'BRAVI',emoji:'⭐'}, {word:'BRAVO',emoji:'🌟'}
+];
+var index=0,tiles=[],chosen=[],active=false,done=false,attempts=0;
+var currentSound=null,audioToken=0,revealTimer=0;
+function $(id){return document.getElementById(id)}
+function clear(n){while(n.firstChild)n.removeChild(n.firstChild)}
+function htmlButton(parent,label,klass,i){
+ var b=document.createElement('button');b.type='button';b.className=klass;b.textContent=label;
+ b.setAttribute('aria-label','Lettera '+label);
+ b.onclick=function(){choose(i)};parent.appendChild(b);return b;
+}
+function stopVoice(){
+ audioToken++;clearTimeout(revealTimer);
+ if(currentSound){try{currentSound.pause();currentSound.currentTime=0}catch(e){}currentSound=null}
+ try{if(window.speechSynthesis)window.speechSynthesis.cancel()}catch(e){}
+}
+function available(){return !window.DiegoAudio||window.DiegoAudio.isEnabled()}
+function unlock(){if(!active||done)return;$('tiles').classList.remove('locked');$('instruction').textContent='Tocca le lettere'}
+function speak(){
+ if(!active)return;
+ stopVoice();var token=audioToken;
+ $('tiles').classList.add('locked');$('instruction').textContent='Ascolta la parola';
+ if(!available()){unlock();return}
+ var completed=false;
+ function finish(){if(completed||token!==audioToken)return;completed=true;clearTimeout(revealTimer);unlock()}
+ function fallback(){
+  if(completed||token!==audioToken)return;
+  try{
+   if(window.speechSynthesis&&typeof window.SpeechSynthesisUtterance==='function'){
+    var u=new SpeechSynthesisUtterance(words[index].word.toLowerCase());
+    u.lang='it-IT';u.rate=.83;u.volume=.9;u.onend=finish;u.onerror=finish;
+    window.speechSynthesis.speak(u);return;
+   }
+  }catch(e){}
+  finish();
+ }
+ revealTimer=setTimeout(fallback,3700);
+ try{
+  var a=new Audio('assets/parole/'+words[index].word.toLowerCase()+'.mp3');
+  currentSound=a;a.preload='auto';a.volume=.95;
+  a.onended=finish;a.onerror=fallback;
+  var result=a.play();
+  if(result&&result.catch)result.catch(fallback);
+ }catch(e){fallback()}
+}
+function mix(word){
+ var chars=word.split(''),i,j,v;
+ for(i=chars.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));v=chars[i];chars[i]=chars[j];chars[j]=v}
+ if(chars.join('')===word){
+  for(i=0;i<chars.length;i++)if(chars[i]!==chars[0]){v=chars[i];chars[i]=chars[0];chars[0]=v;break}
+ }
+ return chars;
+}
+function showPicture(item){
+ var p=$('picture');clear(p);
+ if(item.image){
+  var img=document.createElement('img');img.src=item.image;img.alt='';img.onerror=function(){clear(p);p.textContent=item.emoji};p.appendChild(img)
+ }else p.textContent=item.emoji;
+}
+function refreshSlots(){
+ var s=$('slots'),word=words[index].word;clear(s);
+ for(var i=0;i<word.length;i++){
+  var x=document.createElement('div');x.className='slot'+(i<chosen.length?' filled':'');
+  x.textContent=i<chosen.length?tiles[chosen[i]]:'';
+  s.appendChild(x)
+ }
+}
+function renderTiles(){
+ var t=$('tiles');clear(t);
+ for(var i=0;i<tiles.length;i++){
+  var b=htmlButton(t,tiles[i],'tile',i);
+  if(chosen.indexOf(i)!==-1){b.className+=' used';b.disabled=true}
+ }
+}
+function load(){
+ stopVoice();active=true;done=false;attempts=0;chosen=[];
+ tiles=mix(words[index].word);
+ $('counter').textContent=(index+1)+' / '+words.length;
+ $('reward').hidden=true;$('tiles').hidden=false;
+ $('undo').disabled=false;$('listen').disabled=false;
+ showPicture(words[index]);refreshSlots();renderTiles();speak()
+}
+function nudge(){
+ var next=words[index].word.charAt(chosen.length);
+ var bs=$('tiles').getElementsByTagName('button');
+ for(var i=0;i<bs.length;i++)if(!bs[i].disabled&&tiles[i]===next)bs[i].className+=' hint'
+}
+function win(){
+ done=true;stopVoice();$('instruction').textContent='★';
+ $('tiles').hidden=true;$('reward').hidden=false;$('undo').disabled=true;
+ $('listen').disabled=false;
+ if(window.DiegoAudio)window.DiegoAudio.play('bravo');
+ try{window.localStorage.setItem('diego-parole-completate',String(index+1))}catch(e){}
+}
+function choose(i){
+ if(!active||done||$('tiles').className.indexOf('locked')!==-1)return;
+ if(chosen.indexOf(i)!==-1)return;
+ if(tiles[i]!==words[index].word.charAt(chosen.length)){
+  attempts++;if(attempts>=2){attempts=0;nudge()}return
+ }
+ attempts=0;chosen.push(i);renderTiles();refreshSlots();
+ if(chosen.length===words[index].word.length)win()
+}
+function next(delta){if(!active)return;index=(index+delta+words.length)%words.length;load()}
+function begin(){
+ $('intro').hidden=true;$('game').hidden=false;index=0;load()
+}
+$('start').onclick=begin;
+$('listen').onclick=function(){if(done){if(window.DiegoAudio)window.DiegoAudio.stop()}speak()};
+$('undo').onclick=function(){if(done||!chosen.length)return;chosen.pop();refreshSlots();renderTiles()};
+$('reset').onclick=load;
+$('next').onclick=function(){next(1)};
+$('prev').onclick=function(){next(-1)};
+$('home').onclick=function(){stopVoice();location.href='index.html'};
+$('fullscreen').onclick=function(){var e=document.documentElement;try{if(document.fullscreenElement){document.exitFullscreen()}else if(e.requestFullscreen){e.requestFullscreen()}}catch(x){}};
+$('sound').onclick=function(){if(window.DiegoAudio){window.DiegoAudio.setEnabled(!window.DiegoAudio.isEnabled());$('sound').textContent=window.DiegoAudio.isEnabled()?'SUONI':'MUTO';$('sound').setAttribute('aria-pressed',String(window.DiegoAudio.isEnabled()))}};
+if(window.DiegoAudio){$('sound').textContent=window.DiegoAudio.isEnabled()?'SUONI':'MUTO';$('sound').setAttribute('aria-pressed',String(window.DiegoAudio.isEnabled()))}
+document.addEventListener('keydown',function(e){
+ var k=e.key||'';
+ if(k==='j'||k==='J'){e.preventDefault();next(1)}
+ else if(k==='k'||k==='K'){e.preventDefault();next(-1)}
+ else if(k==='r'||k==='R'){e.preventDefault();if(active)load()}
+ else if(k==='Escape'){stopVoice();location.href='index.html'}
+});
+window.addEventListener('pagehide',stopVoice);
+}());
+</script>
+</body>
+</html>

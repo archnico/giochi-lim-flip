@@ -1,4 +1,4 @@
-/* Diego LIM: compatibilita' e ciclo di vita, senza dipendenze di rete. ES5. */
+/* Diego: compatibilita' e ciclo di vita, senza dipendenze di rete. ES5. */
 (function (w, d) {
   'use strict';
   var errors = [], layoutFrame = 0, scopes = [], offline = 'non richiesto';

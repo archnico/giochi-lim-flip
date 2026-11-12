@@ -1,4 +1,4 @@
-/* Diego LIM Flip 2: stylesheet autonomo. NON modificare versione PC. */
+/* Diego Flip 2: stylesheet autonomo. NON modificare versione PC. */
 html,body{font-family:Arial,Helvetica,sans-serif}
 #app{height:100vh;grid-template-rows:74px minmax(0,1fr) 35px}
 header{padding:8px 18px}
