@@ -1,7 +1,7 @@
 /* Rinforzi locali: nessun errore audio puo' interrompere un gioco. ES5. */
 (function (w, d) {
   'use strict';
-  var names = { bravo: 'bravo.wav', fantastico: 'fantastico.wav', stella: 'stella.wav', bolle: 'bolle.wav' };
+  var names = { bravo: 'bravo.wav', fantastico: 'fantastico.wav', stella: 'stella.wav', bolle: 'bolle.wav', successo: 'successo.wav' };
   var sounds = {}, enabled = true, button = null, listeners = [], sequence = 0;
   try { enabled = w.localStorage.getItem('diego-audio-enabled') !== 'false'; } catch (ignore) {}
   function report(e) { if (w.DiegoRuntime) w.DiegoRuntime.record('audio', e && e.name || 'Risorsa non disponibile'); }

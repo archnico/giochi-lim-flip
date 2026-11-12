@@ -228,7 +228,7 @@ function chapterMenu(){state.session++;clearTimers();state.down=false;state.done
 }
 function stopDemo(){if(demoTimer){clearInterval(demoTimer);demoTimer=0}guide.setAttribute('visibility','hidden')}
 function showDemo(){if(state.chapter<0||state.done||state.down)return;stopDemo();var data=state.parts[state.stroke];if(!data)return;var t0=Date.now(),duration=Math.max(2100,Math.min(4200,data.length*4));guide.setAttribute('visibility','visible');setMessage('Guarda il pallino, poi prova tu!');demoTimer=setInterval(function(){if(state.down||state.done){stopDemo();return}var p=Math.min(1,(Date.now()-t0)/duration),point=data.path.getPointAtLength(p*data.length);document.getElementById('guide-halo').setAttribute('cx',point.x);document.getElementById('guide-halo').setAttribute('cy',point.y);document.getElementById('guide-hand').setAttribute('x',point.x);document.getElementById('guide-hand').setAttribute('y',point.y);if(p>=1){stopDemo();setMessage('Adesso tocca il cerchio luminoso') }},70)}
-function openLevel(ci,li){state.session++;clearTimers();state.chapter=ci;state.deck=chapters[ci].kind==='pc'?'pc':'extra';state.level=(li+chapters[ci].levels.length)%chapters[ci].levels.length;state.stroke=0;state.index=0;state.down=false;state.id=null;state.done=false;celebrate.hidden=true;menu.hidden=true;play.hidden=false;labelButtons();draw();board.setAttribute('viewBox','0 0 1000 600');state.zoom=1;document.getElementById('zoom-readout').textContent='100%';document.getElementById('trace-progress').style.width='0%';setMessage('👆 Segui i puntini!');}
+function openLevel(ci,li){state.session++;clearTimers();state.chapter=ci;state.deck=chapters[ci].kind==='pc'?'pc':'extra';state.level=(li+chapters[ci].levels.length)%chapters[ci].levels.length;state.stroke=0;state.index=0;state.down=false;state.id=null;state.done=false;celebrate.hidden=true;menu.hidden=true;play.hidden=false;labelButtons();state.zoom=1;draw();document.getElementById('zoom-readout').textContent='100%';document.getElementById('trace-progress').style.width='0%';setMessage('👆 Segui i puntini!');}
 function draw(){clear(tracks);clear(markers);clear(drawnInk);state.activeBrush=null;state.brushLast=null;state.inputLast=null;
  var scene=document.getElementById('scene-illustration');
  if(state.decorated&&window.PregrafismoScene){PregrafismoScene.render(themeIndex(),state.level,board);PregrafismoScene.renderSides(themeIndex())}
@@ -237,7 +237,27 @@ function draw(){clear(tracks);clear(markers);clear(drawnInk);state.activeBrush=n
  document.getElementById('decorA').textContent=lesson[2]||'';
  document.getElementById('decorB').textContent=lesson[3]||'';
  state.parts=[];var raw=lesson[1];
-raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#ffc978','stroke-width':'51','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.53'},tracks);var p=svg('path',{d:d,fill:'none',stroke:'#e8a13e','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':'3 26'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#60d1e9','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});activate()}
+raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#ffc978','stroke-width':'51','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.53'},tracks);var p=svg('path',{d:d,fill:'none',stroke:'#e8a13e','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':'3 26'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#60d1e9','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});fitLesson();activate()}
+/* A compact lesson viewBox gives the drawn path more of the interactive surface.
+   Coordinates remain in original SVG space: touch mapping and checkpoints stay exact. */
+function fitLesson(){
+ var base={x:0,y:0,w:1000,h:600};
+ if(chapters[state.chapter].kind==='pc'&&!state.decorated){
+  var lo=600,hi=0,valid=false;
+  state.parts.forEach(function(part){try{
+   var b=part.path.getBBox();
+   if(b&&isFinite(b.y)&&isFinite(b.height)){lo=Math.min(lo,b.y);hi=Math.max(hi,b.y+b.height);valid=true}
+  }catch(ignore){}});
+  if(valid){
+   var h=Math.min(600,Math.max(425,Math.ceil(hi-lo+142)));
+   var center=(lo+hi)/2;
+   base.y=Math.max(0,Math.min(600-h,Math.round(center-h/2)));
+   base.h=h;
+  }
+ }
+ state.baseView=base;
+ board.setAttribute('viewBox',base.x+' '+base.y+' '+base.w+' '+base.h);
+}
 function samplePart(data){var samples=[],n=Math.max(3,Math.min(240,Math.ceil(data.length/7)));for(var i=0;i<=n;i++)samples.push(data.path.getPointAtLength(data.length*i/n));return samples}
 function activate(){clear(markers);if(state.stroke>=state.parts.length)return;state.parts.forEach(function(d,i){var o=i===state.stroke||d.completed?'1':'.22';d.path.setAttribute('opacity',o);d.outer.setAttribute('opacity',i===state.stroke?'.76':'.22')});state.samples=samplePart(state.parts[state.stroke]);state.index=0;state.lastBell=0;state.down=false;
  var first=state.samples[0],last=state.samples[state.samples.length-1];
@@ -253,7 +273,7 @@ function mapEvent(e){var rect=board.getBoundingClientRect(),x=e.clientX,y=e.clie
 function dist(a,b){var x=a.x-b.x,y=a.y-b.y;return Math.sqrt(x*x+y*y)}
 function startGesture(ev,id){if(state.chapter<0||state.done||state.down)return;
  var pt=mapEvent(ev),target=state.samples[state.index];
- if(!target||dist(pt,target)>(state.easy?39:28)){setMessage('👆 Parti dal verde');return}
+ if(!target||dist(pt,target)>(state.easy?44:33)){setMessage('👆 Parti dal verde');return}
  stopDemo();state.down=true;state.id=id;state.inputLast=pt;state.activeBrush=null;state.brushLast=null;
  moveStep(pt);
 }
@@ -288,7 +308,7 @@ function moveStep(pt){
  var lo=Math.max(0,state.index-3),hi=Math.min(state.samples.length-1,state.index+9);
  var best=-1,bestDist=1e9;
  for(var i=lo;i<=hi;i++){var di=dist(pt,state.samples[i]);if(di<bestDist){bestDist=di;best=i}}
- if(bestDist>(state.easy?30:23)){state.activeBrush=null;state.brushLast=null;return}if(best<state.index)return;
+ if(bestDist>(state.easy?35:27)){state.activeBrush=null;state.brushLast=null;return}if(best<state.index)return;
  if(best>state.index){
   state.index=best;paintPoint(pt);
   var data=state.parts[state.stroke],r=state.index/(state.samples.length-1);
@@ -299,7 +319,7 @@ function moveStep(pt){
   var point=state.samples[state.index],cursor=document.getElementById('cursor');
   if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y)}
   if(state.decorated&&window.PregrafismoScene)PregrafismoScene.moveTraveler(point);
-  if(r>=.985||(r>.94&&dist(pt,state.samples[state.samples.length-1])<23))completeStroke();
+  if(r>=.985||(r>.94&&dist(pt,state.samples[state.samples.length-1])<28))completeStroke();
  }
 }
 function moveGesture(ev,id){
@@ -315,25 +335,30 @@ function moveGesture(ev,id){
  state.inputLast=pt;
 }
 function endGesture(id){if(!state.down||state.id!==id)return;state.down=false;state.id=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;if(!state.done)setMessage('👆 Segui i puntini!')}
-function completeStroke(){state.down=false;state.id=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+1)/state.parts.length)+'%';if(window.DiegoAudio)DiegoAudio.play('stella');state.stroke++;
- if(state.stroke<state.parts.length){var token=state.session;setMessage('⭐');later(function(){if(state.session!==token)return;activate()},520)}else finishLevel()}
+function completeStroke(){state.down=false;state.id=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+1)/state.parts.length)+'%';state.stroke++;
+ if(state.stroke<state.parts.length){if(window.DiegoAudio)DiegoAudio.play('stella');var token=state.session;setMessage('⭐');later(function(){if(state.session!==token)return;activate()},520)}else finishLevel()}
 function finishLevel(){state.done=true;celebrate.hidden=false;document.getElementById('trace-progress').style.width='100%';var p=progress[chapters[state.chapter].id]||[];if(p.indexOf(state.level)<0){p.push(state.level);progress[chapters[state.chapter].id]=p;save()}  // Nessuna pioggia di 27 elementi: una stella grande e il delfino bastano.
- if(window.DiegoAudio)DiegoAudio.play(state.level===7?'fantastico':'bravo');setMessage('🌟');var token=state.session;later(function(){if(state.session===token&&state.done)nextLevel()},1850)}
+ if(window.DiegoAudio)DiegoAudio.play('successo');setMessage('🌟');var token=state.session;later(function(){if(state.session===token&&state.done)nextLevel()},1850)}
 function nextLevel(){if(state.chapter<0)return;var n=state.level+1;if(n>=chapters[state.chapter].levels.length){chapterMenu()}else openLevel(state.chapter,n)}
 function panBoard(dx,dy){
  if(state.zoom<=1)return;
- var v=board.viewBox.baseVal,w=1000/state.zoom,h=600/state.zoom;
- var x=Math.max(0,Math.min(1000-w,v.x+dx)),y=Math.max(0,Math.min(600-h,v.y+dy));
+ var base=state.baseView||{x:0,y:0,w:1000,h:600};
+ var v=board.viewBox.baseVal,w=base.w/state.zoom,h=base.h/state.zoom;
+ var x=Math.max(base.x,Math.min(base.x+base.w-w,v.x+dx));
+ var y=Math.max(base.y,Math.min(base.y+base.h-h,v.y+dy));
  board.setAttribute('viewBox',x+' '+y+' '+w+' '+h);
 }
 function zoomBoard(delta){
+ var base=state.baseView||{x:0,y:0,w:1000,h:600};
  var old=board.viewBox.baseVal,cx=old.x+old.width/2,cy=old.y+old.height/2;
  state.zoom=Math.max(1,Math.min(2,Math.round((state.zoom+delta)*100)/100));
- var w=1000/state.zoom,h=600/state.zoom;
- var x=Math.max(0,Math.min(1000-w,cx-w/2)),y=Math.max(0,Math.min(600-h,cy-h/2));
+ var w=base.w/state.zoom,h=base.h/state.zoom;
+ var x=Math.max(base.x,Math.min(base.x+base.w-w,cx-w/2));
+ var y=Math.max(base.y,Math.min(base.y+base.h-h,cy-h/2));
  board.setAttribute('viewBox',x+' '+y+' '+w+' '+h);
  document.getElementById('zoom-readout').textContent=Math.round(state.zoom*100)+'%';
 }
+
 function chirp(){if(!window.DiegoAudio||!DiegoAudio.isEnabled())return;try{var AudioContext=window.AudioContext||window.webkitAudioContext;if(!AudioContext)return;if(!audioCtx)audioCtx=new AudioContext();var osc=audioCtx.createOscillator(),gain=audioCtx.createGain(),t=audioCtx.currentTime;osc.type='sine';osc.frequency.setValueAtTime(600,t);osc.frequency.exponentialRampToValueAtTime(880,t+.12);gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.05,t+.02);gain.gain.exponentialRampToValueAtTime(.0001,t+.18);osc.connect(gain);gain.connect(audioCtx.destination);osc.start(t);osc.stop(t+.19)}catch(ignore){}}
 var sound=document.getElementById('sound');function syncSound(){var enabled=window.DiegoAudio?DiegoAudio.isEnabled():false;sound.textContent=enabled?'SUONI':'MUTO';sound.setAttribute('aria-pressed',String(enabled))}
 sound.onclick=function(){if(window.DiegoAudio){DiegoAudio.setEnabled(!DiegoAudio.isEnabled());syncSound();if(DiegoAudio.isEnabled())DiegoAudio.play('bravo')}};
