@@ -3,7 +3,7 @@
 <head><meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#137b86">
+<meta name="theme-color" content="#12354E">
 <title>Componi la parola — Diego</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -79,6 +79,8 @@ button:focus-visible{outline:5px solid #fff07e;outline-offset:3px}
 @media(max-height:600px){#screen{padding:5px}.top{min-height:53px;padding:4px 9px}.slot,.tile{height:69px}.wordside{gap:8px;padding:7px}.controls .tool{min-height:43px}.instruction{font-size:20px}}
 @media(prefers-reduced-motion:reduce){#reward,.tile.hint{animation:none}}
 </style>
+<link rel="stylesheet" href="parole-layout.css">
+<link rel="stylesheet" href="diegoland.css">
 </head>
 <body>
 <div id="app">
@@ -130,7 +132,7 @@ var words=[
  {word:'SOLE',emoji:'☀️'}, {word:'GATTO',emoji:'🐱'},
  {word:'MAMMA',emoji:'💗'}, {word:'BABBO',emoji:'💛'},
  {word:'NONNO',emoji:'🌻'}, {word:'NONNA',emoji:'🌸'},
- {word:'BRAVI',emoji:'⭐'}, {word:'BRAVO',emoji:'🌟'}
+ {word:'BRAVO',emoji:'🌟'}
 ];
 var index=0,tiles=[],chosen=[],active=false,done=false,attempts=0;
 var currentSound=null,audioToken=0,revealTimer=0;
@@ -147,26 +149,40 @@ function stopVoice(){
  try{if(window.speechSynthesis)window.speechSynthesis.cancel()}catch(e){}
 }
 function available(){return !window.DiegoAudio||window.DiegoAudio.isEnabled()}
-function unlock(){if(!active||done)return;$('tiles').classList.remove('locked');$('instruction').textContent='Tocca le lettere'}
+function unlock(){
+ if(!active)return;
+ $('tiles').classList.remove('locked');
+ if(!done)$('instruction').textContent='Tocca le lettere';
+}
 function speak(){
  if(!active)return;
- stopVoice();var token=audioToken;
- $('tiles').classList.add('locked');$('instruction').textContent='Ascolta la parola';
+ stopVoice();
+ var token=audioToken, finished=false, completedWord=done;
+ if(!completedWord){
+  $('tiles').classList.add('locked');
+  $('instruction').textContent='Ascolta la parola';
+ }
  if(!available()){unlock();return}
- var completed=false;
- function finish(){if(completed||token!==audioToken)return;completed=true;clearTimeout(revealTimer);unlock()}
+ function finish(){
+  if(finished||token!==audioToken)return;
+  finished=true;clearTimeout(revealTimer);
+  if(!done)unlock();
+ }
+ // Watchdog sul browser Tizen: l'audio non deve mai bloccare l'esercizio.
+ revealTimer=setTimeout(finish,2600);
  function fallback(){
-  if(completed||token!==audioToken)return;
+  if(finished||token!==audioToken)return;
   try{
    if(window.speechSynthesis&&typeof window.SpeechSynthesisUtterance==='function'){
     var u=new SpeechSynthesisUtterance(words[index].word.toLowerCase());
-    u.lang='it-IT';u.rate=.83;u.volume=.9;u.onend=finish;u.onerror=finish;
-    window.speechSynthesis.speak(u);return;
+    u.lang='it-IT';u.rate=.85;u.volume=.9;
+    u.onend=finish;u.onerror=finish;
+    window.speechSynthesis.speak(u);
+    return;
    }
   }catch(e){}
   finish();
  }
- revealTimer=setTimeout(fallback,3700);
  try{
   var a=new Audio('assets/parole/'+words[index].word.toLowerCase()+'.mp3');
   currentSound=a;a.preload='auto';a.volume=.95;
@@ -209,7 +225,7 @@ function load(){
  tiles=mix(words[index].word);
  $('counter').textContent=(index+1)+' / '+words.length;
  $('reward').hidden=true;$('tiles').hidden=false;
- $('undo').disabled=false;$('listen').disabled=false;
+ $('undo').disabled=true;$('listen').disabled=false;
  showPicture(words[index]);refreshSlots();renderTiles();speak()
 }
 function nudge(){
@@ -218,7 +234,7 @@ function nudge(){
  for(var i=0;i<bs.length;i++)if(!bs[i].disabled&&tiles[i]===next)bs[i].className+=' hint'
 }
 function win(){
- done=true;stopVoice();$('instruction').textContent='★';
+ done=true;stopVoice();$('instruction').textContent='';
  $('tiles').hidden=true;$('reward').hidden=false;$('undo').disabled=true;
  $('listen').disabled=false;
  if(window.DiegoAudio)window.DiegoAudio.play('bravo');
@@ -230,7 +246,7 @@ function choose(i){
  if(tiles[i]!==words[index].word.charAt(chosen.length)){
   attempts++;if(attempts>=2){attempts=0;nudge()}return
  }
- attempts=0;chosen.push(i);renderTiles();refreshSlots();
+ attempts=0;chosen.push(i);renderTiles();refreshSlots();$('undo').disabled=false;
  if(chosen.length===words[index].word.length)win()
 }
 function next(delta){if(!active)return;index=(index+delta+words.length)%words.length;load()}
@@ -238,21 +254,36 @@ function begin(){
  $('intro').hidden=true;$('game').hidden=false;index=0;load()
 }
 $('start').onclick=begin;
-$('listen').onclick=function(){if(done){if(window.DiegoAudio)window.DiegoAudio.stop()}speak()};
-$('undo').onclick=function(){if(done||!chosen.length)return;chosen.pop();refreshSlots();renderTiles()};
+$('listen').onclick=function(){if(done&&window.DiegoAudio)window.DiegoAudio.stop();speak()};
+$('undo').onclick=function(){if(done||!chosen.length)return;chosen.pop();refreshSlots();renderTiles();$('undo').disabled=!chosen.length};
 $('reset').onclick=load;
 $('next').onclick=function(){next(1)};
 $('prev').onclick=function(){next(-1)};
 $('home').onclick=function(){stopVoice();location.href='index.html'};
 $('fullscreen').onclick=function(){var e=document.documentElement;try{if(document.fullscreenElement){document.exitFullscreen()}else if(e.requestFullscreen){e.requestFullscreen()}}catch(x){}};
-$('sound').onclick=function(){if(window.DiegoAudio){window.DiegoAudio.setEnabled(!window.DiegoAudio.isEnabled());$('sound').textContent=window.DiegoAudio.isEnabled()?'SUONI':'MUTO';$('sound').setAttribute('aria-pressed',String(window.DiegoAudio.isEnabled()))}};
-if(window.DiegoAudio){$('sound').textContent=window.DiegoAudio.isEnabled()?'SUONI':'MUTO';$('sound').setAttribute('aria-pressed',String(window.DiegoAudio.isEnabled()))}
+function updateSound(){
+ var enabled=available();
+ $('sound').textContent=enabled?'SUONI':'MUTO';
+ $('sound').setAttribute('aria-pressed',String(enabled));
+}
+$('sound').onclick=function(){
+ if(!window.DiegoAudio)return;
+ window.DiegoAudio.setEnabled(!window.DiegoAudio.isEnabled());
+ updateSound();
+ if(!available()){stopVoice();unlock()}
+ else if(active)speak();
+};
+if(window.DiegoAudio)window.DiegoAudio.subscribe(updateSound);
 document.addEventListener('keydown',function(e){
  var k=e.key||'';
  if(k==='j'||k==='J'){e.preventDefault();next(1)}
  else if(k==='k'||k==='K'){e.preventDefault();next(-1)}
  else if(k==='r'||k==='R'){e.preventDefault();if(active)load()}
  else if(k==='Escape'){stopVoice();location.href='index.html'}
+ else if(active&&!done&&k.length===1&&/^[a-z]$/i.test(k)){
+  var letter=k.toUpperCase(),bs=$('tiles').getElementsByTagName('button');
+  for(var i=0;i<bs.length;i++)if(!bs[i].disabled&&tiles[i]===letter){e.preventDefault();choose(i);break}
+ }
 });
 window.addEventListener('pagehide',stopVoice);
 }());

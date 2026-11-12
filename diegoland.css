@@ -1,0 +1,139 @@
+/* DIEGOLAND · Tema acqua e avventura · 2026-11-12
+   Wada Sanzo, interpretazione digitale: I-001, I-002, I-003, I-006, I-007 e I-241.
+   I colori sono armonie adattate, NON una singola tavola originale.
+   Compatibile con Samsung Flip WM55R/Tizen 5: no font remoti, filtri complessi o animazioni nuove.
+   Solo colori e superfici: misure dei bersagli, fotografie, contenuti e risposte restano invariati. */
+:root{
+  --land-deep:#12354E;         /* Dark Tyrian Blue · Wada I-002 */
+  --land-ocean:#0093A5;        /* Cerulian Blue · I-001 */
+  --land-lagoon:#B4CDC2;       /* Glaucous Green · I-007 */
+  --land-sun:#F99D1B;          /* Yellow Orange · I-002 */
+  --land-pale:#FFEFAE;         /* Pale Lemon Yellow · I-003 */
+  --land-coral:#F48067;        /* Grenadine Pink · I-006 */
+  --land-red:#DD4027;          /* Red Orange · I-241 */
+  --land-ink:#051230;          /* Deep Indigo · I-006 */
+  --land-paper:#FFF9EC;        /* sfondo chiaro derivato, non Wada letterale */
+  --land-success:#08795E;      /* verde di stato funzionale, contrasto accessibile */
+  --land-fail:#B94030;         /* errore: distinto dal corallo decorativo */
+  --accent:var(--land-sun);--ok:var(--land-success);--bad:var(--land-fail);
+  --diego-navy:var(--land-deep);--diego-cream:var(--land-paper);--diego-deep:var(--land-ink);
+}
+/* MENU · carte come oblò, disegni e fotografie intatti */
+html[data-diego-edition=flip] body,
+html[data-diego-edition=flip] #app{background:var(--land-deep);color:var(--land-paper)}
+html[data-diego-edition=flip] #app header{
+  background:var(--land-deep);border-bottom:3px solid var(--land-ocean)}
+html[data-diego-edition=flip] #app .brand{color:var(--land-paper);text-shadow:none}
+html[data-diego-edition=flip] #app .brand span{color:var(--land-pale)}
+html[data-diego-edition=flip] #app main{
+  background:radial-gradient(ellipse at 18% 8%,#27778B 0%,#165069 48%,#12354E 100%)}
+html[data-diego-edition=flip] #app footer{background:#0B2A40;color:#D9E8E4;border-top:1px solid #4F91A0}
+html[data-diego-edition=flip] #app .iconbtn{
+  background:#18516D;color:var(--land-paper);border-color:var(--land-lagoon)}
+html[data-diego-edition=flip] #app .iconbtn#homeBtn{
+  background:var(--land-pale);color:var(--land-deep);border-color:var(--land-paper)}
+html[data-diego-edition=flip] .flip-card,
+html[data-diego-edition=flip] .flip-other{
+  color:var(--land-deep)!important;border-color:var(--land-paper);
+  box-shadow:0 7px 0 #05123050,0 12px 24px #05123050}
+html[data-diego-edition=flip] .flip-card h2,
+html[data-diego-edition=flip] .flip-home .flip-card h2{color:var(--land-deep)}
+html[data-diego-edition=flip] .flip-card p{color:#245065!important}
+html[data-diego-edition=flip] .flip-animali,
+html[data-diego-edition=flip] .flip-habitat1,
+html[data-diego-edition=flip] .flip-habitat2,
+html[data-diego-edition=flip] .flip-colori{background:linear-gradient(135deg,#E5F3E9,var(--land-lagoon))}
+html[data-diego-edition=flip] .flip-acqua,
+html[data-diego-edition=flip] .flip-attenzione{background:linear-gradient(135deg,#DAF4F1,#91D7DC)}
+html[data-diego-edition=flip] .flip-matematica,
+html[data-diego-edition=flip] .flip-conta,
+html[data-diego-edition=flip] .flip-numeri,
+html[data-diego-edition=flip] .flip-unisci{background:linear-gradient(135deg,#FFF8D5,var(--land-pale))}
+html[data-diego-edition=flip] .flip-pregrafismo{background:linear-gradient(135deg,#FFF4E3,#FFD9B5)}
+html[data-diego-edition=flip] .flip-scacchi,
+html[data-diego-edition=flip] .flip-memoria{background:linear-gradient(135deg,#E4E9F4,#BBD3E1)}
+html[data-diego-edition=flip] .flip-associazioni,
+html[data-diego-edition=flip] .flip-match{background:linear-gradient(135deg,#FFECE3,#F8C2AF)}
+html[data-diego-edition=flip] .flip-home .flip-other{background:linear-gradient(135deg,#FFF0C8,#F1D69A);border-color:#FFF7E8}
+html[data-diego-edition=flip] .flip-other span{color:#245065}
+html[data-diego-edition=flip] .flip-back{
+  background:var(--land-pale);color:var(--land-deep);border-color:var(--land-paper)}
+html[data-diego-edition=flip] .flip-section .gamehead h1{color:var(--land-paper)}
+/* GIOCHI NELLA PAGINA PRINCIPALE */
+html[data-diego-edition=flip] .gamewrap:not(.flip-section) .gamehead{
+  background:#184E68;border-color:#5398A5}
+html[data-diego-edition=flip] .gamewrap:not(.flip-section) .gamehead h1{color:var(--land-paper)}
+html[data-diego-edition=flip] .gamewrap .gamehead .sub{color:#E2EFE7}
+html[data-diego-edition=flip] .score .star.on{color:var(--land-sun);text-shadow:0 0 7px #FFEFAE88}
+html[data-diego-edition=flip] .answer,
+html[data-diego-edition=flip] .tile,
+html[data-diego-edition=flip] .sortitem,
+html[data-diego-edition=flip] .mem{background:var(--land-paper);color:var(--land-deep);border-color:var(--land-lagoon)}
+html[data-diego-edition=flip] .answer.good,
+html[data-diego-edition=flip] .tile.good,
+html[data-diego-edition=flip] .sortitem.good{border-color:var(--land-success);background:#E2F3E9;color:#0B5B43}
+html[data-diego-edition=flip] .answer.bad,
+html[data-diego-edition=flip] .tile.bad,
+html[data-diego-edition=flip] .sortitem.bad{border-color:var(--land-fail);background:#FCE3DC}
+html[data-diego-edition=flip] .match-word{color:var(--land-pale)}
+html[data-diego-edition=flip] .match-photo{background:var(--land-paper);border-color:var(--land-paper)}
+html[data-diego-edition=flip] .match-photo.good{border-color:var(--land-success)}
+html[data-diego-edition=flip] .nextbtn{background:var(--land-sun);color:var(--land-deep)}
+html[data-diego-edition=flip] .habitat-name{background:var(--land-pale);color:var(--land-deep)}
+html[data-diego-edition=flip] .notice{background:var(--land-pale);color:var(--land-deep)}
+html[data-diego-edition=flip] #mini-celebrate{background:var(--land-paper);border-color:var(--land-pale)}
+html[data-diego-edition=flip] #mini-celebrate>.reward-star{color:var(--land-sun)}
+/* La firma rossa del cappellino Zissou resta un piccolo indicatore, non domina i giochi. */
+html[data-diego-edition=flip] #app .brand:before,
+html[data-diego-edition=web] .brand:before{content:"";display:inline-block;width:15px;height:15px;vertical-align:middle;
+  margin-right:11px;border-radius:50%;background:var(--land-red);border:2px solid #FFF9EC}
+/* PREGRAFISMO · una pagina più chiara per disegnare: nessun effetto sulla geometria del gesto */
+html[data-diego-edition=flip] .top .pregra-brand{color:var(--land-deep)}
+html[data-diego-edition=flip] .top{background:var(--land-paper);border-bottom-color:var(--land-ocean)}
+html[data-diego-edition=flip] .btn{background:#E8F4F2;color:var(--land-deep);border-color:var(--land-lagoon)}
+html[data-diego-edition=flip] .btn.light{background:var(--land-pale);border-color:var(--land-sun)}
+html[data-diego-edition=flip] #menu,
+html[data-diego-edition=flip] #play{background:#E9F5F1}
+html[data-diego-edition=flip] .intro h1,
+html[data-diego-edition=flip] .hud h1{color:var(--land-deep)}
+html[data-diego-edition=flip] .intro p,
+html[data-diego-edition=flip] .hud p{color:#285F72}
+html[data-diego-edition=flip] .chapter{border-color:#B4CDC2;background:linear-gradient(138deg,#FFF9EC,#D5EAE7)}
+html[data-diego-edition=flip] .chapter:nth-child(2n){background:linear-gradient(138deg,#FFF6D8,#FFEFAE)}
+html[data-diego-edition=flip] .chapter:nth-child(3n){background:linear-gradient(138deg,#EEF5F7,#C4DFE7)}
+html[data-diego-edition=flip] .chapter:nth-child(4n){background:linear-gradient(138deg,#FCEDE6,#F9D1BF)}
+html[data-diego-edition=flip] .chapter .name{color:var(--land-deep)}
+html[data-diego-edition=flip] .chapter .detail{color:#28566B}
+html[data-diego-edition=flip] .board-wrap{border-color:var(--land-ocean);background:var(--land-paper)}
+html[data-diego-edition=flip] #board .live-ink{stroke:var(--land-ocean)}
+html[data-diego-edition=flip] #message{background:var(--land-paper);color:var(--land-deep);border-color:var(--land-pale)}
+html[data-diego-edition=flip] #trace-progress{background:linear-gradient(90deg,var(--land-ocean),var(--land-success))}
+html[data-diego-edition=flip] .deck-tab.selected{background:var(--land-pale);border-color:var(--land-sun);color:var(--land-deep)}
+/* COMPONI LA PAROLA · ambiente marino, lettere identiche e grandi */
+html[data-diego-edition=web] body{background:var(--land-deep)}
+html[data-diego-edition=web] #app{
+  background:radial-gradient(circle at 84% 5%,#59B8BE 0,#277E92 25%,transparent 54%),
+             linear-gradient(135deg,var(--land-deep),#14677E 68%,#1D7A86)}
+html[data-diego-edition=web] .top{background:#12354E;border-bottom-color:var(--land-lagoon)}
+html[data-diego-edition=web] .brand small{color:#D8EEE7}
+html[data-diego-edition=web] .tool{background:#1A647A;color:var(--land-paper);border-color:var(--land-lagoon)}
+html[data-diego-edition=web] .tool.light,
+html[data-diego-edition=web] .bigbtn{background:var(--land-pale);color:var(--land-deep);border-color:var(--land-paper)}
+html[data-diego-edition=web] .scene{border-color:var(--land-paper);
+  background:radial-gradient(circle at 80% 17%,var(--land-pale) 0 9%,transparent 9.5%),
+             linear-gradient(180deg,#ACE5E7 0 57%,#B4CDC2 57% 73%,#0093A5 73%)}
+html[data-diego-edition=web] .scene:before{background:#5CBDB7}
+html[data-diego-edition=web] .scene:after{background:#7BC8C0}
+html[data-diego-edition=web] .wordside{background:#12354EAB;border-color:var(--land-lagoon)}
+html[data-diego-edition=web] .slot{border-color:var(--land-pale)}
+html[data-diego-edition=web] .slot.filled{background:#DFF4E8;color:var(--land-deep);border-color:var(--land-paper)}
+html[data-diego-edition=web] .tile{background:var(--land-pale);color:var(--land-deep);border-color:#FFF9EC}
+html[data-diego-edition=web] .tile:nth-child(2n){background:#C6E7E7;border-color:#E8F5F4}
+html[data-diego-edition=web] .tile:nth-child(3n){background:#F9D2C4;border-color:#FFF0E6}
+html[data-diego-edition=web] .tile:nth-child(4n){background:#F1E2B9;border-color:#FFF7E0}
+html[data-diego-edition=web] #reward{color:var(--land-sun)}
+html[data-diego-edition=web] #next{background:#DFF4E8;color:#0B5B43;border-color:#FFF9EC}
+@media(prefers-reduced-motion:reduce){
+  html[data-diego-edition=web] .tile,
+  html[data-diego-edition=flip] .flip-card{transition:none}
+}

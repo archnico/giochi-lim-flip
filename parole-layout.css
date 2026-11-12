@@ -1,0 +1,61 @@
+/* Diego — Componi la parola: layout soltanto.
+   Non contiene una palette: le superfici e i colori appartengono a diegoland.css.
+   Supporto mouse, touchscreen, telefono, tablet e LIM 1920x1080. */
+html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior:none}
+#screen,#game,#intro,.playfield,.scene,.wordside{min-width:0;min-height:0}
+.top{flex-shrink:0}
+.playfield{width:100%}
+button{-webkit-user-select:none;user-select:none}
+.controls{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;width:100%;max-width:1330px;margin:0 auto}
+.controls .tool{width:100%;max-width:none;min-width:0;min-height:60px;padding:8px 6px;font-weight:900}
+.tile{min-height:54px;touch-action:manipulation}
+.tool:disabled{opacity:.55;cursor:default}
+#picture img{pointer-events:none;user-select:none;-webkit-user-select:none}
+#tiles.locked{pointer-events:none}
+@media(max-width:800px){
+ .controls{gap:6px}
+ .controls .tool{min-height:52px;font-size:15px;font-size:clamp(13px,1.75vw,18px);padding:5px 2px}
+}
+@media(max-width:650px){
+ #screen{padding:7px}
+ .top{padding:5px 7px}
+ .brand{font-size:21px}
+ .top .tool{min-width:0;min-height:47px}
+ .controls{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+ .controls .tool{min-height:48px;font-size:14px;padding:5px 1px}
+ .controls #prev{grid-column:1 / 2}
+ .controls #next{grid-column:2 / 4}
+ #picture{font-size:118px;font-size:clamp(84px,24vw,158px);width:94%;height:95%}
+ .wordside{gap:7px}
+ #slots,#tiles{gap:5px}
+ .slot,.tile{border-radius:12px;min-height:54px;height:67px;height:clamp(54px,9.4vh,80px);font-size:42px;font-size:clamp(31px,10vw,60px)}
+ .scene:before,.scene:after{display:none}
+ .instruction{font-size:20px}
+}
+@media(max-width:650px) and (max-height:700px){
+ .brand{font-size:18px}
+ .top{min-height:54px}
+ .playfield{gap:5px}
+ .heading h1{font-size:19px}
+ .wordside{padding:5px 7px;gap:5px}
+ .slot,.tile{height:54px}
+ .controls .tool{min-height:43px}
+ #picture{font-size:95px;font-size:clamp(80px,22vw,135px)}
+}
+@media(min-width:651px) and (max-height:570px){
+ #screen{padding:5px 10px}
+ .top{min-height:53px;padding:5px 11px}
+ .heading h1{font-size:24px}
+ .playfield{gap:8px;grid-template-columns:minmax(0,38%) minmax(0,62%)}
+ .wordside{gap:5px;padding:6px 8px}
+ .slot,.tile{height:69px;height:clamp(54px,15vh,83px)}
+ .controls .tool{min-height:42px}
+ .controls{gap:5px}
+}
+@media(min-width:651px) and (max-width:1024px) and (orientation:portrait){
+ .playfield{display:flex;flex-direction:column}
+ .scene{flex:1 1 36%}
+ .wordside{flex:1 1 64%}
+ #picture{font-size:185px;font-size:clamp(130px,24vw,240px)}
+}
+@media(prefers-reduced-motion:reduce){.tile,.tool,.bigbtn{transition:none}}
