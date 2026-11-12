@@ -245,3 +245,23 @@ body,html{background:#102536}
  .answer,.tile,.sortitem,.mem,.habitat-zone,.colori-choice{animation:none;transition:none}
 }
 
+
+/* 2026-11-12: feedback solo visivo, leggero per Samsung Tizen 5. */
+#mini-celebrate{position:fixed;left:50%;top:48%;width:210px;height:210px;
+  min-width:0;display:flex;align-items:center;justify-content:center;
+  border:8px solid #fff4be;border-radius:50%;background:#fffef1;
+  box-shadow:0 7px 24px #052b3855;filter:none;gap:0;padding:0;
+  animation:diego-star-once .68s ease-out both}
+#mini-celebrate>.reward-star{display:block;font:900 165px/1 Arial,Helvetica,sans-serif;
+  color:#eba723;text-shadow:none;animation:none}
+@keyframes diego-star-once{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.72)}
+  30%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1)}
+}
+.notice{min-width:96px;min-height:96px;padding:7px 15px;text-align:center;
+  font:900 74px/1 Arial,Helvetica,sans-serif;box-shadow:none}
+@media(max-width:720px){#mini-celebrate{width:150px;height:150px}
+  #mini-celebrate>.reward-star{font-size:115px}
+  .notice{min-width:72px;min-height:72px;font-size:55px}}
+@media(prefers-reduced-motion:reduce){#mini-celebrate{animation:none;opacity:1}}

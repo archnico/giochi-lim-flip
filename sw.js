@@ -1,11 +1,13 @@
 var PREFIX='diego-flip-'+new URL('./',self.location.href).pathname+'-';
-var CACHE=PREFIX+'88cbb66cd153';
+var CACHE=PREFIX+'20261112-stable';
 var FILES=["./index.html", "./flip-ui.css", "./visual-v2.css", "./pregrafismo-v2.css", "./manifest.webmanifest", "./acqua.html", "./scacchi-stelle.html", "./trova-il-numero.html", "./trova-il-4.html", "./colori-animali.html", "./crediti-foto.html", "./test-lim.html", "./diagnostica-flip.html", "./unisci-quantita.html", "./prova-suoni.html", "./pregrafismo.html", "./diego-runtime.js", "./diego-runtime.css", "./diego-audio.js", "./pregrafismo-scene.js", "./pregrafismo-pc-data.js", "./offline-check.html", "./assets/associazioni/auto.webp", "./assets/associazioni/banana.webp", "./assets/associazioni/bicicletta.webp", "./assets/associazioni/mela.webp", "./assets/colori/coccinella.svg", "./assets/colori/elefante.svg", "./assets/colori/fenicottero.svg", "./assets/colori/leone.svg", "./assets/colori/panda.svg", "./assets/colori/pinguino.svg", "./assets/colori/rana.svg", "./assets/colori/tigre.svg", "./assets/colori/volpe.svg", "./assets/colori/zebra.svg", "./assets/habitat/aquila.webp", "./assets/habitat/balena.webp", "./assets/habitat/cane.webp", "./assets/habitat/cavallo.webp", "./assets/habitat/cielo.webp", "./assets/habitat/delfino.webp", "./assets/habitat/elefante.webp", "./assets/habitat/gabbiano.webp", "./assets/habitat/giraffa.webp", "./assets/habitat/gufo.webp", "./assets/habitat/leone.webp", "./assets/habitat/manifest.json", "./assets/habitat/mare.webp", "./assets/habitat/pappagallo.webp", "./assets/habitat/pesce.webp", "./assets/habitat/polpo.webp", "./assets/habitat/squalo.webp", "./assets/habitat/terra.webp", "./assets/icons/acqua.png", "./assets/icons/acqua.svg", "./assets/icons/altri.png", "./assets/icons/altri.svg", "./assets/icons/animali.jpg", "./assets/icons/app-180.png", "./assets/icons/app-192.png", "./assets/icons/app-512.png", "./assets/icons/associazioni.png", "./assets/icons/associazioni.svg", "./assets/icons/attenzione.png", "./assets/icons/attenzione.svg", "./assets/icons/kit-v2/acqua.svg", "./assets/icons/kit-v2/altri.svg", "./assets/icons/kit-v2/animali.svg", "./assets/icons/kit-v2/associazioni.svg", "./assets/icons/kit-v2/attenzione.svg", "./assets/icons/kit-v2/colori.svg", "./assets/icons/kit-v2/conta.svg", "./assets/icons/kit-v2/matematica.svg", "./assets/icons/kit-v2/memoria.svg", "./assets/icons/kit-v2/numeri.svg", "./assets/icons/kit-v2/pregrafismo.svg", "./assets/icons/kit-v2/scacchi.svg", "./assets/icons/kit-v2/traccia-acqua.svg", "./assets/icons/kit-v2/traccia-cerchi.svg", "./assets/icons/kit-v2/traccia-curve.svg", "./assets/icons/kit-v2/traccia-diagonali.svg", "./assets/icons/kit-v2/traccia-onde.svg", "./assets/icons/kit-v2/traccia-rette.svg", "./assets/icons/kit-v2/traccia-segni.svg", "./assets/icons/kit-v2/unisci.svg", "./assets/icons/mare.jpg", "./assets/icons/matematica.png", "./assets/icons/matematica.svg", "./assets/icons/memoria.png", "./assets/icons/memoria.svg", "./assets/icons/pregrafismo.svg", "./assets/icons/scacchi.png", "./assets/icons/scacchi.svg", "./assets/icons/unisci.svg", "./assets/suoni/bolle.wav", "./assets/suoni/bravo.wav", "./assets/suoni/fantastico.wav", "./assets/suoni/stella.wav"];
 
 var SCOPE=new URL('./',self.location.href);
 var ALLOWED=FILES.map(function(f){return new URL(f,SCOPE).pathname});
+// Avvio leggero: pagine e codice subito, foto e suoni al primo utilizzo.
+var CORE=FILES.filter(function(f){return f.indexOf('./assets/')!==0;});
 self.addEventListener('install',function(e){
- e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(FILES)}));
+ e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(CORE)}).then(function(){return self.skipWaiting()}));
 });
 self.addEventListener('activate',function(e){
  e.waitUntil(caches.keys().then(function(names){
@@ -34,7 +36,13 @@ self.addEventListener('fetch',function(e){
  if(ALLOWED.indexOf(url.pathname)<0)return;
  // I parametri game, topic e numero scelgono la schermata; i byte HTML sono gli stessi.
  url.search='';url.hash='';
- e.respondWith(caches.open(CACHE).then(function(c){return c.match(url.href)}).then(function(response){
-  return response?fromRange(e.request,response):fetch(e.request);
- }));
+ e.respondWith(caches.open(CACHE).then(function(c){
+  return c.match(url.href).then(function(response){
+    if(response)return fromRange(e.request,response);
+    return fetch(e.request).then(function(network){
+      if(network&&network.ok)c.put(url.href,network.clone()).catch(function(){});
+      return network;
+    });
+  });
+}));
 });

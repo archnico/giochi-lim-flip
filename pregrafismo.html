@@ -227,7 +227,7 @@ function chapterMenu(){state.session++;clearTimers();state.down=false;state.done
  });
 }
 function stopDemo(){if(demoTimer){clearInterval(demoTimer);demoTimer=0}guide.setAttribute('visibility','hidden')}
-function showDemo(){if(state.chapter<0||state.done||state.down)return;stopDemo();var data=state.parts[state.stroke];if(!data)return;var t0=Date.now(),duration=Math.max(2100,Math.min(4200,data.length*4));guide.setAttribute('visibility','visible');setMessage('Guarda il pallino, poi prova tu!');demoTimer=setInterval(function(){if(state.down||state.done){stopDemo();return}var p=Math.min(1,(Date.now()-t0)/duration),point=data.path.getPointAtLength(p*data.length);document.getElementById('guide-halo').setAttribute('cx',point.x);document.getElementById('guide-halo').setAttribute('cy',point.y);document.getElementById('guide-hand').setAttribute('x',point.x);document.getElementById('guide-hand').setAttribute('y',point.y);if(p>=1){stopDemo();setMessage('Adesso tocca il cerchio luminoso') }},40)}
+function showDemo(){if(state.chapter<0||state.done||state.down)return;stopDemo();var data=state.parts[state.stroke];if(!data)return;var t0=Date.now(),duration=Math.max(2100,Math.min(4200,data.length*4));guide.setAttribute('visibility','visible');setMessage('Guarda il pallino, poi prova tu!');demoTimer=setInterval(function(){if(state.down||state.done){stopDemo();return}var p=Math.min(1,(Date.now()-t0)/duration),point=data.path.getPointAtLength(p*data.length);document.getElementById('guide-halo').setAttribute('cx',point.x);document.getElementById('guide-halo').setAttribute('cy',point.y);document.getElementById('guide-hand').setAttribute('x',point.x);document.getElementById('guide-hand').setAttribute('y',point.y);if(p>=1){stopDemo();setMessage('Adesso tocca il cerchio luminoso') }},70)}
 function openLevel(ci,li){state.session++;clearTimers();state.chapter=ci;state.deck=chapters[ci].kind==='pc'?'pc':'extra';state.level=(li+chapters[ci].levels.length)%chapters[ci].levels.length;state.stroke=0;state.index=0;state.down=false;state.id=null;state.done=false;celebrate.hidden=true;menu.hidden=true;play.hidden=false;labelButtons();draw();board.setAttribute('viewBox','0 0 1000 600');state.zoom=1;document.getElementById('zoom-readout').textContent='100%';document.getElementById('trace-progress').style.width='0%';setMessage('👆 Segui i puntini!');}
 function draw(){clear(tracks);clear(markers);clear(drawnInk);state.activeBrush=null;state.brushLast=null;state.inputLast=null;
  var scene=document.getElementById('scene-illustration');
@@ -238,7 +238,7 @@ function draw(){clear(tracks);clear(markers);clear(drawnInk);state.activeBrush=n
  document.getElementById('decorB').textContent=lesson[3]||'';
  state.parts=[];var raw=lesson[1];
 raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#ffc978','stroke-width':'51','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.53'},tracks);var p=svg('path',{d:d,fill:'none',stroke:'#e8a13e','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':'3 26'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#60d1e9','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});activate()}
-function samplePart(data){var samples=[],n=Math.max(3,Math.ceil(data.length/5));for(var i=0;i<=n;i++)samples.push(data.path.getPointAtLength(data.length*i/n));return samples}
+function samplePart(data){var samples=[],n=Math.max(3,Math.min(240,Math.ceil(data.length/7)));for(var i=0;i<=n;i++)samples.push(data.path.getPointAtLength(data.length*i/n));return samples}
 function activate(){clear(markers);if(state.stroke>=state.parts.length)return;state.parts.forEach(function(d,i){var o=i===state.stroke||d.completed?'1':'.22';d.path.setAttribute('opacity',o);d.outer.setAttribute('opacity',i===state.stroke?'.76':'.22')});state.samples=samplePart(state.parts[state.stroke]);state.index=0;state.lastBell=0;state.down=false;
  var first=state.samples[0],last=state.samples[state.samples.length-1];
  svg('circle',{cx:last.x,cy:last.y,r:38,fill:'#fff1a5',stroke:'#dca02b','stroke-width':6},markers);
@@ -260,16 +260,28 @@ function startGesture(ev,id){if(state.chapter<0||state.done||state.down)return;
 /* Real ink: only touch points that advance sequential path checkpoints can paint.
    Splitting sparse touch events into short steps keeps Samsung Tizen responsive. */
 function paintPoint(pt){
- var last=state.brushLast;
- if(last&&dist(last,pt)<4)return;
- if(!state.activeBrush){
-  state.activeBrush=svg('path',{'class':'live-ink',d:'M '+Math.round(pt.x)+' '+Math.round(pt.y)},drawnInk);
- }else{
-  var existing=state.activeBrush.getAttribute('d');
-  if(existing.length<16000)state.activeBrush.setAttribute('d',existing+' L '+Math.round(pt.x)+' '+Math.round(pt.y));
-  else state.activeBrush=null; // bounds SVG attribute growth on slow old browsers
- }
- state.brushLast=pt;
+  // Sul Flip evitare getAttribute('d') + setAttribute ad ogni campione:
+  // il costo cresceva col quadrato della lunghezza del tratto.
+  var last=state.brushLast;
+  if(last&&dist(last,pt)<9)return;
+  var pos=Math.round(pt.x)+' '+Math.round(pt.y),now=Date.now();
+  if(!state.activeBrush){
+    state.activeBrush=svg('path',{'class':'live-ink',d:'M '+pos},drawnInk);
+    state.activeBrush._diegoPath='M '+pos;
+    state.brushUpdatedAt=now;
+  }else{
+    var path=state.activeBrush._diegoPath;
+    if(path.length<2600){
+      state.activeBrush._diegoPath=path+' L '+pos;
+      if(now-state.brushUpdatedAt>38){
+        state.activeBrush.setAttribute('d',state.activeBrush._diegoPath);
+        state.brushUpdatedAt=now;
+      }
+    }else{
+      state.activeBrush=null;
+    }
+  }
+  state.brushLast=pt;
 }
 function moveStep(pt){
  if(!state.down||state.done)return;
@@ -305,8 +317,7 @@ function moveGesture(ev,id){
 function endGesture(id){if(!state.down||state.id!==id)return;state.down=false;state.id=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;if(!state.done)setMessage('👆 Segui i puntini!')}
 function completeStroke(){state.down=false;state.id=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+1)/state.parts.length)+'%';if(window.DiegoAudio)DiegoAudio.play('stella');state.stroke++;
  if(state.stroke<state.parts.length){var token=state.session;setMessage('⭐');later(function(){if(state.session!==token)return;activate()},520)}else finishLevel()}
-function finishLevel(){state.done=true;celebrate.hidden=false;document.getElementById('trace-progress').style.width='100%';var p=progress[chapters[state.chapter].id]||[];if(p.indexOf(state.level)<0){p.push(state.level);progress[chapters[state.chapter].id]=p;save()}
- var confetti=document.getElementById('confetti');clear(confetti);for(var i=0;i<27;i++){var el=document.createElement('span');el.className='particle';el.style.left=(5+((i*37)%90))+'%';el.style.background=['#ffdc4a','#ff79a8','#88f6ec','#c6a2ff'][i%4];el.style.animationDelay=(i%8)*.11+'s';confetti.appendChild(el)}
+function finishLevel(){state.done=true;celebrate.hidden=false;document.getElementById('trace-progress').style.width='100%';var p=progress[chapters[state.chapter].id]||[];if(p.indexOf(state.level)<0){p.push(state.level);progress[chapters[state.chapter].id]=p;save()}  // Nessuna pioggia di 27 elementi: una stella grande e il delfino bastano.
  if(window.DiegoAudio)DiegoAudio.play(state.level===7?'fantastico':'bravo');setMessage('🌟');var token=state.session;later(function(){if(state.session===token&&state.done)nextLevel()},1850)}
 function nextLevel(){if(state.chapter<0)return;var n=state.level+1;if(n>=chapters[state.chapter].levels.length){chapterMenu()}else openLevel(state.chapter,n)}
 function panBoard(dx,dy){

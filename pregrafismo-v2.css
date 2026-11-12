@@ -346,3 +346,22 @@ html,body{background:var(--sky)!important;color:var(--ink)!important}
  #menu.pc-deck .chapter .classic-icon{font-size:clamp(95px,8.5vw,165px)}
  #menu.pc-deck .chapter .name{font-size:clamp(28px,2.5vw,46px)}
 }
+
+/* 2026-11-12: premio iconico, grande, senza parole e senza loop. */
+#celebrate .yay,#celebrate #confetti{display:none!important}
+#celebrate .bigstar{font-size:clamp(140px,14vw,245px);
+  animation:diego-pregra-star .65s ease-out 1 both;text-shadow:none}
+#celebrate .reward-dolphin{animation:diego-pregra-dolphin .8s ease-out 1 both}
+#celebrate .reward-water span{animation:none!important}
+#message{font-size:clamp(26px,2.65vw,44px);padding:11px 25px;
+  background:#effaffec;color:#104c62;border:2px solid #7bd5ed}
+@keyframes diego-pregra-star{
+  0%{opacity:0;transform:scale(.68)}
+  50%{opacity:1;transform:scale(1.08)}
+  100%{opacity:1;transform:scale(1)}
+}
+@keyframes diego-pregra-dolphin{
+  0%{opacity:0;transform:translateY(18px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+@media(max-width:720px){#message{font-size:25px;max-width:93%;padding:7px 14px}}

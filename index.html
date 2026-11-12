@@ -188,19 +188,21 @@ const oddsets=[
 const main=document.getElementById('main'),statusEl=document.getElementById('status'),notice=document.getElementById('notice');
 let current=null,stars=0,roundToken=0;
 const gameScope=DiegoRuntime.createScope();
-function clearRound(){roundToken++;gameScope.reset();clearTimeout(say.t);notice.classList.remove('show');DiegoAudio.stop();main.scrollTop=0}
+function clearRound(){roundToken++;gameScope.reset();clearTimeout(say.t);notice.classList.remove('show');var reward=document.getElementById('mini-celebrate');if(reward)reward.remove();DiegoAudio.stop();main.scrollTop=0}
 function later(fn,ms){const token=roundToken;return gameScope.later(()=>{if(token===roundToken&&current)fn()},ms)}
 function shuffle(a){const result=a.slice();for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const v=result[i];result[i]=result[j];result[j]=v}return result}
-function say(t){notice.textContent=t;notice.classList.add('show');clearTimeout(say.t);say.t=setTimeout(()=>notice.classList.remove('show'),900)}
+function say(t){notice.textContent='↻';notice.setAttribute('aria-label',t||'Riprova');notice.classList.add('show');clearTimeout(say.t);say.t=setTimeout(()=>notice.classList.remove('show'),650)}
 function scoreHtml(){return `<div class="score" aria-label="Stelle ottenute su cinque">${[1,2,3,4,5].map(n=>`<span class="star ${n<=stars?'on':''}">★</span>`).join('')}</div>`}
 function shell(title,sub,body,next=false){clearRound();main.innerHTML=`<div class="gamewrap"><div class="gamehead"><div><h1>${title}</h1><div class="sub">${sub}</div></div><div id="scorebox">${scoreHtml()}</div></div><div class="stage">${body}</div><button class="nextbtn" id="nextBtn" ${next?'':'hidden'}>ANCORA →</button></div>`;}
 function refreshScore(){const b=document.getElementById('scorebox');if(b)b.innerHTML=scoreHtml()}
 function miniCelebration(){
- const prior=document.getElementById('mini-celebrate');if(prior)prior.remove();
- const f=document.createElement('div');f.id='mini-celebrate';
- f.innerHTML='<span class="reward-spark a">✦</span><span class="reward-spark b">✦</span><span class="reward-spark c">✦</span><div class="reward-inner" aria-label="Risposta corretta"><span class="reward-star" aria-hidden="true">★</span></div>';
- main.appendChild(f);
- gameScope.later(()=>{if(f.parentNode)f.parentNode.removeChild(f)},930);
+  // Un solo simbolo grande: niente testo, scintille multiple o animazioni permanenti.
+  const prior=document.getElementById('mini-celebrate');if(prior)prior.remove();
+  const f=document.createElement('div');f.id='mini-celebrate';
+  f.setAttribute('aria-label','Risposta corretta');
+  f.innerHTML='<span class="reward-star" aria-hidden="true">★</span>';
+  main.appendChild(f);
+  gameScope.later(()=>{if(f.parentNode)f.parentNode.removeChild(f)},720);
 }
 function point(){var completed=stars===4;stars=Math.min(5,stars+1);refreshScore();miniCelebration();DiegoAudio.play(completed?'fantastico':'bravo')}
 const topics=[
