@@ -242,7 +242,7 @@ raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#ffc978'
    Coordinates remain in original SVG space: touch mapping and checkpoints stay exact. */
 function fitLesson(){
  var base={x:0,y:0,w:1000,h:600};
- if(chapters[state.chapter].kind==='pc'&&!state.decorated){
+ if(!state.decorated){
   var lo=600,hi=0,valid=false;
   state.parts.forEach(function(part){try{
    var b=part.path.getBBox();
