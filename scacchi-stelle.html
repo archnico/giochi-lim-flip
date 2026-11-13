@@ -10,16 +10,16 @@ main{max-width:1500px;margin:auto;padding:10px 24px;display:grid;grid-template-c
 .board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-template-rows:repeat(8,minmax(0,1fr));/*diego-fallback*/width:76vh;/*end-fallback*/width:min(76vh,76vw,850px);max-width:100%;aspect-ratio:1;border:8px solid #e7e2d4;border-radius:12px;overflow:hidden;box-shadow:0 7px 32px #0009}
 .sq{border:0;border-radius:0;position:relative;padding:0;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;overflow:hidden}
 .light{background:#f1e4c9}.dark{background:#87a48c}
-.piece{font-family:"DejaVu Sans","Segoe UI Symbol",serif;/*diego-fallback*/font-size:7vh;/*end-fallback*/font-size:var(--chess-piece-size, 64px);line-height:1;color:#12354E;text-shadow:0 2px 3px #111,-2px -2px 2px #111,2px -2px 2px #111;pointer-events:none}
+.piece{display:block;width:78%;height:78%;max-width:100%;max-height:100%;object-fit:contain;pointer-events:none;user-select:none;-webkit-user-select:none}
 .sq.active{box-shadow:inset 0 0 0 7px #f2c230}.star{width:72%;height:72%;filter:drop-shadow(0 2px 2px #664);pointer-events:none}
 .controls{display:flex;flex-direction:column;/*diego-fallback*/--diego-gap:15px;grid-gap:15px;/*end-fallback*/gap:15px;align-items:stretch}.controls h1{/*diego-fallback*/font-size:3.6vw;/*end-fallback*/font-size:clamp(30px,3.6vw,60px);margin:0}.instruction{/*diego-fallback*/font-size:2.4vw;/*end-fallback*/font-size:clamp(24px,2.4vw,39px);font-weight:900;min-height:2em;color:#ffe076}
 .pick{display:flex;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px}.pick button{flex:1;min-height:78px;border:3px solid #64727c;border-radius:18px;background:#232c32;color:#fff;font-size:24px;font-weight:800}
-.pick button.on{border-color:#ffd34d;background:#39442d}.pick span{font-size:40px;display:block}
+.pick button.on{border-color:#ffd34d;background:#39442d}.pick img.pick-piece{display:block;width:50px;height:50px;object-fit:contain;margin:0 auto 3px;pointer-events:none}
 .modes{display:flex;/*diego-fallback*/--diego-gap:12px;grid-gap:12px;/*end-fallback*/gap:12px}.modes button{flex:1;min-height:75px;border:3px solid #79858d;border-radius:18px;background:#27323b;color:#fff;font-weight:850;font-size:20px}
 .modes button.on{border-color:#f6cd48;background:#56461e}
 .again{min-height:68px;border:0;background:#ffd34d;color:#1b1b1b;border-radius:18px;font-size:26px;font-weight:900}
 .progress{font-size:25px;font-weight:800}.hint{font-size:19px;color:#aebcc4}
-@media(max-width:850px){main{grid-template-columns:1fr;justify-items:center;padding:12px;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px}.board{/*diego-fallback*/width:90vw;/*end-fallback*/width:min(90vw,62vh)}.controls{width:100%;max-width:620px}.controls h1{font-size:26px}.instruction{min-height:0;font-size:25px}.pick button{min-height:57px}.pick span{display:inline;font-size:29px}.modes button{min-height:55px}.hint{font-size:15px}}
+@media(max-width:850px){main{grid-template-columns:1fr;justify-items:center;padding:12px;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px}.board{/*diego-fallback*/width:90vw;/*end-fallback*/width:min(90vw,62vh)}.controls{width:100%;max-width:620px}.controls h1{font-size:26px}.instruction{min-height:0;font-size:25px}.pick button{min-height:57px}.pick img.pick-piece{display:inline-block;vertical-align:middle;width:31px;height:31px;margin:0 5px 0 0}.modes button{min-height:55px}.hint{font-size:15px}}
 </style><link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script></head><body>
 <header><strong>DIEGO · SCACCHI</strong><a href="index.html">⌂ MENU</a></header>
 <main>
@@ -29,9 +29,9 @@ main{max-width:1500px;margin:auto;padding:10px 24px;display:grid;grid-template-c
 <div class="instruction" id="instruction" role="status">Tocca la stella!</div>
 <div class="progress" id="progress">★ 0 / 3</div>
 <div class="pick" aria-label="Scegli il pezzo">
-<button data-piece="king"><span>♔</span> RE</button>
-<button data-piece="rook"><span>♖</span> TORRE</button>
-<button data-piece="queen"><span>♕</span> REGINA</button>
+<button data-piece="king"><img class="pick-piece" src="assets/scacchi/cburnett/wK.svg" alt="" aria-hidden="true" draggable="false"> RE</button>
+<button data-piece="rook"><img class="pick-piece" src="assets/scacchi/cburnett/wR.svg" alt="" aria-hidden="true" draggable="false"> TORRE</button>
+<button data-piece="queen"><img class="pick-piece" src="assets/scacchi/cburnett/wQ.svg" alt="" aria-hidden="true" draggable="false"> REGINA</button>
 </div>
 <div class="modes" aria-label="Difficoltà">
 <button data-mode="easy">1 · FACILE</button>
@@ -43,9 +43,9 @@ main{max-width:1500px;margin:auto;padding:10px 24px;display:grid;grid-template-c
 <script src="diego-audio.js"></script><script>
 'use strict';
 const plans={
- king:{name:'RE',glyph:'♔',start:[6,4],targets:[[5,4],[4,4],[3,3]]},
- rook:{name:'TORRE',glyph:'♖',start:[6,0],targets:[[2,0],[2,4],[5,4]]},
- queen:{name:'REGINA',glyph:'♕',start:[6,0],targets:[[4,2],[4,5],[1,5]]}
+ king:{name:'RE',glyph:'♔',asset:'assets/scacchi/cburnett/wK.svg',start:[6,4],targets:[[5,4],[4,4],[3,3]]},
+ rook:{name:'TORRE',glyph:'♖',asset:'assets/scacchi/cburnett/wR.svg',start:[6,0],targets:[[2,0],[2,4],[5,4]]},
+ queen:{name:'REGINA',glyph:'♕',asset:'assets/scacchi/cburnett/wQ.svg',start:[6,0],targets:[[4,2],[4,5],[1,5]]}
 };
 const chessScope=DiegoRuntime.createScope();
 let piece='rook',mode='easy',position,step,selected,locked=false;
@@ -58,7 +58,7 @@ function fitChessboard(){
  if(!width)return;
  const size=Math.round(width*100)/100;
  board.style.height=size+'px';
- board.style.setProperty('--chess-piece-size',Math.max(20,Math.min(84,Math.round((size-16)/10.2)))+'px');
+ // Pieces size automatically to the square: no system chess font.
 }
 window.addEventListener('resize',fitChessboard);
 const same=(a,b)=>a[0]===b[0]&&a[1]===b[1];
@@ -84,7 +84,7 @@ function draw(){
   cell.dataset.r=r;cell.dataset.c=c;cell.setAttribute('aria-label','Casella '+String.fromCharCode(97+c)+(8-r));
   if(same([r,c],position)){
    cell.classList.toggle('active',selected);
-   const p=document.createElement('span');p.className='piece';p.textContent=plans[piece].glyph;cell.append(p);
+   const p=document.createElement('img');p.className='piece';p.src=plans[piece].asset;p.alt='';p.setAttribute('aria-hidden','true');p.draggable=false;cell.append(p);
   }else if(step<3&&same([r,c],plans[piece].targets[step])){
    cell.setAttribute('aria-label','Stella obiettivo');
    cell.innerHTML='<svg class="star" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 7 L62 35 L92 38 L69 58 L77 90 L50 73 L23 90 L31 58 L8 38 L38 35 Z" fill="#F99D1B" stroke="#12354E" stroke-width="4"/></svg>';
