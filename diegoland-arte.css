@@ -1,0 +1,26 @@
+/* Diego / Diegoland: le illustrazioni del set selezionato.
+   Il canone Wada e i contrasti restano definiti in diegoland.css;
+   nessuna variazione agli hit-target o alle fotografie didattiche. */
+html[data-diego-edition=flip] .flip-home .flip-visual img[src^="assets/diegoland/"]{
+  width:100%;height:100%;max-width:100%;
+  max-height:100%;object-fit:contain!important;
+  user-select:none;pointer-events:none;
+}
+html[data-diego-edition=flip] .flip-home .flip-acqua .flip-visual{
+  position:relative;overflow:hidden;
+}
+html[data-diego-edition=flip] .flip-home .flip-acqua .flip-visual::before{
+  content:"";position:absolute;left:1%;bottom:3%;
+  width:56%;height:55%;pointer-events:none;
+  opacity:.37;background:url("assets/diegoland/bolle.svg") no-repeat center;
+  background-size:contain;
+}
+html[data-diego-edition=flip] .flip-home .flip-acqua .flip-visual img{position:relative;z-index:1}
+@media(max-width:800px){
+ html[data-diego-edition=flip] .flip-home .flip-visual img[src^="assets/diegoland/"]{
+  min-width:0;min-height:0;object-fit:contain!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-diego-edition=flip] .flip-home .flip-visual img{animation:none!important}
+}
