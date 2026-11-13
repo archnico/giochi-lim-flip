@@ -110,6 +110,7 @@ footer{min-height:52px;border-top:1px solid var(--line);padding:10px 20px;displa
 </div>
 <div class="notice" id="notice"></div>
 <script src="diego-audio.js"></script>
+<script src="diego-lessico.js"></script>
 <script>
 const games=[
   {id:'pregrafismo',icon:'✏️',title:'Pregrafismo',desc:'88 percorsi · 32 classici PC + 56 altri'},
@@ -128,18 +129,8 @@ const games=[
   {id:'acqua',icon:'🌊',title:'Splash! Il mondo dell’acqua',desc:'Schizzi, animali che nuotano e piscina'}
 ];
 const pairs=[['🐶','CANE'],['☀️','SOLE'],['🍎','MELA'],['🚂','TRENO'],['🏠','CASA'],['🌙','LUNA'],['🐱','GATTO'],['🌳','ALBERO']];
-const matchItems=[
- {name:'CANE',file:'assets/habitat/cane.webp'},
- {name:'LEONE',file:'assets/habitat/leone.webp'},
- {name:'DELFINO',file:'assets/habitat/delfino.webp'},
- {name:'ELEFANTE',file:'assets/habitat/elefante.webp'},
- {name:'CAVALLO',file:'assets/habitat/cavallo.webp'},
- {name:'PAPPAGALLO',file:'assets/habitat/pappagallo.webp'},
- {name:'MELA',file:'assets/associazioni/mela.webp'},
- {name:'BANANA',file:'assets/associazioni/banana.webp'},
- {name:'BICICLETTA',file:'assets/associazioni/bicicletta.webp'},
- {name:'AUTO',file:'assets/associazioni/auto.webp'}
-];
+// Le parole stampate in ABBINA provengono dallo stesso lessico di PAROLE.
+const matchItems=DiegoLessico.abbina();
 let matchDeck=[];
 const sameItems=['🐶','🐱','🍎','🍐','🚗','🚂','🏠','🌳','⚽','☀️'];
 // Sequenze remain in source for future activities; excluded from Diego home.
@@ -243,20 +234,20 @@ function flipCard(title,desc,id,visual,kind,href){
   const tag=href?'a':'button';
   const attr=href?' href="'+href+'"':' type="button"';
   const data=kind==='topic'?' data-topic="'+id+'"':kind==='other'?' data-other="'+id+'"':' data-game="'+id+'"';
-  return '<'+tag+' class="flip-card flip-'+id+'"'+attr+data+'><div class="flip-copy"><h2>'+title+'</h2><p>'+desc+'</p></div><div class="flip-visual"><img src="'+visual+'" alt="" draggable="false"></div></'+tag+'>';
+  return '<'+tag+' class="flip-card flip-'+id+'"'+attr+data+'><div class="flip-copy"><h2>'+title+'</h2></div><div class="flip-visual"><img src="'+visual+'" alt="" draggable="false"></div></'+tag+'>';
 }
 function home(){
   clearRound();current=null;topic=null;stars=0;
-  statusEl.textContent='Scegli un argomento';
+  statusEl.textContent='';
   const primaries=[
     ['ANIMALI','Dove vive? · Colori','animali'],
-    ['MATEMATICA','Numeri · Conta · Unisci','matematica'],
+    ['NUMERI','Numeri · Conta · Unisci','matematica'],
     ['ACQUA','Splash! · Piscina','acqua'],
     ['SCACCHI','Re · Torre · Regina','scacchi'],
-    ['SEGNI E PAROLE','Disegna · Ascolta · Componi','pregrafismo']
+    ['PAROLE','Disegna · Ascolta · Componi','pregrafismo']
   ];
   main.innerHTML='<div class="flip-home">'+primaries.map(function(a){return flipCard(a[0],a[1],a[2],flipVisual[a[2]],'topic')}).join('')+
-   '<button type="button" class="flip-other" id="otherBtn"><img src="assets/icons/kit-v2/altri.svg" alt="">ALTRI GIOCHI <span>Attenzione · Associazioni · Memoria</span></button></div>';
+   '<button type="button" class="flip-other" id="otherBtn"><img src="assets/icons/kit-v2/altri.svg" alt="">ALTRI</button></div>';
   main.querySelectorAll('[data-topic]').forEach(function(b){b.onclick=function(){openTopic(b.dataset.topic)}});
   main.querySelector('#otherBtn').onclick=openOthers;
 }
@@ -269,15 +260,15 @@ function openTopic(id){
   const t=topics.find(function(x){return x.id===id});
   if(!t){home();return;}
   statusEl.textContent=t.title;
-  main.innerHTML='<div class="gamewrap flip-section"><div class="gamehead"><h1>'+t.title+'</h1><button type="button" class="flip-back" id="backTopic">← INDIETRO</button></div><div class="flip-games">'+games.filter(function(g){return t.ids.indexOf(g.id)!==-1}).map(flipGameCard).join('')+'</div></div>';
+  main.innerHTML='<div class="gamewrap flip-section"><div class="gamehead"><h1>'+t.title+'</h1><button type="button" class="flip-back" id="backTopic" title="Indietro" aria-label="Indietro">←</button></div><div class="flip-games">'+games.filter(function(g){return t.ids.indexOf(g.id)!==-1}).map(flipGameCard).join('')+'</div></div>';
   main.querySelector('#backTopic').onclick=home;
   main.querySelectorAll('button[data-game]').forEach(function(b){b.onclick=function(){start(b.dataset.game)}});
 }
 function openOthers(){
   clearRound();current=null;topic=null;stars=0;
   const other=topics.filter(function(t){return ['attenzione','associazioni','memoria'].indexOf(t.id)!==-1});
-  statusEl.textContent='Altri giochi';
-  main.innerHTML='<div class="gamewrap flip-section"><div class="gamehead"><h1>ALTRI GIOCHI</h1><button type="button" class="flip-back" id="backOthers">← INDIETRO</button></div><div class="flip-games">'+other.map(function(t){return flipCard(t.title,t.desc,t.id,flipVisual[t.id],'topic')}).join('')+'</div></div>';
+  statusEl.textContent='';
+  main.innerHTML='<div class="gamewrap flip-section"><div class="gamehead"><h1>ALTRI GIOCHI</h1><button type="button" class="flip-back" id="backOthers" title="Indietro" aria-label="Indietro">←</button></div><div class="flip-games">'+other.map(function(t){return flipCard(t.title,t.desc,t.id,flipVisual[t.id],'topic')}).join('')+'</div></div>';
   main.querySelector('#backOthers').onclick=home;
   main.querySelectorAll('[data-topic]').forEach(function(b){b.onclick=function(){openTopic(b.dataset.topic)}});
 }
@@ -290,9 +281,12 @@ function renderMatch(){
  const other=shuffle(matchItems.filter(x=>x.name!==target.name))[0];
  const choices=shuffle([target,other]);
  const cards=choices.map((v,i)=>'<button class="match-photo" type="button" data-choice="'+i+'" aria-label="Foto: '+v.name+'"><img src="'+v.file+'" draggable="false" alt=""><span class="match-photo-fallback" hidden>📷</span></button>').join('');
- shell('Abbina','Leggi la parola e tocca la fotografia giusta',
-  '<div class="match-simple"><div class="match-word" aria-label="Trova '+target.name+'">'+target.name+'</div><div class="match-photo-grid">'+cards+'</div></div>');
+ shell('ABBINA','',
+  '<div class="match-simple"><button type="button" class="match-word" title="Ascolta" aria-label="Ascolta '+target.name+'">'+target.name+'</button><div class="match-photo-grid">'+cards+'</div></div>');
  main.querySelector('.gamewrap').classList.add('match-wide');
+ // La stessa parola si puo riascoltare prima di riconoscerne la foto.
+ var wordButton=main.querySelector('.match-word');
+ wordButton.onclick=function(){try{var a=new Audio('assets/parole/'+target.name.toLowerCase()+'.mp3');var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){}};
  main.querySelectorAll('.match-photo img').forEach(img=>{
   img.onerror=function(){this.hidden=true;this.nextElementSibling.hidden=false};
  });

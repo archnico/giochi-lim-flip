@@ -24,3 +24,7 @@ html[data-diego-edition=flip] .flip-home .flip-acqua .flip-visual img{position:r
 @media(prefers-reduced-motion:reduce){
  html[data-diego-edition=flip] .flip-home .flip-visual img{animation:none!important}
 }
+
+/* Parola di ABBINA: grande e riascoltabile senza decorazioni da pulsante. */
+.match-word{display:block;width:100%;border:0;background:transparent;cursor:pointer;padding:0 8px}
+.match-word:focus-visible{outline:5px solid var(--gold,#ffe17f);outline-offset:3px;border-radius:14px}

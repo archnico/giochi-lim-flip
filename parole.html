@@ -85,55 +85,47 @@ button:focus-visible{outline:5px solid #fff07e;outline-offset:3px}
 <body>
 <div id="app">
 <header class="top">
-  <div class="brand">DIEGO <small>· LE PAROLE</small></div>
+  <div class="brand">DIEGO</div>
   <div class="toolbar">
-    <button type="button" class="tool" id="home">⌂ GIOCHI</button>
-    <button type="button" class="tool" id="sound" aria-pressed="true">SUONI</button>
-    <button type="button" class="tool" id="fullscreen">⛶ SCHERMO</button>
+    <button type="button" class="tool" id="home" title="Home" aria-label="Torna ai giochi">⌂</button>
+    <button type="button" class="tool" id="sound" title="Audio" aria-label="Attiva o disattiva audio" aria-pressed="true">🔊</button>
+    <button type="button" class="tool" id="fullscreen" title="Schermo intero" aria-label="Schermo intero">⛶</button>
   </div>
 </header>
 <main id="screen">
 <section id="intro">
   <div class="land" aria-hidden="true">🌈</div>
-  <h1>Componi la parola</h1>
-  <p>Ascolta e tocca le lettere!</p>
-  <button type="button" class="bigbtn" id="start">▶ COMINCIAMO!</button>
+  <h1>PAROLE</h1>
+  <button type="button" class="bigbtn" id="start" title="Inizia" aria-label="Inizia">▶</button>
 </section>
 <section id="game" hidden>
-  <div class="heading"><h1>Ascolta e componi</h1><div id="counter"></div></div>
+  <div class="heading"><h1>PAROLE</h1><div id="counter"></div></div>
   <div class="playfield">
     <div class="scene"><div id="picture" aria-hidden="true"></div></div>
     <div class="wordside">
-      <div class="instruction" id="instruction">Ascolta la parola</div>
+      <div class="instruction" id="instruction" aria-label="Ascolta la parola">🔊</div>
       <div id="slots" aria-label="Parola da comporre"></div>
       <div id="tiles" class="locked" aria-label="Lettere disponibili"></div>
       <div id="reward" hidden aria-label="Bravo">★</div>
     </div>
   </div>
   <div class="controls">
-    <button type="button" class="tool light" id="listen">◀)) ASCOLTA</button>
-    <button type="button" class="tool" id="undo">↶ ANNULLA</button>
-    <button type="button" class="tool" id="reset">↻ RIPROVA</button>
-    <button type="button" class="tool light" id="prev">← PRIMA</button>
-    <button type="button" class="tool" id="next">DOPO →</button>
+    <button type="button" class="tool light" id="listen" title="Ascolta" aria-label="Ascolta">🔊</button>
+    <button type="button" class="tool" id="undo" title="Annulla" aria-label="Annulla">↶</button>
+    <button type="button" class="tool" id="reset" title="Riprova" aria-label="Riprova">↻</button>
+    <button type="button" class="tool light" id="prev" title="Prima" aria-label="Prima">◀</button>
+    <button type="button" class="tool" id="next" title="Dopo" aria-label="Dopo">▶</button>
   </div>
 </section>
 </main>
 </div>
 <script src="diego-audio.js"></script>
+<script src="diego-lessico.js"></script>
 <script>
 (function(){
 'use strict';
-var words=[
- {word:'APE',emoji:'🐝'}, {word:'UVA',emoji:'🍇'},
- {word:'CANE',image:'assets/habitat/cane.webp',emoji:'🐶'},
- {word:'RANA',image:'assets/colori/rana.svg',emoji:'🐸'},
- {word:'TOPO',emoji:'🐭'}, {word:'MARE',image:'assets/habitat/mare.webp',emoji:'🌊'},
- {word:'SOLE',emoji:'☀️'}, {word:'GATTO',emoji:'🐱'},
- {word:'MAMMA',emoji:'💗'}, {word:'BABBO',emoji:'💛'},
- {word:'NONNO',emoji:'🌻'}, {word:'NONNA',emoji:'🌸'},
- {word:'BRAVO',emoji:'🌟'}
-];
+// La seconda serie si apre soltanto con ?serie=2 (scelta dell'educatore).
+var words=window.DiegoLessico.parole(/(?:^|[?&])serie=2(?:&|$)/.test(location.search)?2:1);
 var index=0,tiles=[],chosen=[],active=false,done=false,attempts=0;
 var currentSound=null,audioToken=0,revealTimer=0;
 function $(id){return document.getElementById(id)}
@@ -152,7 +144,7 @@ function available(){return !window.DiegoAudio||window.DiegoAudio.isEnabled()}
 function unlock(){
  if(!active)return;
  $('tiles').classList.remove('locked');
- if(!done)$('instruction').textContent='Tocca le lettere';
+ if(!done)$('instruction').textContent='☝';
 }
 function speak(){
  if(!active)return;
@@ -160,7 +152,7 @@ function speak(){
  var token=audioToken, finished=false, completedWord=done;
  if(!completedWord){
   $('tiles').classList.add('locked');
-  $('instruction').textContent='Ascolta la parola';
+  $('instruction').textContent='🔊';
  }
  if(!available()){unlock();return}
  function finish(){
@@ -263,7 +255,7 @@ $('home').onclick=function(){stopVoice();location.href='index.html'};
 $('fullscreen').onclick=function(){var e=document.documentElement;try{if(document.fullscreenElement){document.exitFullscreen()}else if(e.requestFullscreen){e.requestFullscreen()}}catch(x){}};
 function updateSound(){
  var enabled=available();
- $('sound').textContent=enabled?'SUONI':'MUTO';
+ $('sound').textContent=enabled?'🔊':'🔇';
  $('sound').setAttribute('aria-pressed',String(enabled));
 }
 $('sound').onclick=function(){

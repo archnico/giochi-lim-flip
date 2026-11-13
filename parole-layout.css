@@ -59,3 +59,9 @@ button{-webkit-user-select:none;user-select:none}
  #picture{font-size:185px;font-size:clamp(130px,24vw,240px)}
 }
 @media(prefers-reduced-motion:reduce){.tile,.tool,.bigbtn{transition:none}}
+
+/* I comandi sono grandi pittogrammi: istruzioni complete solo in aria-label/title. */
+.toolbar .tool{min-width:58px;min-height:58px;font-size:28px;padding:5px 9px}
+.controls .tool{font-size:clamp(26px,3.6vw,42px);line-height:1}
+#start{min-width:128px;font-size:clamp(42px,6vw,76px);line-height:1}
+@media(max-width:650px){.toolbar .tool{min-width:46px;min-height:46px;font-size:24px;padding:3px}.controls .tool{font-size:30px}}
