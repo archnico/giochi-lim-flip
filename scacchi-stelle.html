@@ -15,11 +15,11 @@ main{max-width:1500px;margin:auto;padding:10px 24px;display:grid;grid-template-c
 .controls{display:flex;flex-direction:column;/*diego-fallback*/--diego-gap:15px;grid-gap:15px;/*end-fallback*/gap:15px;align-items:stretch}.controls h1{/*diego-fallback*/font-size:3.6vw;/*end-fallback*/font-size:clamp(30px,3.6vw,60px);margin:0}.instruction{/*diego-fallback*/font-size:2.4vw;/*end-fallback*/font-size:clamp(24px,2.4vw,39px);font-weight:900;min-height:2em;color:#ffe076}
 .pick{display:flex;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px}.pick button{flex:1;min-height:78px;border:3px solid #64727c;border-radius:18px;background:#232c32;color:#fff;font-size:24px;font-weight:800}
 .pick button.on{border-color:#ffd34d;background:#39442d}.pick img.pick-piece{display:block;width:50px;height:50px;object-fit:contain;margin:0 auto 3px;pointer-events:none}
-.modes{display:flex;/*diego-fallback*/--diego-gap:12px;grid-gap:12px;/*end-fallback*/gap:12px}.modes button{flex:1;min-height:75px;border:3px solid #79858d;border-radius:18px;background:#27323b;color:#fff;font-weight:850;font-size:20px}
+.modes{display:flex;/*diego-fallback*/--diego-gap:12px;grid-gap:12px;/*end-fallback*/gap:12px}.modes button{flex:1;min-width:0;min-height:75px;border:3px solid #79858d;border-radius:18px;background:#27323b;color:#fff;font-weight:850;font-size:18px}
 .modes button.on{border-color:#f6cd48;background:#56461e}
 .again{min-height:68px;border:0;background:#ffd34d;color:#1b1b1b;border-radius:18px;font-size:26px;font-weight:900}
 .progress{font-size:25px;font-weight:800}.hint{font-size:19px;color:#aebcc4}
-@media(max-width:850px){main{grid-template-columns:1fr;justify-items:center;padding:12px;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px}.board{/*diego-fallback*/width:90vw;/*end-fallback*/width:min(90vw,62vh)}.controls{width:100%;max-width:620px}.controls h1{font-size:26px}.instruction{min-height:0;font-size:25px}.pick button{min-height:57px}.pick img.pick-piece{display:inline-block;vertical-align:middle;width:31px;height:31px;margin:0 5px 0 0}.modes button{min-height:55px}.hint{font-size:15px}}
+@media(max-width:850px){main{grid-template-columns:1fr;justify-items:center;padding:12px;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px}.board{/*diego-fallback*/width:90vw;/*end-fallback*/width:min(90vw,62vh)}.controls{width:100%;max-width:620px}.controls h1{font-size:26px}.instruction{min-height:0;font-size:25px}.pick button{min-height:57px}.pick img.pick-piece{display:inline-block;vertical-align:middle;width:31px;height:31px;margin:0 5px 0 0}.modes button{min-height:55px;font-size:13px;padding:5px 2px}.hint{font-size:15px}}
 </style><link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script></head><body>
 <header><strong>DIEGO · SCACCHI</strong><a href="index.html">⌂ MENU</a></header>
 <main>
@@ -27,7 +27,7 @@ main{max-width:1500px;margin:auto;padding:10px 24px;display:grid;grid-template-c
 <section class="controls">
 <h1>⭐ Scacchi Stellari</h1>
 <div class="instruction" id="instruction" role="status">Tocca la stella!</div>
-<div class="progress" id="progress">★ 0 / 3</div>
+<div class="progress" id="progress" aria-live="polite">★ 0 / 3</div>
 <div class="pick" aria-label="Scegli il pezzo">
 <button data-piece="king"><img class="pick-piece" src="assets/scacchi/cburnett/wK.svg" alt="" aria-hidden="true" draggable="false"> RE</button>
 <button data-piece="rook"><img class="pick-piece" src="assets/scacchi/cburnett/wR.svg" alt="" aria-hidden="true" draggable="false"> TORRE</button>
@@ -35,20 +35,24 @@ main{max-width:1500px;margin:auto;padding:10px 24px;display:grid;grid-template-c
 </div>
 <div class="modes" aria-label="Difficoltà">
 <button data-mode="easy">1 · FACILE</button>
-<button data-mode="two">2 · DUE TOCCHI</button>
+<button data-mode="two">2 · PIÙ STELLE</button>
+<button data-mode="challenge">3 · SFIDA</button>
 </div>
 <button class="again" id="again">↻ RICOMINCIA</button>
-<div class="hint">Un doppio tocco sul pezzo non annulla mai la selezione. Una stella per volta.</div>
+<div class="hint">Tocca il pezzo e poi la stella. Nei livelli 2 e 3 puoi raccogliere le stelle nell’ordine che preferisci.</div>
 </section></main>
 <script src="diego-audio.js"></script><script>
 'use strict';
 const plans={
- king:{name:'RE',glyph:'♔',asset:'assets/scacchi/cburnett/wK.svg',start:[6,4],targets:[[5,4],[4,4],[3,3]]},
- rook:{name:'TORRE',glyph:'♖',asset:'assets/scacchi/cburnett/wR.svg',start:[6,0],targets:[[2,0],[2,4],[5,4]]},
- queen:{name:'REGINA',glyph:'♕',asset:'assets/scacchi/cburnett/wQ.svg',start:[6,0],targets:[[4,2],[4,5],[1,5]]}
+ king:{name:'RE',glyph:'♔',asset:'assets/scacchi/cburnett/wK.svg',start:[6,4],
+       targets:[[5,4],[4,4],[3,3]],challenge:[[5,4],[5,5],[4,5],[3,4],[2,5]]},
+ rook:{name:'TORRE',glyph:'♖',asset:'assets/scacchi/cburnett/wR.svg',start:[6,0],
+       targets:[[2,0],[2,4],[5,4]],challenge:[[6,4],[2,4],[2,1],[4,1],[4,6]]},
+ queen:{name:'REGINA',glyph:'♕',asset:'assets/scacchi/cburnett/wQ.svg',start:[6,0],
+        targets:[[4,2],[4,5],[1,5]],challenge:[[4,2],[4,5],[1,5],[2,2],[6,6]]}
 };
 const chessScope=DiegoRuntime.createScope();
-let piece='rook',mode='easy',position,step,selected,locked=false;
+let piece='rook',mode='easy',position,step,selected,locked=false,remaining=[];
 const board=document.getElementById('board'),instruction=document.getElementById('instruction'),progress=document.getElementById('progress');
 // Fix in pixel, not in grid-content height: a rook moving must never
 // stretch a row. Explicit height also supports older Samsung Tizen browsers
@@ -67,16 +71,23 @@ function allowed(a,b){
  if(!dr&&!dc)return false;
  return piece==='king'?Math.max(dr,dc)===1:piece==='rook'?dr===0||dc===0:dr===0||dc===0||dr===dc;
 }
+function totalStars(){return mode==='challenge'?plans[piece].challenge.length:plans[piece].targets.length}
+function availableStars(){
+ if(mode==='easy')return step<totalStars()?[plans[piece].targets[step]]:[];
+ return remaining;
+}
 function reset(){
  chessScope.reset();DiegoAudio.stop();
  position=plans[piece].start.slice();step=0;selected=mode==='easy';locked=false;
+ remaining=(mode==='challenge'?plans[piece].challenge:plans[piece].targets).map(p=>p.slice());
  instruction.textContent=mode==='easy'?'TOCCA LA STELLA!':'TOCCA IL PEZZO!';
  draw();
 }
 function draw(){
- progress.textContent='★ '+step+' / '+plans[piece].targets.length;
+ progress.textContent='★ '+step+' / '+totalStars();
  for(const b of document.querySelectorAll('[data-piece]'))b.classList.toggle('on',b.dataset.piece===piece);
  for(const b of document.querySelectorAll('[data-mode]'))b.classList.toggle('on',b.dataset.mode===mode);
+ const stars=availableStars();
  board.replaceChildren();
  for(let r=0;r<8;r++)for(let c=0;c<8;c++){
   const cell=document.createElement('button');
@@ -85,8 +96,8 @@ function draw(){
   if(same([r,c],position)){
    cell.classList.toggle('active',selected);
    const p=document.createElement('img');p.className='piece';p.src=plans[piece].asset;p.alt='';p.setAttribute('aria-hidden','true');p.draggable=false;cell.append(p);
-  }else if(step<3&&same([r,c],plans[piece].targets[step])){
-   cell.setAttribute('aria-label','Stella obiettivo');
+  }else if(stars.some(p=>same(p,[r,c]))){
+   cell.setAttribute('aria-label','Stella da raccogliere');
    cell.innerHTML='<svg class="star" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 7 L62 35 L92 38 L69 58 L77 90 L50 73 L23 90 L31 58 L8 38 L38 35 Z" fill="#F99D1B" stroke="#12354E" stroke-width="4"/></svg>';
   }
   cell.addEventListener('click',()=>tap(r,c));board.append(cell);
@@ -94,23 +105,37 @@ function draw(){
  fitChessboard();
 }
 function tap(r,c){
- if(locked||step>=3)return;
+ if(locked||step>=totalStars())return;
  const dest=[r,c];
  if(same(dest,position)){
-  selected=true;
+  selected=true; // Never deselect the piece on a repeated tap.
   instruction.textContent='ORA TOCCA LA STELLA!';
   draw();return;
  }
  if(!selected){instruction.textContent='PRIMA TOCCA IL PEZZO!';return;}
- if(!same(dest,plans[piece].targets[step])){instruction.textContent='CERCA LA STELLA!';return;}
  if(!allowed(position,dest)){instruction.textContent='QUESTA MOSSA NON VA BENE';return;}
+ const stars=availableStars();
+ const index=stars.findIndex(p=>same(p,dest));
+ // From level 2, non-star moves are permitted so the king can reach
+ // distant stars; only collecting a star advances the progress counter.
+ if(index<0){
+  if(mode==='easy'){instruction.textContent='CERCA LA STELLA!';return;}
+  position=dest;selected=false;
+  instruction.textContent='AVVICINATI ALLE STELLE!';
+  draw();return;
+ }
  position=dest;step++;selected=mode==='easy';
- instruction.textContent=step===3?'⭐ ⭐ ⭐':'⭐';
- DiegoAudio.play(step===3?'fantastico':'stella');
+ if(mode!=='easy')remaining.splice(index,1);
+ const finished=step===totalStars();
+ instruction.textContent=finished?'⭐ ⭐ ⭐':'⭐';
+ DiegoAudio.play(finished?'fantastico':'stella');
  draw();
- if(step<3){
+ if(!finished){
   locked=true;
-  chessScope.later(()=>{locked=false;instruction.textContent=mode==='easy'?'TOCCA LA STELLA!':'TOCCA IL PEZZO!';},650);
+  chessScope.later(()=>{
+   locked=false;
+   instruction.textContent=mode==='easy'?'TOCCA LA STELLA!':'TOCCA IL PEZZO!';
+  },650);
  }
 }
 document.querySelectorAll('[data-piece]').forEach(b=>b.addEventListener('click',()=>{piece=b.dataset.piece;reset()}));
