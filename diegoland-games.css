@@ -117,6 +117,51 @@ html[data-diego-game=scacchi] .again{
   background:var(--land-sun);color:var(--land-deep);
 }
 html[data-diego-game=scacchi] .hint{color:#DBEAE6}
+/* SCACCHI · Wada/Zissou 1.3 · quadro stabile e palette canonica.
+   La geometria 8x8 sta nel CSS del gioco; qui solo colore e leggibilità. */
+html[data-diego-game=scacchi] body {
+  background:linear-gradient(145deg,var(--land-deep) 0%,#175D70 100%);
+}
+html[data-diego-game=scacchi] header {
+  background:var(--land-deep);border-bottom-color:var(--land-ocean);
+  color:var(--land-paper);
+}
+html[data-diego-game=scacchi] .board {
+  border-color:var(--land-pale);
+  background:var(--land-deep);
+  box-shadow:0 7px 0 #05123077,0 14px 26px #05123077;
+}
+html[data-diego-game=scacchi] .sq.light {background:var(--land-paper)}
+html[data-diego-game=scacchi] .sq.dark {background:var(--land-lagoon)}
+html[data-diego-game=scacchi] .piece {
+  color:var(--land-deep);
+  text-shadow:0 1px 0 var(--land-paper),0 2px 2px #05123044;
+  display:block;white-space:nowrap;pointer-events:none;
+}
+html[data-diego-game=scacchi] .star {
+  filter:none;max-width:70%;max-height:70%;
+}
+html[data-diego-game=scacchi] .sq.active {
+  box-shadow:inset 0 0 0 6px var(--land-sun);
+}
+html[data-diego-game=scacchi] .sq:focus {
+  outline:3px solid var(--land-ocean);outline-offset:-4px;
+}
+html[data-diego-game=scacchi] .controls h1,
+html[data-diego-game=scacchi] .progress {color:var(--land-paper)}
+html[data-diego-game=scacchi] .instruction {color:var(--land-pale)}
+html[data-diego-game=scacchi] .pick button,
+html[data-diego-game=scacchi] .modes button {
+  background:#23596C;color:var(--land-paper);border-color:var(--land-lagoon);
+}
+html[data-diego-game=scacchi] .pick button.on,
+html[data-diego-game=scacchi] .modes button.on {
+  background:var(--land-pale);color:var(--land-deep);border-color:var(--land-sun);
+}
+html[data-diego-game=scacchi] .again {
+  background:var(--land-sun);color:var(--land-deep);
+}
+html[data-diego-game=scacchi] .hint {color:#DFEEE7}
 /* TROVA NUMERO · carta avorio, capitoli giallo/laguna/corallo. */
 html[data-diego-game=numeri] body{background:var(--land-deep);color:var(--land-paper)}
 html[data-diego-game=numeri] header,

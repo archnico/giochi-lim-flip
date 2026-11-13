@@ -7,10 +7,10 @@
 header{display:flex;justify-content:space-between;align-items:center;padding:10px 22px;background:#20272d}
 header strong{font-size:24px}header a{color:#fff;text-decoration:none;border:2px solid #8998a4;border-radius:14px;padding:10px 20px;font-size:20px;font-weight:800}
 main{max-width:1500px;margin:auto;padding:10px 24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,.52fr);/*diego-fallback*/--diego-gap:26px;grid-gap:26px;/*end-fallback*/gap:26px;align-items:center}
-.board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));/*diego-fallback*/width:76vh;/*end-fallback*/width:min(76vh,76vw,850px);max-width:100%;aspect-ratio:1;border:8px solid #e7e2d4;border-radius:12px;overflow:hidden;box-shadow:0 7px 32px #0009}
-.sq{border:0;border-radius:0;position:relative;padding:0;display:grid;place-items:center;min-width:0;min-height:0}
+.board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-template-rows:repeat(8,minmax(0,1fr));/*diego-fallback*/width:76vh;/*end-fallback*/width:min(76vh,76vw,850px);max-width:100%;aspect-ratio:1;border:8px solid #e7e2d4;border-radius:12px;overflow:hidden;box-shadow:0 7px 32px #0009}
+.sq{border:0;border-radius:0;position:relative;padding:0;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;overflow:hidden}
 .light{background:#f1e4c9}.dark{background:#87a48c}
-.piece{font-family:"DejaVu Sans","Segoe UI Symbol",serif;/*diego-fallback*/font-size:7vh;/*end-fallback*/font-size:clamp(37px,7vh,93px);line-height:1;color:#fff;text-shadow:0 2px 3px #111,-2px -2px 2px #111,2px -2px 2px #111;pointer-events:none}
+.piece{font-family:"DejaVu Sans","Segoe UI Symbol",serif;/*diego-fallback*/font-size:7vh;/*end-fallback*/font-size:var(--chess-piece-size, 64px);line-height:1;color:#12354E;text-shadow:0 2px 3px #111,-2px -2px 2px #111,2px -2px 2px #111;pointer-events:none}
 .sq.active{box-shadow:inset 0 0 0 7px #f2c230}.star{width:72%;height:72%;filter:drop-shadow(0 2px 2px #664);pointer-events:none}
 .controls{display:flex;flex-direction:column;/*diego-fallback*/--diego-gap:15px;grid-gap:15px;/*end-fallback*/gap:15px;align-items:stretch}.controls h1{/*diego-fallback*/font-size:3.6vw;/*end-fallback*/font-size:clamp(30px,3.6vw,60px);margin:0}.instruction{/*diego-fallback*/font-size:2.4vw;/*end-fallback*/font-size:clamp(24px,2.4vw,39px);font-weight:900;min-height:2em;color:#ffe076}
 .pick{display:flex;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px}.pick button{flex:1;min-height:78px;border:3px solid #64727c;border-radius:18px;background:#232c32;color:#fff;font-size:24px;font-weight:800}
@@ -21,7 +21,7 @@ main{max-width:1500px;margin:auto;padding:10px 24px;display:grid;grid-template-c
 .progress{font-size:25px;font-weight:800}.hint{font-size:19px;color:#aebcc4}
 @media(max-width:850px){main{grid-template-columns:1fr;justify-items:center;padding:12px;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px}.board{/*diego-fallback*/width:90vw;/*end-fallback*/width:min(90vw,62vh)}.controls{width:100%;max-width:620px}.controls h1{font-size:26px}.instruction{min-height:0;font-size:25px}.pick button{min-height:57px}.pick span{display:inline;font-size:29px}.modes button{min-height:55px}.hint{font-size:15px}}
 </style><link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script></head><body>
-<header><strong>DIEGO · LIM · SCACCHI</strong><a href="index.html">⌂ GIOCHI</a></header>
+<header><strong>DIEGO · SCACCHI</strong><a href="index.html">⌂ MENU</a></header>
 <main>
 <div class="board" id="board" aria-label="Scacchiera interattiva"></div>
 <section class="controls">
@@ -50,6 +50,17 @@ const plans={
 const chessScope=DiegoRuntime.createScope();
 let piece='rook',mode='easy',position,step,selected,locked=false;
 const board=document.getElementById('board'),instruction=document.getElementById('instruction'),progress=document.getElementById('progress');
+// Fix in pixel, not in grid-content height: a rook moving must never
+// stretch a row. Explicit height also supports older Samsung Tizen browsers
+// that do not consistently honor aspect-ratio on a CSS grid.
+function fitChessboard(){
+ const width=board.getBoundingClientRect().width;
+ if(!width)return;
+ const size=Math.round(width*100)/100;
+ board.style.height=size+'px';
+ board.style.setProperty('--chess-piece-size',Math.max(20,Math.min(84,Math.round((size-16)/10.2)))+'px');
+}
+window.addEventListener('resize',fitChessboard);
 const same=(a,b)=>a[0]===b[0]&&a[1]===b[1];
 function allowed(a,b){
  const dr=Math.abs(a[0]-b[0]),dc=Math.abs(a[1]-b[1]);
@@ -76,10 +87,11 @@ function draw(){
    const p=document.createElement('span');p.className='piece';p.textContent=plans[piece].glyph;cell.append(p);
   }else if(step<3&&same([r,c],plans[piece].targets[step])){
    cell.setAttribute('aria-label','Stella obiettivo');
-   cell.innerHTML='<svg class="star" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 7 L62 35 L92 38 L69 58 L77 90 L50 73 L23 90 L31 58 L8 38 L38 35 Z" fill="#ffd12c" stroke="#a97300" stroke-width="4"/></svg>';
+   cell.innerHTML='<svg class="star" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 7 L62 35 L92 38 L69 58 L77 90 L50 73 L23 90 L31 58 L8 38 L38 35 Z" fill="#F99D1B" stroke="#12354E" stroke-width="4"/></svg>';
   }
   cell.addEventListener('click',()=>tap(r,c));board.append(cell);
  }
+ fitChessboard();
 }
 function tap(r,c){
  if(locked||step>=3)return;
