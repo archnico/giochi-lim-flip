@@ -23,4 +23,4 @@ da password. La release non include dati personali o file di lavoro.
 
 Licenza codice: MIT (LICENSE). Crediti per foto e illustrazioni:
 FOTOGRAFIE-E-LICENZE.md, FOTO-ASSOCIAZIONI-E-LICENZE.md,
-ILLUSTRAZIONI-E-LICENZE.md, AUDIO-E-LICENZE.md e crediti-foto.html.
+ILLUSTRAZIONI-E-LICENZE.md e crediti-foto.html.
