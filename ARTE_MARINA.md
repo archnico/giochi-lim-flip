@@ -9,7 +9,7 @@ La versione grafica scelta dall’utente è la **tavola collage** con:
 Palette di riferimento: #12354E, #0093A5, #B4CDC2, #F99D1B, #FFEFAE, #F48067, #DD4027 e #FFF9EC.
 Nome pubblico della piattaforma: **Diego**; Diegoland indica il tema.
 
-Le derivazioni WebP in `assets/diegoland/` sono state ricavate dal **set esatto indicato dall’utente**, usando il suo screenshot. L’originale dello screenshot è custodito nell’archivio privato e non viene pubblicato per evitare di esporre i comandi del telefono.
+Le derivazioni WebP in `assets/diegoland/` sono state ricavate dal **set esatto indicato dall’utente**, usando il suo screenshot. L’originale dello screenshot è custodito localmente in `~/src/diego/Consegne/Diego_riferimento_grafico_2026-11-13.jpg`, non pubblicato per evitare di esporre i comandi del telefono.
 
 Applicazione iniziale: figure sulle grandi tessere Home (Pregrafismo, Acqua, Animali) e palette CSS `diegoland-arte.css`. Le immagini didattiche negli esercizi e le aree toccabili non vengono ridotte. Gli asset WebP sono locali e sono inseriti nell’elenco dei file del Service Worker; nessuna risorsa remota a runtime.
 
