@@ -137,3 +137,103 @@ html[data-diego-edition=web] #next{background:#DFF4E8;color:#0B5B43;border-color
   html[data-diego-edition=web] .tile,
   html[data-diego-edition=flip] .flip-card{transition:none}
 }
+
+
+/* DIEGOLAND 1.2 · Stati touch e pregrafismo coerenti.
+   Una carta Memory coperta DEVE nascondere il suo contenuto;
+   le tessere confermate devono restare riconoscibili anche senza il colore.
+   Nessuna modifica a dimensioni, hit target o fotografie. */
+html[data-diego-edition=flip] .tile.selected,
+html[data-diego-edition=flip] .sortitem.chosen {
+  border-color:var(--land-sun);
+  box-shadow:0 0 0 4px #F99D1B66,0 5px 0 #05123055;
+}
+html[data-diego-edition=flip] .tile.ok,
+html[data-diego-edition=flip] .mem.done {
+  background:#DEF4E7;border-color:var(--land-success);color:#0B5B43;
+}
+html[data-diego-edition=flip] .mem.closed {
+  color:transparent;
+  background:linear-gradient(145deg,#E3F1EA,var(--land-lagoon));
+  border-color:var(--land-paper);
+}
+html[data-diego-edition=flip] .mem.closed::after {
+  color:var(--land-deep);
+}
+html[data-diego-edition=flip] .sameexample {
+  background:var(--land-paper);color:var(--land-deep);
+  border-color:var(--land-pale);
+}
+html[data-diego-edition=flip] .habitat-animal {
+  background:var(--land-paper);border-color:var(--land-lagoon);
+}
+html[data-diego-edition=flip] .habitat-zone {
+  border-color:var(--land-paper);
+}
+html[data-diego-edition=flip] .habitat-zone.good {
+  border-color:var(--land-success);
+  box-shadow:0 0 0 7px #08795E66;
+}
+html[data-diego-edition=flip] .habitat-zone.wrong {
+  border-color:var(--land-fail);
+  box-shadow:0 0 0 7px #B9403066;
+}
+html[data-diego-edition=flip] .habitat-label {
+  color:var(--land-paper);
+  background:linear-gradient(transparent,#12354ED9 35%,#051230F2);
+}
+html[data-diego-edition=flip] .colori-figure {
+  background:var(--land-paper);border-color:var(--land-lagoon);
+}
+html[data-diego-edition=flip] .colori-choice {
+  background:var(--land-paper);border-color:var(--land-lagoon);
+}
+html[data-diego-edition=flip] .colori-choice.good {
+  background:#DEF4E7;border-color:var(--land-success);
+}
+html[data-diego-edition=flip] .colori-choice.wrong {
+  background:#FCE1D9;border-color:var(--land-fail);
+}
+html[data-diego-edition=flip] .match-photo.wrong {
+  border-color:var(--land-fail);
+}
+html[data-diego-edition=flip] .match-photo.good:after {
+  background:var(--land-success);color:var(--land-paper);
+}
+/* Il pregrafismo ha un fondale chiaro: l'aria intorno al foglio
+   non deve ereditare il blu scuro della home. */
+html[data-diego-page=pregrafismo] {
+  --sky:#E9F5F1;--ink:var(--land-deep);
+  --navy:var(--land-deep);--cyan:var(--land-ocean);
+  --yellow:var(--land-sun);--white:var(--land-paper);
+}
+html[data-diego-page=pregrafismo] #app,
+html[data-diego-page=pregrafismo] #menu,
+html[data-diego-page=pregrafismo] #play {
+  background:#E9F5F1;color:var(--land-deep);
+}
+html[data-diego-page=pregrafismo] .deck-tab {
+  color:var(--land-deep);background:var(--land-paper);
+  border-color:var(--land-lagoon);
+}
+html[data-diego-page=pregrafismo] .chapter:nth-child(5n) {
+  background:linear-gradient(138deg,#E8F5F3,#B4CDC2);
+}
+html[data-diego-page=pregrafismo] .chapter:last-child {
+  background:linear-gradient(138deg,#FFF9EC,#BFE1E0);
+  border-color:var(--land-ocean);
+}
+html[data-diego-page=pregrafismo] .chapter .stars {
+  color:#85500E;
+}
+html[data-diego-page=pregrafismo] .hud .counter {
+  color:var(--land-deep);background:var(--land-pale);
+  border-color:var(--land-sun);
+}
+html[data-diego-page=pregrafismo] .board-wrap {
+  border-color:var(--land-ocean);
+}
+html[data-diego-page=pregrafismo] .world-mare,
+html[data-diego-page=pregrafismo] .world-acqua {
+  border-color:var(--land-ocean);
+}

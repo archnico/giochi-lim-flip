@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="it" data-diego-edition="flip">
+<html lang="it" data-diego-edition="flip" data-diego-page="pregrafismo">
 <head><meta name="robots" content="noindex,nofollow"><meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -248,7 +248,7 @@ function draw(){state.touchMatrix=null;clear(tracks);clear(markers);clear(drawnI
  document.getElementById('decorA').textContent=lesson[2]||'';
  document.getElementById('decorB').textContent=lesson[3]||'';
  state.parts=[];var raw=lesson[1];
-raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#ffc978','stroke-width':'51','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.53'},tracks);var p=svg('path',{d:d,fill:'none',stroke:'#e8a13e','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':'3 26'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#20a8d8','stroke-width':'27','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});fitLesson();activate()}
+raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#FFEFAE','stroke-width':'51','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.53'},tracks);var p=svg('path',{d:d,fill:'none',stroke:'#BB7125','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':'3 26'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#0093A5','stroke-width':'27','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});fitLesson();activate()}
 /* A compact lesson viewBox gives the drawn path more of the interactive surface.
    Coordinates remain in original SVG space: touch mapping and checkpoints stay exact. */
 function fitLesson(){

@@ -57,3 +57,50 @@ footer{min-height:0;padding:4px 20px;font-size:13px}
 .flip-home .flip-card h2{font-size:clamp(27px,2.25vw,45px);overflow-wrap:normal;word-break:normal}
 .flip-home .flip-pregrafismo .flip-copy{max-width:60%}
 @media(max-width:800px){.flip-home .flip-card h2{font-size:clamp(29px,5vw,42px)}}
+
+
+/* Diego · fotografie protagoniste · LIM + smartphone · 2026-11-13
+   Niente ritagli: immagini intere e pulsanti grandi.
+   CSS Grid e media query compatibili con Samsung Flip 2 (Tizen 5). */
+.match-photo{display:flex;align-items:center;justify-content:center}
+.match-photo img{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain}
+.match-photo-grid{grid-gap:16px;gap:16px}
+.match-simple{gap:10px}
+.match-photo{padding:4px}
+.colori-figure img{width:100%}
+@media (max-width:800px) and (orientation:portrait){
+  .match-wide .gamehead .sub,.habitat-wide .gamehead .sub,.colori-wide .gamehead .sub{display:none}
+  .match-simple{gap:6px}
+  .match-word{font-size:10vw;font-size:clamp(34px,10vw,56px);line-height:1.05}
+  .match-photo-grid{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:repeat(2,minmax(0,1fr));
+    grid-gap:8px;gap:8px;
+  }
+  .match-photo{border-width:3px;border-radius:16px;padding:2px;min-height:0}
+  .habitatboard{grid-template-rows:minmax(0,1.5fr) minmax(0,.8fr)}
+  .habitat-animal>img{max-height:calc(100% - 40px)}
+  .habitat-name{font-size:24px;padding:2px 12px}
+  .colori-board{grid-template-rows:minmax(0,1.55fr) minmax(0,.8fr)}
+  .colori-figure{padding:4px}
+  .colori-figure img{max-height:calc(100% - 38px)}
+  .colori-figure strong{font-size:24px;padding:1px}
+}
+@media (max-width:950px) and (orientation:landscape) and (max-height:550px){
+  /* La barra principale mantiene sempre il pulsante Menu. */
+  .match-wide .gamehead,.habitat-wide .gamehead,.colori-wide .gamehead{display:none}
+  .match-simple{gap:4px}
+  .match-word{font-size:5vw;font-size:clamp(28px,5vw,46px);line-height:1}
+  .match-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:minmax(0,1fr);grid-gap:8px;gap:8px}
+  .match-photo{padding:2px;border-width:3px;border-radius:12px}
+  .habitatboard{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);grid-template-rows:minmax(0,1fr);grid-gap:8px;gap:8px}
+  .habitat-choices{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(2,minmax(0,1fr));grid-gap:6px;gap:6px}
+  .habitatboard.level2 .habitat-choices{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(3,minmax(0,1fr))}
+  .habitat-name{font-size:23px;padding:2px 10px}
+  .habitat-animal>img{max-height:calc(100% - 30px)}
+  .habitat-label{font-size:18px;padding:2px}
+  .colori-board{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);grid-gap:8px;gap:8px}
+  .colori-choices{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(3,minmax(0,1fr))}
+  .colori-figure img{max-height:calc(100% - 32px)}
+  .colori-figure strong{font-size:22px}
+}
