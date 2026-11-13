@@ -136,7 +136,7 @@ html[data-diego-game=scacchi] .sq.dark {background:var(--land-lagoon)}
 html[data-diego-game=scacchi] .piece {display:block;width:78%;height:78%;object-fit:contain;pointer-events:none;user-select:none;-webkit-user-select:none}
 html[data-diego-game=scacchi] .pick-piece {object-fit:contain;pointer-events:none}
 html[data-diego-game=scacchi] .star {
-  filter:none;max-width:70%;max-height:70%;
+  filter:none;max-width:86%;max-height:86%;
 }
 html[data-diego-game=scacchi] .sq.active {
   box-shadow:inset 0 0 0 6px var(--land-sun);
