@@ -1,6 +1,6 @@
 <!doctype html>
-<html lang="it" data-diego-edition="flip" data-diego-page="pregrafismo">
-<head><meta name="robots" content="noindex,nofollow"><meta name="robots" content="noindex,nofollow">
+<html lang="it" data-diego-edition="flip">
+<head><meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Pregrafismo — Diego</title>
@@ -57,8 +57,8 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.particle,#celebrate .bigstar{animation:none}}
 </style>
 <link rel="stylesheet" href="pregrafismo-v2.css">
-<script src="diego-runtime.js"></script>
 <link rel="stylesheet" href="diegoland.css">
+<script src="diego-runtime.js"></script>
 </head>
 <body>
 <div id="app">
@@ -76,11 +76,12 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
     <div class="deck-tabs" role="group" aria-label="Scegli i percorsi">
       <button id="deckPC" type="button" class="deck-tab selected" aria-pressed="true">✏️ CLASSICI PC · 32</button>
       <button id="deckExtra" type="button" class="deck-tab" aria-pressed="false">⭐ ALTRI PERCORSI · 56</button>
+      <button id="deckNuovi" type="button" class="deck-tab" aria-pressed="false">🐟 DISEGNI E LETTERE · 24</button>
     </div>
     <div id="chapters" class="chapters"></div>
   </div>
   <div id="play" hidden>
-    <div class="hud"><div><h1 id="ex-title"></h1><p id="ex-subtitle"></p></div><div class="hud-right"><span class="counter" id="ex-counter"></span><div class="meter" aria-label="Avanzamento del disegno"><span id="trace-progress"></span></div></div></div>
+    <div class="hud"><div><h1 id="ex-title"></h1><p id="ex-subtitle"></p></div><div class="hud-right"><span class="counter" id="ex-counter"></span><span id="mastery-stars" hidden aria-label="Allenamento cinque stelle"></span><div class="meter" aria-label="Avanzamento del disegno"><span id="trace-progress"></span></div></div></div>
     <div class="board-wrap">
       <div class="illustration-wing left-wing" aria-hidden="true"><svg id="scene-side-left" viewBox="0 0 220 500"></svg></div>
       <div class="illustration-wing right-wing" aria-hidden="true"><svg id="scene-side-right" viewBox="0 0 220 500"></svg></div>
@@ -107,6 +108,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
           <circle cx="345" cy="105" r="15" fill="#73cbaa"/>
           <circle cx="365" cy="211" r="8" fill="#50b7da"/>
         </svg>
+        <img class="reward-sub" src="assets/diegoland/sottomarino.webp" alt="" aria-hidden="true">
       </div>
     </div>
     <div class="board-tools">
@@ -118,7 +120,9 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
     <div id="teacherTools" class="teacher-tools" hidden>
       <button id="prev" type="button" class="btn">← PRIMA</button>
       <button id="hint" type="button" class="btn">▶ MOSTRA</button>
-      <button id="easy" type="button" class="btn" aria-pressed="false">◎ PRECISO</button>
+      <button id="easy" type="button" class="btn" aria-label="Cambia aiuti di scrittura">☺ ASSISTITO</button>
+      <button id="mastery" type="button" class="btn" aria-pressed="false">☆ 5 STELLE</button>
+      <button id="report" type="button" class="btn">▤ PROGRESSI</button>
       <button id="decor" type="button" class="btn" aria-pressed="false">☆ SCENARI</button>
       <button id="zoomOut" type="button" class="btn">−</button>
       <button id="zoomIn" type="button" class="btn">+</button>
@@ -128,6 +132,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 <script src="diego-audio.js"></script>
 <script src="pregrafismo-scene.js"></script>
 <script src="pregrafismo-pc-data.js"></script>
+<script src="pregrafismo-nuovi.js"></script>
 <script>
 (function(){
 'use strict';
@@ -206,40 +211,64 @@ var chapters=[
 ]}
 ];
 if(!window.PregrafismoPCChapters||window.PregrafismoPCChapters.length!==4)throw new Error('Percorsi PC mancanti');
-chapters=window.PregrafismoPCChapters.concat(chapters);
-var state={deck:'pc',chapter:-1,level:0,stroke:0,parts:[],samples:[],index:0,down:false,id:null,lastTouch:0,done:false,easy:false,decorated:false,session:0,zoom:1,inputLast:null,activeBrush:null,brushLast:null};
-var sessionTimers=[],demoTimer=0,audioCtx=null,progress={},traceRenderTimer=0;
+chapters=window.PregrafismoPCChapters.concat(chapters,window.PregrafismoNuoviChapters||[]);
+var state={deck:'pc',chapter:-1,level:0,stroke:0,parts:[],samples:[],index:0,down:false,id:null,lastTouch:0,done:false,easy:true,mode:0,mastery:false,masteryStep:0,decorated:false,session:0,zoom:1,inputLast:null,activeBrush:null,brushLast:null,brushD:'',strokeCaptures:[],errors:0,startedAt:0};
+var sessionTimers=[],demoTimer=0,audioCtx=null,progress={},traceRenderTimer=0,masteryProgress={},attempts={};
 try{progress=JSON.parse(localStorage.getItem('diego-pregrafismo-progress-v1')||'{}')||{}}catch(e){progress={}}
-function save(){try{localStorage.setItem('diego-pregrafismo-progress-v1',JSON.stringify(progress))}catch(e){}}
+try{masteryProgress=JSON.parse(localStorage.getItem('diego-pregrafismo-5stelle-v1')||'{}')||{};attempts=JSON.parse(localStorage.getItem('diego-pregrafismo-attempts-v1')||'{}')||{}}catch(e){masteryProgress={};attempts={}}
+function save(){try{localStorage.setItem('diego-pregrafismo-progress-v1',JSON.stringify(progress));
+ localStorage.setItem('diego-pregrafismo-5stelle-v1',JSON.stringify(masteryProgress));
+ localStorage.setItem('diego-pregrafismo-attempts-v1',JSON.stringify(attempts))}catch(e){}}
 function later(fn,ms){var id=setTimeout(fn,ms);sessionTimers.push(id);return id}
 function clearTimers(){sessionTimers.forEach(clearTimeout);sessionTimers=[];if(traceRenderTimer){clearTimeout(traceRenderTimer);traceRenderTimer=0}stopDemo()}
 function svg(tag,attr,parent){var n=document.createElementNS(S,tag);Object.keys(attr||{}).forEach(function(k){n.setAttribute(k,attr[k])});if(parent)parent.appendChild(n);return n}
 function clear(node){while(node.firstChild)node.removeChild(node.firstChild)}
 function setMessage(text){message.textContent=text}
 function title(){return chapters[state.chapter].levels[state.level][0]}
-function themeIndex(){return state.chapter<4?[0,2,5,6][state.chapter]:state.chapter-4}
+function themeIndex(){return state.chapter<4?[0,2,5,6][state.chapter]:Math.min(6,state.chapter-4)}
 function deckButtons(){
- var pc=state.deck==='pc',a=document.getElementById('deckPC'),b=document.getElementById('deckExtra');
- a.className='deck-tab'+(pc?' selected':'');b.className='deck-tab'+(pc?'':' selected');
- a.setAttribute('aria-pressed',String(pc));b.setAttribute('aria-pressed',String(!pc));menu.className=pc?'pc-deck':'extra-deck'
+ var names=['pc','extra','nuovi'],ids=['deckPC','deckExtra','deckNuovi'];
+ names.forEach(function(name,i){var b=document.getElementById(ids[i]),selected=state.deck===name;
+  b.className='deck-tab'+(selected?' selected':'');b.setAttribute('aria-pressed',String(selected))});
+ menu.className=state.deck+'-deck'
 }
 function setDeck(name){state.deck=name;chapterMenu()}
 document.getElementById('deckPC').onclick=function(){setDeck('pc')};
 document.getElementById('deckExtra').onclick=function(){setDeck('extra')};
+document.getElementById('deckNuovi').onclick=function(){setDeck('nuovi')};
 
-function labelButtons(){var c=chapters[state.chapter];document.getElementById('ex-title').textContent=title();document.getElementById('ex-subtitle').textContent=(c.levels[state.level][4]||c.title)+' · 👆 → ⭐';document.getElementById('ex-counter').textContent=(state.level+1)+' / '+c.levels.length;document.getElementById('easy').textContent=state.easy?'☺ FACILE':'◎ PRECISO';document.getElementById('easy').setAttribute('aria-pressed',String(state.easy))}
+function effectiveMode(){return state.mastery?Math.max(state.mode,[0,0,1,1,2][state.masteryStep]):state.mode}
+function labelButtons(){var c=chapters[state.chapter],mode=effectiveMode();
+ document.getElementById('ex-title').textContent=title();
+ document.getElementById('ex-subtitle').textContent=(c.levels[state.level][4]||c.title)+' · 👆 → ⭐';
+ document.getElementById('ex-counter').textContent=(state.level+1)+' / '+c.levels.length;
+ document.getElementById('easy').textContent=['☺ ASSISTITO','◉ GUIDATO','◎ AUTONOMO'][state.mode];
+ document.getElementById('easy').setAttribute('data-mode',String(state.mode));
+ document.getElementById('mastery').textContent=state.mastery?'★ 5 STELLE':'☆ 5 STELLE';
+ document.getElementById('mastery').setAttribute('aria-pressed',String(state.mastery));
+ var stars=document.getElementById('mastery-stars');stars.hidden=!state.mastery;
+ stars.textContent=state.mastery?('★★★★★'.slice(0,state.masteryStep+(state.done?1:0))+'☆☆☆☆☆'.slice(state.masteryStep+(state.done?1:0))+' · '+['☺','☺','◉','◉','◎'][state.masteryStep]):'';
+}
 function chapterMenu(){state.session++;clearTimers();state.down=false;state.done=false;state.chapter=-1;menu.hidden=false;play.hidden=true;celebrate.hidden=true;var box=document.getElementById('chapters');clear(box);deckButtons();
  chapters.forEach(function(c,ci){
-  if((state.deck==='pc')!==(c.kind==='pc'))return;
+  if((c.kind||'extra')!==state.deck)return;
   var b=document.createElement('button');b.type='button';b.className='chapter';var done=(progress[c.id]||[]).length;
-  var picture=c.kind==='pc'?('<span class="classic-icon">'+c.icon+'</span>'):('<img src="assets/icons/kit-v2/traccia-'+c.id+'.svg" alt="">');
+  var picture=(c.kind==='pc'||c.kind==='nuovi')?('<span class="classic-icon">'+c.icon+'</span>'):('<img src="assets/icons/kit-v2/traccia-'+c.id+'.svg" alt="">');
   b.innerHTML='<span class="symbol">'+picture+'</span><span class="name">'+c.title+'</span><span class="detail">'+c.detail+'</span><span class="stars">'+done+' / '+c.levels.length+' ★</span>';
   b.addEventListener('click',function(){var p=progress[c.id]||[],n=0;while(n<c.levels.length-1&&p.indexOf(n)>=0)n++;openLevel(ci,n)});box.appendChild(b);
  });
 }
 function stopDemo(){if(demoTimer){clearInterval(demoTimer);demoTimer=0}guide.setAttribute('visibility','hidden')}
 function showDemo(){if(state.chapter<0||state.done||state.down)return;stopDemo();var data=state.parts[state.stroke];if(!data)return;var t0=Date.now(),duration=Math.max(2100,Math.min(4200,data.length*4));guide.setAttribute('visibility','visible');setMessage('Guarda il pallino, poi prova tu!');demoTimer=setInterval(function(){if(state.down||state.done){stopDemo();return}var p=Math.min(1,(Date.now()-t0)/duration),point=data.path.getPointAtLength(p*data.length);document.getElementById('guide-halo').setAttribute('cx',point.x);document.getElementById('guide-halo').setAttribute('cy',point.y);document.getElementById('guide-hand').setAttribute('x',point.x);document.getElementById('guide-hand').setAttribute('y',point.y);if(p>=1){stopDemo();setMessage('Adesso tocca il cerchio luminoso') }},70)}
-function openLevel(ci,li){state.session++;clearTimers();state.chapter=ci;state.deck=chapters[ci].kind==='pc'?'pc':'extra';state.level=(li+chapters[ci].levels.length)%chapters[ci].levels.length;state.stroke=0;state.index=0;state.down=false;state.id=null;state.done=false;celebrate.hidden=true;menu.hidden=true;play.hidden=false;labelButtons();state.zoom=1;draw();document.getElementById('zoom-readout').textContent='100%';document.getElementById('trace-progress').style.width='0%';setMessage('👆 Segui i puntini!');}
+function openLevel(ci,li,repeat){state.session++;clearTimers();state.chapter=ci;
+ state.deck=chapters[ci].kind||'extra';
+ state.level=(li+chapters[ci].levels.length)%chapters[ci].levels.length;
+ if(!repeat)state.masteryStep=0;
+ state.stroke=0;state.index=0;state.down=false;state.id=null;state.done=false;
+ state.startedAt=Date.now();state.errors=0;state.strokeCaptures=[];
+ celebrate.hidden=true;menu.hidden=true;play.hidden=false;labelButtons();state.zoom=1;draw();
+ document.getElementById('zoom-readout').textContent='100%';
+ document.getElementById('trace-progress').style.width='0%';setMessage('👆 Segui i puntini!');}
 function draw(){state.touchMatrix=null;clear(tracks);clear(markers);clear(drawnInk);state.activeBrush=null;state.brushLast=null;state.inputLast=null;
  var scene=document.getElementById('scene-illustration');
  if(state.decorated&&window.PregrafismoScene){PregrafismoScene.render(themeIndex(),state.level,board);PregrafismoScene.renderSides(themeIndex())}
@@ -247,7 +276,7 @@ function draw(){state.touchMatrix=null;clear(tracks);clear(markers);clear(drawnI
  var lesson=chapters[state.chapter].levels[state.level];
  document.getElementById('decorA').textContent=lesson[2]||'';
  document.getElementById('decorB').textContent=lesson[3]||'';
- state.parts=[];var raw=lesson[1];
+ state.parts=[];var raw=lesson[1],mode=effectiveMode();
 raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#FFEFAE','stroke-width':'51','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.53'},tracks);var p=svg('path',{d:d,fill:'none',stroke:'#BB7125','stroke-width':'13','stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':'3 26'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#0093A5','stroke-width':'27','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});fitLesson();activate()}
 /* A compact lesson viewBox gives the drawn path more of the interactive surface.
    Coordinates remain in original SVG space: touch mapping and checkpoints stay exact. */
@@ -270,7 +299,9 @@ function fitLesson(){
  board.setAttribute('viewBox',base.x+' '+base.y+' '+base.w+' '+base.h);state.touchMatrix=null;
 }
 function samplePart(data){var samples=[],n=Math.max(3,Math.min(240,Math.ceil(data.length/7)));for(var i=0;i<=n;i++)samples.push(data.path.getPointAtLength(data.length*i/n));return samples}
-function activate(){clear(markers);if(state.stroke>=state.parts.length)return;state.parts.forEach(function(d,i){var o=i===state.stroke||d.completed?'1':'.22';d.path.setAttribute('opacity',o);d.outer.setAttribute('opacity',i===state.stroke?'.76':'.22')});state.samples=samplePart(state.parts[state.stroke]);state.index=0;state.lastBell=0;state.down=false;
+function activate(){clear(markers);if(state.stroke>=state.parts.length)return;state.parts.forEach(function(d,i){var m=effectiveMode();
+  d.path.setAttribute('opacity',i===state.stroke?[1,.66,.24][m]:(d.completed?'.4':'.15'));
+  d.outer.setAttribute('opacity',i===state.stroke?[.76,.45,.12][m]:'.12')});state.samples=samplePart(state.parts[state.stroke]);state.index=0;state.lastBell=0;state.down=false;
  var first=state.samples[0],last=state.samples[state.samples.length-1];
  svg('circle',{cx:last.x,cy:last.y,r:38,fill:'#fff1a5',stroke:'#dca02b','stroke-width':6},markers);
  svg('text',{x:last.x,y:last.y+17,'text-anchor':'middle','font-size':53,fill:'#b77a12'},markers).textContent='★';
@@ -299,8 +330,11 @@ function mapEvent(e){
 function dist(a,b){var x=a.x-b.x,y=a.y-b.y;return Math.sqrt(x*x+y*y)}
 function startGesture(ev,id){if(state.chapter<0||state.done||state.down)return;
  state.touchMatrix=null;var pt=mapEvent(ev),target=state.samples[state.index];
- if(!target||dist(pt,target)>(state.easy?96:76)){setMessage('👆 Tocca il cerchio bianco');return false}
- stopDemo();state.down=true;state.id=id;state.inputLast=pt;state.activeBrush=null;state.brushLast=null;
+ if(!target||dist(pt,target)>Math.max([96,70,50][effectiveMode()],(board.viewBox.baseVal.width/Math.max(1,board.getBoundingClientRect().width))*26)){setMessage('👆 Tocca il cerchio bianco');return false}
+ stopDemo();state.down=true;state.id=id;state.inputLast=pt;
+ state.brushD='M'+Math.round(pt.x)+' '+Math.round(pt.y);
+ state.brushLast=pt;state.activeBrush=svg('path',{'class':'live-ink',d:state.brushD,opacity:effectiveMode()===0?'.22':'.9','pointer-events':'none'},drawnInk);
+ state.strokeCaptures.push([[Math.round(pt.x),Math.round(pt.y)]]);
  renderTrace();return true;
 }
 /* Real ink: only touch points that advance sequential path checkpoints can paint.
@@ -322,7 +356,7 @@ function renderTrace(){
  if(state.chapter<0||state.done||state.stroke>=state.parts.length)return;
  var data=state.parts[state.stroke];
  var r=state.index/Math.max(1,state.samples.length-1);
- data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));
+ data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));if(state.activeBrush&&state.brushD)state.activeBrush.setAttribute('d',state.brushD);
  document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+r)/state.parts.length)+'%';
  var point=state.samples[state.index],cursor=document.getElementById('cursor');
  if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y)}
@@ -334,7 +368,8 @@ function moveStep(pt){
  var lo=Math.max(0,state.index-3),hi=Math.min(state.samples.length-1,state.index+9);
  var best=-1,bestDist=1e9;
  for(var i=lo;i<=hi;i++){var di=dist(pt,state.samples[i]);if(di<bestDist){bestDist=di;best=i}}
- if(bestDist>(state.easy?35:27))return;if(best<state.index)return;
+ var tolerance=Math.max([42,30,19][effectiveMode()],(board.viewBox.baseVal.width/Math.max(1,board.getBoundingClientRect().width))*15);
+ if(bestDist>tolerance){state.errors++;return}if(best<state.index)return;
  if(best>state.index){
   state.index=best;
   var r=state.index/(state.samples.length-1);
@@ -346,8 +381,15 @@ function moveStep(pt){
 function moveGesture(ev,id){
  if(!state.down||state.id!==id||state.done)return;
  var pt=mapEvent(ev),last=state.inputLast||pt,dd=dist(last,pt);
+ // Eventi persi o salti enormi non devono disegnare una linea falsa.
+ if(dd>240){state.inputLast=pt;state.activeBrush=null;return}
+ // Una sola traccia reale SVG per gesto, con punti limitati: niente lag su Tizen.
+ var capture=state.strokeCaptures[state.strokeCaptures.length-1];
+ if(capture&&(!state.brushLast||dist(pt,state.brushLast)>9)&&capture.length<360){
+  state.brushD+=' L'+Math.round(pt.x)+' '+Math.round(pt.y);
+  capture.push([Math.round(pt.x),Math.round(pt.y)]);state.brushLast=pt;
+ }
  // A discontinuity cannot earn a completed path. Lost frames get interpolation.
- if(dd>240){state.inputLast=pt;return}
  var count=Math.max(1,Math.min(22,Math.ceil(dd/12)));
  for(var k=1;k<=count;k++){
   moveStep({x:last.x+(pt.x-last.x)*k/count,y:last.y+(pt.y-last.y)*k/count});
@@ -356,15 +398,32 @@ function moveGesture(ev,id){
  if(state.down&&!state.done)scheduleTrace();
  state.inputLast=pt;
 }
-function endGesture(id){if(!state.down||state.id!==id)return;flushTrace();state.down=false;state.id=null;state.touchMatrix=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;if(!state.done)setMessage('👆 Segui i puntini!')}
+function endGesture(id){if(!state.down||state.id!==id)return;flushTrace();
+ state.down=false;state.id=null;state.touchMatrix=null;state.inputLast=null;
+ state.activeBrush=null;state.brushLast=null;if(!state.done)setMessage('👆 Segui i puntini!')}
 function completeStroke(){flushTrace();state.down=false;state.id=null;state.touchMatrix=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+1)/state.parts.length)+'%';state.stroke++;
  if(state.stroke<state.parts.length){if(window.DiegoAudio)DiegoAudio.play('stella');var token=state.session;setMessage('⭐');later(function(){if(state.session!==token)return;activate()},520)}else finishLevel()}
-function finishLevel(){state.done=true;celebrate.hidden=false;document.getElementById('trace-progress').style.width='100%';var p=progress[chapters[state.chapter].id]||[];if(p.indexOf(state.level)<0){p.push(state.level);progress[chapters[state.chapter].id]=p;save()}  // Nessuna pioggia di 27 elementi: una stella grande e il delfino bastano.
- if(window.DiegoAudio)DiegoAudio.play('successo');setMessage('⭐');var token=state.session;later(function(){if(state.session===token&&state.done)nextLevel()},750)}
-function nextLevel(){if(state.chapter<0)return;var n=state.level+1;
+function finishLevel(){
+ state.done=true;celebrate.hidden=false;document.getElementById('trace-progress').style.width='100%';
+ var id=chapters[state.chapter].id,level=state.level,key=id+':'+level,p=progress[id]||[];
+ if(p.indexOf(level)<0){p.push(level);progress[id]=p}
+ var a=attempts[key]||{completati:0};
+ a.completati++;a.ultimoTempoMs=Math.max(0,Date.now()-state.startedAt);
+ a.correzioni=state.errors;a.ultimaModalita=effectiveMode();
+ // Solo gli ultimi 100 punti di ogni tratto, massimo tre tratti; storage locale.
+ a.ultimoTracciato=state.strokeCaptures.slice(-3).map(function(points){return points.filter(function(pt,i){return i%3===0}).slice(-100)});
+ attempts[key]=a;
+ if(state.mastery&&state.masteryStep===4)masteryProgress[key]=true;
+ save();labelButtons();
+ if(window.DiegoAudio)DiegoAudio.play('successo');setMessage('⭐');
+ var token=state.session;later(function(){if(state.session===token&&state.done)nextLevel()},750)
+}
+function nextLevel(){if(state.chapter<0)return;
+ if(state.mastery&&state.done&&state.masteryStep<4){state.masteryStep++;openLevel(state.chapter,state.level,true);return}
+ var n=state.level+1;
  if(n>=chapters[state.chapter].levels.length){
-  if(state.chapter===chapters.length-1){location.href='parole.html';return;}
-  openLevel(state.chapter+1,0);
+  if(state.chapter===chapters.length-1){location.href='parole.html';return}
+  openLevel(state.chapter+1,0)
  }else openLevel(state.chapter,n)
 }
 function panBoard(dx,dy){
@@ -428,7 +487,19 @@ document.addEventListener('keydown',function(e){
  else if(key==='r'){e.preventDefault();location.reload()}
  else if(key==='f'){e.preventDefault();try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen();else if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen()}catch(ignore){}}
 });
-document.getElementById('easy').onclick=function(){state.easy=!state.easy;labelButtons();setMessage(state.easy?'☺ Facile':'◎ Preciso')};
+document.getElementById('easy').onclick=function(){
+ state.mode=(state.mode+1)%3;state.easy=state.mode===0;labelButtons();
+ if(state.chapter>=0){state.session++;clearTimers();draw()}
+ setMessage(['☺ Assistito','◉ Guidato','◎ Autonomo'][state.mode]);
+};
+document.getElementById('mastery').onclick=function(){
+ state.mastery=!state.mastery;state.masteryStep=0;
+ if(state.chapter>=0)openLevel(state.chapter,state.level);
+};
+document.getElementById('report').onclick=function(){
+ var total=Object.keys(attempts).length,stars=Object.keys(masteryProgress).length;
+ setMessage('★ '+stars+' percorsi 5 stelle · '+total+' completati');
+};
 var usePointer=!!window.PointerEvent;
 if(usePointer){
  board.addEventListener('pointerdown',function(e){if(e.button!==undefined&&e.button!==0)return;if(e.cancelable)e.preventDefault();if(startGesture(e,e.pointerId)){try{board.setPointerCapture(e.pointerId)}catch(ignore){}}});

@@ -385,3 +385,35 @@ html,body,#app{width:100%;max-width:none;margin:0}
  .board-tools{min-height:49px}
  #play{padding:4px 8px 6px}
 }
+
+/* 13 novembre — scaffolding a 3 gradi e percorso 5 stelle (Tizen-safe). */
+#mastery-stars{display:block;background:#fff6d6;color:#a66d14;text-align:center;
+ border:2px solid #efc66b;border-radius:12px;padding:3px 7px;letter-spacing:2px;font-size:22px}
+#mastery-stars[hidden]{display:none}
+#menu .deck-tabs{max-width:1300px;flex-wrap:wrap}
+#menu.nuovi-deck .chapters{align-content:start}
+#menu.nuovi-deck .classic-icon{font-size:75px}
+#board .live-ink{stroke:#f48067;stroke-width:20;stroke-linecap:round;stroke-linejoin:round;fill:none;pointer-events:none}
+#board #tracks path{transition:opacity .12s linear}
+.teacher-tools #mastery[aria-pressed=true]{background:#ffe6a3;border-color:#f99d1b}
+@media(max-width:720px){
+ #menu .deck-tabs{gap:4px}
+ #menu .deck-tab{min-height:40px;padding:5px 7px;font-size:12px;flex:1 1 auto}
+ #mastery-stars{font-size:14px;padding:2px 4px}
+ #menu.nuovi-deck .classic-icon{font-size:52px}
+}
+@media(prefers-reduced-motion:reduce){#board #tracks path{transition:none}}
+
+/* Set collage marino approvato: elementi laterali fuori dal percorso touch. */
+@media(min-width:1060px) and (min-height:750px){
+ #menu .intro{position:relative;min-height:142px;padding:5px 140px;display:flex;flex-direction:column;justify-content:center}
+ #menu .intro:before,#menu .intro:after{content:"";position:absolute;top:0;width:135px;height:136px;
+  background-size:contain;background-position:center;background-repeat:no-repeat;pointer-events:none}
+ #menu .intro:before{left:2px;background-image:url("assets/diegoland/esploratore_intero.webp")}
+ #menu .intro:after{right:2px;background-image:url("assets/diegoland/squalo_giaguaro.webp")}
+}
+#celebrate .reward-sub{display:block;width:min(360px,36vw);height:min(180px,19vh);max-width:75%;
+ object-fit:contain;pointer-events:none;animation:diego-pregra-sub .65s ease-out 1 both}
+@keyframes diego-pregra-sub{from{opacity:0;transform:translateY(17px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:720px){#celebrate .reward-sub{width:210px;height:110px}}
+@media(prefers-reduced-motion:reduce){#celebrate .reward-sub{animation:none}}

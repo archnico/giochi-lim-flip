@@ -113,7 +113,7 @@ footer{min-height:52px;border-top:1px solid var(--line);padding:10px 20px;displa
 <script src="diego-lessico.js"></script>
 <script>
 const games=[
-  {id:'pregrafismo',icon:'✏️',title:'Pregrafismo',desc:'88 percorsi · 32 classici PC + 56 altri'},
+  {id:'pregrafismo',icon:'✏️',title:'Pregrafismo',desc:'112 percorsi · 32 classici + 56 altri + 24 nuovi'},
   {id:'parole',icon:'🔤',title:'Componi la parola',desc:'Ascolta e ordina le lettere · senza intrusi'},
   {id:'scacchi',icon:'⭐',title:'Scacchi Stellari',desc:'Re, torre e regina: cattura le stelle'},
   {id:'match',icon:'🧩',title:'Abbina',desc:'Una parola grande · scegli fra due foto'},
@@ -126,7 +126,7 @@ const games=[
   {id:'habitat1',icon:'🐬',title:'Dove vive? — Livello 1',desc:'Mare e terra · 8 animali'},
   {id:'habitat2',icon:'🦅',title:'Dove vive? — Livello 2',desc:'Mare, terra e cielo · 12 animali'},
   {id:'colori',icon:'🎨',title:'I colori degli animali',desc:'Scegli uno o due colori · disegni grandi'},
-  {id:'acqua',icon:'🌊',title:'Splash! Il mondo dell’acqua',desc:'Schizzi, animali che nuotano e piscina'}
+  {id:'acqua',icon:'🌊',title:'Splash! Il mondo dell’acqua',desc:'Schizzi e piscina'}
 ];
 const pairs=[['🐶','CANE'],['☀️','SOLE'],['🍎','MELA'],['🚂','TRENO'],['🏠','CASA'],['🌙','LUNA'],['🐱','GATTO'],['🌳','ALBERO']];
 // Le parole stampate in ABBINA provengono dallo stesso lessico di PAROLE.
@@ -275,7 +275,7 @@ function openOthers(){
   main.querySelectorAll('[data-topic]').forEach(function(b){b.onclick=function(){openTopic(b.dataset.topic)}});
 }
 
-function start(id){if(id==='pregrafismo'){location.href='pregrafismo.html';return}if(id==='parole'){location.href='parole.html';return}if(id==='scacchi'){location.href='scacchi-stelle.html';return}if(id==='acqua'){location.href='acqua.html?game=choice';return}if(id==='numeri'){location.href='trova-il-numero.html';return}if(id==='unisci'){location.href='unisci-quantita.html';return}current=id;stars=0;if(id==='count'){countSolved=0;countTouchedAudio=null}statusEl.textContent=games.find(g=>g.id===id).title;if(id==='habitat1'||id==='habitat2'){habitatDeck=[];habitatCorrect=0}render()}
+function start(id){if(id==='pregrafismo'){location.href='pregrafismo.html';return}if(id==='parole'){location.href='parole.html';return}if(id==='scacchi'){location.href='scacchi-stelle.html';return}if(id==='acqua'){location.href='acqua.html?game=splash';return}if(id==='numeri'){location.href='trova-il-numero.html';return}if(id==='unisci'){location.href='unisci-quantita.html';return}current=id;stars=0;if(id==='count'){countSolved=0;countTouchedAudio=null}statusEl.textContent=games.find(g=>g.id===id).title;if(id==='habitat1'||id==='habitat2'){habitatDeck=[];habitatCorrect=0}render()}
 function render(){roundToken++;if(current==='match')renderMatch();if(current==='count')renderCount();if(current==='same')renderSame();if(current==='memory')renderMemory();if(current==='odd')renderOdd();if(current==='habitat1'||current==='habitat2')renderHabitat();if(current==='colori')renderColori()}
 function renderMatch(){
  if(!matchDeck.length)matchDeck=shuffle(matchItems);

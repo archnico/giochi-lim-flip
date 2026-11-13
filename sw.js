@@ -5,7 +5,7 @@ var FILES=["./index.html", "./flip-ui.css", "./visual-v2.css", "./diegoland.css"
 var SCOPE=new URL('./',self.location.href);
 var ALLOWED=FILES.map(function(f){return new URL(f,SCOPE).pathname});
 // Cache the lightweight app and its positive sounds first; large photos on demand.
-var CORE=FILES.filter(function(f){return f.indexOf('./assets/')!==0||f.indexOf('./assets/suoni/')===0||f.indexOf('./assets/parole/')===0;});
+var CORE=FILES.filter(function(f){return f.indexOf('./assets/')!==0||f.indexOf('./assets/suoni/')===0;});
 self.addEventListener('install',function(e){
  e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(CORE)}).then(function(){return self.skipWaiting()}));
 });
@@ -37,19 +37,6 @@ self.addEventListener('fetch',function(e){
  // I parametri game, topic e numero scelgono la schermata; i byte HTML sono gli stessi.
  url.search='';url.hash='';
  e.respondWith(caches.open(CACHE).then(function(c){
-  // HTML navigation: online current version, offline last known good copy.
-  if(e.request.mode==='navigate'||/\.html$/i.test(url.pathname)){
-    return fetch(e.request).then(function(network){
-      if(network&&network.ok)c.put(url.href,network.clone()).catch(function(){});
-      return network;
-    }).catch(function(){
-      return c.match(url.href).then(function(saved){
-        if(saved)return saved;
-        throw new Error('Diego HTML unavailable offline');
-      });
-    });
-  }
-  // Asset pesanti, SVG e audio: cache-first per fluidita.
   return c.match(url.href).then(function(response){
     if(response)return fromRange(e.request,response);
     return fetch(e.request).then(function(network){
