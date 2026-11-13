@@ -13,3 +13,13 @@ separata dalla licenza MIT del codice Diego.
 
 Fonte: https://github.com/lichess-org/lila/blob/master/COPYING.md
 Licenza: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+
+
+## Obiettivi marini negli scacchi
+
+Gli obiettivi al posto delle stelle includono i ritagli del collage marino
+scelto dall'utente (`assets/diegoland/sottomarino.webp` e
+`squalo_giaguaro.webp`) e il pittogramma originale
+`assets/diegoland/berretto.svg` (progettato per Diego).
+Le meccaniche di raccolta si ispirano agli esercizi Chess Basics
+di Lichess; il codice del gioco e i livelli sono implementati autonomamente.
