@@ -65,3 +65,21 @@ html[data-diego-edition=flip] .gamewrap.count-wide{
  .count-item{padding:3px}
 }
 @media(prefers-reduced-motion:reduce){.count-option:active{transform:none}}
+
+/* Layout micro-landscape limitato a Conta; protegge la LIM e il resto dei giochi. */
+@media(max-height:520px){
+ html.count-is-open #app{grid-template-rows:48px minmax(0,1fr) 0px}
+ html.count-is-open #app>header{padding:2px 8px}
+ html.count-is-open #app>footer{display:none}
+ html.count-is-open #app>main{padding:4px 8px}
+ html.count-is-open #app .toolbar .iconbtn{min-height:40px;min-width:44px;height:42px;font-size:23px}
+ html.count-is-open .count-wide{gap:2px}
+ html.count-is-open .count-wide .gamehead{height:36px;min-height:0!important;flex:none;padding:1px 8px}
+ html.count-is-open .count-wide .gamehead h1{font-size:23px;margin:0}
+ html.count-is-open .count-wide .score{font-size:20px}
+ html.count-is-open .count-board{gap:3px}
+ html.count-is-open .count-question{font-size:19px;line-height:1}
+ html.count-is-open .count-choices .count-option{min-height:44px;font-size:34px;border-width:3px}
+ html.count-is-open .count-objects{gap:3px}
+ html.count-is-open .count-item{border-width:2px;padding:1px}
+}

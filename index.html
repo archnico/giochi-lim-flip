@@ -181,7 +181,7 @@ const oddsets=[
 const main=document.getElementById('main'),statusEl=document.getElementById('status'),notice=document.getElementById('notice');
 let current=null,stars=0,roundToken=0,habitatCorrect=0;
 const gameScope=DiegoRuntime.createScope();
-function clearRound(){roundToken++;gameScope.reset();clearTimeout(say.t);notice.classList.remove('show');var reward=document.getElementById('mini-celebrate');if(reward)reward.remove();DiegoAudio.stop();main.scrollTop=0}
+function clearRound(){if(current==='count'&&window.speechSynthesis)try{window.speechSynthesis.cancel()}catch(e){}document.documentElement.classList.remove('count-is-open');roundToken++;gameScope.reset();clearTimeout(say.t);notice.classList.remove('show');var reward=document.getElementById('mini-celebrate');if(reward)reward.remove();DiegoAudio.stop();main.scrollTop=0}
 function later(fn,ms){const token=roundToken;return gameScope.later(()=>{if(token===roundToken&&current)fn()},ms)}
 function shuffle(a){const result=a.slice();for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const v=result[i];result[i]=result[j];result[j]=v}return result}
 function say(t){notice.textContent='↻';notice.setAttribute('aria-label',t||'Riprova');notice.classList.add('show');clearTimeout(say.t);say.t=setTimeout(()=>notice.classList.remove('show'),650)}
@@ -334,7 +334,7 @@ function renderCount(){
  const figures=Array.from({length:n},(_,i)=>'<button type="button" class="count-item" data-index="'+i+'" aria-label="Tocca '+type.name+' '+(i+1)+'"><img src="'+type.file+'" alt="" draggable="false"><span class="count-badge" aria-hidden="true"></span></button>').join('');
  const choices=options.map(x=>'<button type="button" class="count-option" data-n="'+x+'" aria-label="'+x+'">'+x+'</button>').join('');
  shell('CONTA','', '<div class="count-board"><div class="count-objects" data-n="'+n+'" data-kind="'+type.name+'" style="--count-cols:'+cols+';--count-rows:'+rows+'">'+figures+'</div><div class="count-question">QUANTI?</div><div class="count-choices">'+choices+'</div></div>');
- main.querySelector('.gamewrap').classList.add('count-wide');
+ main.querySelector('.gamewrap').classList.add('count-wide');document.documentElement.classList.add('count-is-open');
  let touched=0,answered=false;
  main.querySelectorAll('.count-item').forEach(b=>{
   b.onclick=()=>{
