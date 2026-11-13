@@ -366,7 +366,7 @@ function renderCount(){
 function renderSame(){
   const target=sameItems[Math.floor(Math.random()*sameItems.length)];
   const choices=shuffle([target,...shuffle(sameItems.filter(x=>x!==target)).slice(0,2)]);
-  shell('Trova uguale','Tocca la stessa figura',`<div class="samewrap"><div class="sameexample" aria-label="Figura da cercare">${target}</div><div class="answers sameanswers">${choices.map(x=>`<button class="answer" data-a="${x}" aria-label="Scegli ${x}">${x}</button>`).join('')}</div></div>`);
+  shell('UGUALE','',`<div class="samewrap"><div class="sameexample" aria-label="Figura da cercare">${target}</div><div class="answers sameanswers">${choices.map(x=>`<button class="answer" data-a="${x}" aria-label="Scegli ${x}">${x}</button>`).join('')}</div></div>`);
   let answered=false;
   document.querySelectorAll('.sameanswers .answer').forEach(b=>b.onclick=()=>{
     if(answered)return;
@@ -383,7 +383,7 @@ function renderSequence(){
 }
 function renderMemory(){
   const vals=shuffle(pairs).slice(0,4).map(x=>x[0]);const deck=shuffle([...vals,...vals]);let open=[],lock=false,done=0;
-  shell('Memory','Trova le coppie uguali',`<div class="memgrid">${deck.map((v,i)=>`<button class="mem closed" data-v="${v}" data-i="${i}">${v}</button>`).join('')}</div>`);
+  shell('MEMORY','',`<div class="memgrid">${deck.map((v,i)=>`<button class="mem closed" data-v="${v}" data-i="${i}">${v}</button>`).join('')}</div>`);
   document.querySelectorAll('.mem').forEach(b=>b.onclick=()=>{if(lock||!b.classList.contains('closed'))return;b.classList.remove('closed');open.push(b);if(open.length===2){lock=true;if(open[0].dataset.v===open[1].dataset.v){later(()=>{open.forEach(x=>x.classList.add('done'));open=[];lock=false;done++;point();if(done===4)later(renderMemory,900)},350)}else{later(()=>{open.forEach(x=>x.classList.add('closed'));open=[];lock=false},650)}}})
 }
 function renderHabitat(){
@@ -391,13 +391,13 @@ function renderHabitat(){
   const animal=nextHabitat();
   const environments=level===2?['mare','terra','cielo']:['mare','terra'];
   const labels={mare:'🌊 MARE',terra:'🌳 TERRA',cielo:'☁️ CIELO'};
-  shell('Dove vive? — Livello '+level,'Guarda l’animale e tocca il suo ambiente',
+  shell('MARE · TERRA'+(level===2?' · CIELO':''),'',
     `<div class="habitatboard level${level}">
       <div class="habitat-animal">
         <img src="${habitatUrl(animal.file)}" alt="${animal.name}" draggable="false"
           onerror="this.style.display='none';this.nextElementSibling.hidden=false">
         <span class="habitat-emoji" hidden>${animal.icon}</span>
-        <strong class="habitat-name">${animal.name}</strong>
+        ${DiegoLessico.incluso(animal.name)?'<strong class="habitat-name">'+animal.name+'</strong>':''}
       </div>
       <div class="habitat-choices">${environments.map(env=>`
         <button class="habitat-zone" data-env="${env}" aria-label="${env}">
@@ -448,9 +448,9 @@ function renderColori(){
  if(!coloriDeck.length)coloriDeck=shuffle(coloriAnimals);
  const a=coloriDeck.pop();
  const choices=shuffle([{colors:a.answer,right:true},...a.wrong.map(colors=>({colors,right:false}))]);
- shell('I colori degli animali','Tocca i colori che vedi nel disegno',
+ shell('COLORI','',
  `<div class="colori-board">
-   <div class="colori-figure"><img src="assets/colori/${a.file}.svg" alt="${a.name}" draggable="false"><strong>${a.name}</strong></div>
+   <div class="colori-figure"><img src="assets/colori/${a.file}.svg" alt="${a.name}" draggable="false">${DiegoLessico.incluso(a.name)?'<strong>'+a.name+'</strong>':''}</div>
    <div class="colori-choices">${choices.map((v,i)=>`<button class="colori-choice" data-choice="${i}" aria-label="${v.colors.join(' e ')}">${v.colors.map(c=>`<span class="colori-dot" style="background:${coloriPalette[c]}"></span>`).join('')}</button>`).join('')}</div>
  </div>`);
  main.querySelector('.gamewrap').classList.add('colori-wide');
@@ -466,7 +466,7 @@ function renderColori(){
 }
 
 function renderOdd(){
-  const q=oddsets[Math.floor(Math.random()*oddsets.length)];shell('L’intruso',q.label,`<div class="sortarea">${shuffle(q.items).map(x=>`<button class="sortitem" data-v="${x}">${x}</button>`).join('')}</div>`);
+  const q=oddsets[Math.floor(Math.random()*oddsets.length)];shell('DIVERSO','',`<div class="sortarea">${shuffle(q.items).map(x=>`<button class="sortitem" data-v="${x}">${x}</button>`).join('')}</div>`);
   let answered=false;document.querySelectorAll('.sortitem').forEach(b=>b.onclick=()=>{if(answered)return;if(b.dataset.v===q.answer){answered=true;b.classList.add('good');point();later(renderOdd,900)}else{b.classList.add('bad');say('Prova ancora');later(()=>b.classList.remove('bad'),550)}})
 }
 document.getElementById('testBtn').onclick=()=>{location.href='test-lim.html'};
