@@ -125,7 +125,8 @@ button:focus-visible{outline:5px solid #fff07e;outline-offset:3px}
 (function(){
 'use strict';
 // La seconda serie si apre soltanto con ?serie=2 (scelta dell'educatore).
-var words=window.DiegoLessico.parole(/(?:^|[?&])serie=2(?:&|$)/.test(location.search)?2:1);
+var serie=/(?:^|[?&])serie=2(?:&|$)/.test(location.search)?2:1;
+var words=window.DiegoLessico.parole(serie);
 var index=0,tiles=[],chosen=[],active=false,done=false,attempts=0;
 var currentSound=null,audioToken=0,revealTimer=0;
 function $(id){return document.getElementById(id)}
@@ -232,6 +233,8 @@ function win(){
  $('listen').disabled=false;
  if(window.DiegoAudio)window.DiegoAudio.play('bravo');
  try{window.localStorage.setItem('diego-parole-completate',String(index+1))}catch(e){}
+ window.DiegoLessico.registra(words[index].word,'componi');
+ if(serie===1)words=window.DiegoLessico.parole(1);
  clearTimeout(nextWordTimer);
  nextWordTimer=setTimeout(function(){if(done)next(1)},750);
 }
