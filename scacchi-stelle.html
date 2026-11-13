@@ -35,8 +35,8 @@ main{max-width:1500px;margin:auto;padding:10px 24px;display:grid;grid-template-c
 </div>
 <div class="modes" aria-label="Difficoltà">
 <button data-mode="easy">1 · FACILE</button>
-<button data-mode="two">2 · PIÙ STELLE</button>
-<button data-mode="challenge">3 · SFIDA</button>
+<button data-mode="two">2 · 3 STELLE</button>
+<button data-mode="challenge">3 · 5 STELLE</button>
 </div>
 <button class="again" id="again">↻ RICOMINCIA</button>
 <div class="hint">Tocca il pezzo e poi la stella. Nei livelli 2 e 3 puoi raccogliere le stelle nell’ordine che preferisci.</div>
@@ -52,7 +52,21 @@ const plans={
         targets:[[4,2],[4,5],[1,5]],challenge:[[4,2],[4,5],[1,5],[2,2],[6,6]]}
 };
 const chessScope=DiegoRuntime.createScope();
-let piece='rook',mode='easy',position,step,selected,locked=false,remaining=[];
+// Tre stelle subito, ma resta disponibile il livello Facile.
+// Query-string compatibile con il browser Samsung Tizen 5 (senza URLSearchParams).
+function chessParam(name){
+ var parts=(window.location.search||'').replace(/^\?/,'').split('&');
+ for(var i=0;i<parts.length;i++){
+  var pair=parts[i].split('=');
+  if(pair[0]===name)return decodeURIComponent(pair.slice(1).join('='));
+ }
+ return '';
+}
+const requestedMode=chessParam('mode');
+const requestedPiece=chessParam('piece');
+let piece=['king','rook','queen'].indexOf(requestedPiece)>=0?requestedPiece:'rook',
+ mode=['easy','two','challenge'].indexOf(requestedMode)>=0?requestedMode:'two',
+ position,step,selected,locked=false,remaining=[];
 const board=document.getElementById('board'),instruction=document.getElementById('instruction'),progress=document.getElementById('progress');
 // Fix in pixel, not in grid-content height: a rook moving must never
 // stretch a row. Explicit height also supports older Samsung Tizen browsers
