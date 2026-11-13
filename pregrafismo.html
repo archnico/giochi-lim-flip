@@ -72,7 +72,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
     </div>
   </div>
   <div id="menu">
-    <div class="intro"><h1>Disegniamo con il dito! 🌟</h1><p>Dal verde alla stella, segui il percorso.</p></div>
+    <div class="intro"><h1>✏️</h1><p aria-label="Dal verde alla stella">👆 → ⭐</p></div>
     <div class="deck-tabs" role="group" aria-label="Scegli i percorsi">
       <button id="deckPC" type="button" class="deck-tab selected" aria-pressed="true">✏️ CLASSICI PC · 32</button>
       <button id="deckExtra" type="button" class="deck-tab" aria-pressed="false">⭐ ALTRI PERCORSI · 56</button>
@@ -97,7 +97,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
       <div id="decorA" class="pc-corner corner-a" aria-hidden="true"></div>
       <div id="decorB" class="pc-corner corner-b" aria-hidden="true"></div>
       <div id="zoom-readout" aria-hidden="true">100%</div>
-      <div id="message" role="status" aria-live="polite">👆 Segui i puntini!</div>
+      <div id="message" role="status" aria-live="polite">👆 → ⭐</div>
       <div id="celebrate" hidden aria-label="Percorso completato">
         <svg class="reward-medal" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 360" aria-hidden="true">
           <circle cx="220" cy="180" r="153" fill="#f8ffff" stroke="#a5e3eb" stroke-width="13"/>
@@ -112,10 +112,10 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
       </div>
     </div>
     <div class="board-tools">
-      <button id="chaptersBtn" type="button" class="btn">← PERCORSI</button>
-      <button id="again" type="button" class="btn">↻ RIPROVA</button>
-      <span class="bottom-hint" aria-hidden="true">👆 Segui i puntini</span>
-      <button id="next" type="button" class="btn light">AVANTI ➜</button>
+      <button id="chaptersBtn" type="button" class="btn" title="Percorsi" aria-label="Torna ai percorsi">←</button>
+      <button id="again" type="button" class="btn" title="Riprova" aria-label="Ricomincia">↻</button>
+      <span class="bottom-hint" aria-hidden="true">👆 ··· ⭐</span>
+      <button id="next" type="button" class="btn light" title="Avanti" aria-label="Esercizio successivo">▶</button>
     </div>
     <div id="teacherTools" class="teacher-tools" hidden>
       <button id="prev" type="button" class="btn">← PRIMA</button>
@@ -130,6 +130,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
   </div>
 </div>
 <script src="diego-audio.js"></script>
+<script src="diego-lessico.js"></script>
 <script src="pregrafismo-scene.js"></script>
 <script src="pregrafismo-pc-data.js"></script>
 <script src="pregrafismo-nuovi.js"></script>
@@ -223,8 +224,19 @@ function later(fn,ms){var id=setTimeout(fn,ms);sessionTimers.push(id);return id}
 function clearTimers(){sessionTimers.forEach(clearTimeout);sessionTimers=[];if(traceRenderTimer){clearTimeout(traceRenderTimer);traceRenderTimer=0}stopDemo()}
 function svg(tag,attr,parent){var n=document.createElementNS(S,tag);Object.keys(attr||{}).forEach(function(k){n.setAttribute(k,attr[k])});if(parent)parent.appendChild(n);return n}
 function clear(node){while(node.firstChild)node.removeChild(node.firstChild)}
-function setMessage(text){message.textContent=text}
+function setMessage(text){
+ message.setAttribute("aria-label",text);
+ var teacher=document.getElementById("teacherTools");
+ message.textContent=(teacher&&!teacher.hidden)?text:(/brav|perf|complet|ottim|bene|eccell|^★/i.test(text)?"★":"👆 → ⭐");
+}
 function title(){return chapters[state.chapter].levels[state.level][0]}
+function titoloBreve(){
+ var t=title(),parti=t.toUpperCase().match(/[A-ZÀ-Ú]+/g)||[];
+ var v=window.DiegoLessico?window.DiegoLessico.parole(1):[];
+ for(var i=0;i<parti.length;i++)for(var j=0;j<v.length;j++)if(parti[i]===v[j].word)return parti[i];
+ var lettera=t.match(/^([A-Z]) di /);
+ return lettera?lettera[1]:"✏";
+}
 function themeIndex(){return state.chapter<4?[0,2,5,6][state.chapter]:Math.min(6,state.chapter-4)}
 function deckButtons(){
  var names=['pc','extra','nuovi'],ids=['deckPC','deckExtra','deckNuovi'];
@@ -239,8 +251,10 @@ document.getElementById('deckNuovi').onclick=function(){setDeck('nuovi')};
 
 function effectiveMode(){return state.mastery?Math.max(state.mode,[0,0,1,1,2][state.masteryStep]):state.mode}
 function labelButtons(){var c=chapters[state.chapter],mode=effectiveMode();
- document.getElementById('ex-title').textContent=title();
- document.getElementById('ex-subtitle').textContent=(c.levels[state.level][4]||c.title)+' · 👆 → ⭐';
+ document.getElementById('ex-title').textContent=titoloBreve();
+ document.getElementById('ex-title').setAttribute('aria-label',title());
+ document.getElementById('ex-subtitle').textContent='👆 → ⭐';
+ document.getElementById('ex-subtitle').setAttribute('aria-label',c.levels[state.level][4]||c.title);
  document.getElementById('ex-counter').textContent=(state.level+1)+' / '+c.levels.length;
  document.getElementById('easy').textContent=['☺ ASSISTITO','◉ GUIDATO','◎ AUTONOMO'][state.mode];
  document.getElementById('easy').setAttribute('data-mode',String(state.mode));
