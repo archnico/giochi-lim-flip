@@ -100,7 +100,7 @@ footer{min-height:52px;border-top:1px solid var(--line);padding:10px 20px;displa
 <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/app-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/app-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="diego-runtime.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-arte.css">
+<link rel="stylesheet" href="diego-runtime.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-arte.css"><link rel="stylesheet" href="conta-marino.css">
 </head>
 <body>
 <div id="app">
@@ -117,7 +117,7 @@ const games=[
   {id:'parole',icon:'🔤',title:'Componi la parola',desc:'Ascolta e ordina le lettere · senza intrusi'},
   {id:'scacchi',icon:'⭐',title:'Scacchi Stellari',desc:'Re, torre e regina: cattura le stelle'},
   {id:'match',icon:'🧩',title:'Abbina',desc:'Una parola grande · scegli fra due foto'},
-  {id:'count',icon:'🔢',title:'Conta',desc:'Conta e scegli il numero'},
+  {id:'count',icon:'🔢',title:'Conta',desc:'Conta cuffie, squali, sub e chitarre'},
   {id:'unisci',icon:'🔗',title:'Unisci numeri e quantità',desc:'Collega i numeri ai pallini · 1–5'},
   {id:'numeri',icon:'🔎',title:'Trova il numero',desc:'10 capitoli · Cerca i numeri da 0 a 9'},
   {id:'same',icon:'👀',title:'Trova uguale',desc:'Tocca la figura identica'},
@@ -179,7 +179,7 @@ const oddsets=[
   {items:['👟','🧢','🧤','🍐'],answer:'🍐',label:'Quale non si indossa?'}
 ];
 const main=document.getElementById('main'),statusEl=document.getElementById('status'),notice=document.getElementById('notice');
-let current=null,stars=0,roundToken=0;
+let current=null,stars=0,roundToken=0,habitatCorrect=0;
 const gameScope=DiegoRuntime.createScope();
 function clearRound(){roundToken++;gameScope.reset();clearTimeout(say.t);notice.classList.remove('show');var reward=document.getElementById('mini-celebrate');if(reward)reward.remove();DiegoAudio.stop();main.scrollTop=0}
 function later(fn,ms){const token=roundToken;return gameScope.later(()=>{if(token===roundToken&&current)fn()},ms)}
@@ -246,9 +246,11 @@ function home(){
     ['SCACCHI','Re · Torre · Regina','scacchi'],
     ['PAROLE','Disegna · Ascolta · Componi','pregrafismo']
   ];
-  main.innerHTML='<div class="flip-home">'+primaries.map(function(a){return flipCard(a[0],a[1],a[2],flipVisual[a[2]],'topic')}).join('')+
+  main.innerHTML='<div class="flip-home">'+primaries.map(function(a){return flipCard(a[0],a[1],a[2],flipVisual[a[2]],'game')}).join('')+
    '<button type="button" class="flip-other" id="otherBtn"><img src="assets/icons/kit-v2/altri.svg" alt="">ALTRI</button></div>';
-  main.querySelectorAll('[data-topic]').forEach(function(b){b.onclick=function(){openTopic(b.dataset.topic)}});
+  // Un unico tocco dalla home: i percorsi procedono da soli.
+  const direct={animali:'habitat1',matematica:'numeri',acqua:'acqua',scacchi:'scacchi',pregrafismo:'pregrafismo'};
+  main.querySelectorAll('[data-game]').forEach(function(b){b.onclick=function(){start(direct[b.dataset.game])}});
   main.querySelector('#otherBtn').onclick=openOthers;
 }
 function flipGameCard(g){
@@ -266,14 +268,14 @@ function openTopic(id){
 }
 function openOthers(){
   clearRound();current=null;topic=null;stars=0;
-  const other=topics.filter(function(t){return ['attenzione','associazioni','memoria'].indexOf(t.id)!==-1});
+  const other=topics; // Menu per l'adulto: tutti gli argomenti rimangono accessibili.
   statusEl.textContent='';
   main.innerHTML='<div class="gamewrap flip-section"><div class="gamehead"><h1>ALTRI GIOCHI</h1><button type="button" class="flip-back" id="backOthers" title="Indietro" aria-label="Indietro">←</button></div><div class="flip-games">'+other.map(function(t){return flipCard(t.title,t.desc,t.id,flipVisual[t.id],'topic')}).join('')+'</div></div>';
   main.querySelector('#backOthers').onclick=home;
   main.querySelectorAll('[data-topic]').forEach(function(b){b.onclick=function(){openTopic(b.dataset.topic)}});
 }
 
-function start(id){if(id==='pregrafismo'){location.href='pregrafismo.html';return}if(id==='parole'){location.href='parole.html';return}if(id==='scacchi'){location.href='scacchi-stelle.html';return}if(id==='acqua'){location.href='acqua.html';return}if(id==='numeri'){location.href='trova-il-numero.html';return}if(id==='unisci'){location.href='unisci-quantita.html';return}current=id;stars=0;statusEl.textContent=games.find(g=>g.id===id).title;if(id==='habitat1'||id==='habitat2')habitatDeck=[];render()}
+function start(id){if(id==='pregrafismo'){location.href='pregrafismo.html';return}if(id==='parole'){location.href='parole.html';return}if(id==='scacchi'){location.href='scacchi-stelle.html';return}if(id==='acqua'){location.href='acqua.html?game=choice';return}if(id==='numeri'){location.href='trova-il-numero.html';return}if(id==='unisci'){location.href='unisci-quantita.html';return}current=id;stars=0;if(id==='count'){countSolved=0;countTouchedAudio=null}statusEl.textContent=games.find(g=>g.id===id).title;if(id==='habitat1'||id==='habitat2'){habitatDeck=[];habitatCorrect=0}render()}
 function render(){roundToken++;if(current==='match')renderMatch();if(current==='count')renderCount();if(current==='same')renderSame();if(current==='memory')renderMemory();if(current==='odd')renderOdd();if(current==='habitat1'||current==='habitat2')renderHabitat();if(current==='colori')renderColori()}
 function renderMatch(){
  if(!matchDeck.length)matchDeck=shuffle(matchItems);
@@ -302,10 +304,60 @@ function renderMatch(){
  });
 }
 
+// Quattro figure riconoscibili e un unico percorso graduale, senza menu di livelli.
+const countTypes=[
+ {name:'CUFFIA',file:'assets/conta/cuffia.svg'},
+ {name:'SUB',file:'assets/diegoland/sottomarino.webp'},
+ {name:'SQUALO',file:'assets/diegoland/squalo_giaguaro.webp'},
+ {name:'CHITARRA',file:'assets/conta/chitarra.svg'}
+];
+const countPlan=[1,2,3,2,3,4,3,4,5,4,5,6,5,6,7,6,7,8];
+let countSolved=0,countTouchedAudio=null;
+function countNumber(n){
+ // Lettura vocale locale del browser, se disponibile: nessun servizio online.
+ if(!DiegoAudio.isEnabled()||!window.speechSynthesis||!window.SpeechSynthesisUtterance)return;
+ try{
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(['','uno','due','tre','quattro','cinque','sei','sette','otto'][n]);
+  u.lang='it-IT';u.rate=.83;u.volume=.8;
+  countTouchedAudio=u;
+  window.speechSynthesis.speak(u);
+ }catch(e){/* voce assente sulla LIM: rimane il riscontro visivo */}
+}
 function renderCount(){
-  const n=1+Math.floor(Math.random()*9);const icons=['🍎','⭐','🐞','⚽','🟦'];const icon=icons[Math.floor(Math.random()*icons.length)];const opts=shuffle([n,...shuffle([1,2,3,4,5,6,7,8,9,10].filter(x=>x!==n)).slice(0,2)]);
-  shell('Conta','Quanti sono?',`<div style="width:100%"><div class="objects">${Array(n).fill(icon).join(' ')}</div><div style="height:24px"></div><div class="answers">${shuffle(opts).map(x=>`<button class="answer" data-n="${x}">${x}</button>`).join('')}</div></div>`);
-  let answered=false;document.querySelectorAll('.answer').forEach(b=>b.onclick=()=>{if(answered)return;if(+b.dataset.n===n){answered=true;b.classList.add('good');point();later(renderCount,900)}else{b.classList.add('bad');say('Conta ancora');later(()=>b.classList.remove('bad'),550)}})
+ const step=countSolved;
+ const n=step<countPlan.length?countPlan[step]:1+((step-countPlan.length+4)%8);
+ const type=countTypes[step%countTypes.length];
+ const neighbours=n===1?[2,3]:n===8?[6,7]:[n-1,n+1];
+ const options=shuffle([n,...neighbours]);
+ const cols=n<=3?n:n<=6?3:4, rows=Math.ceil(n/cols);
+ const figures=Array.from({length:n},(_,i)=>'<button type="button" class="count-item" data-index="'+i+'" aria-label="Tocca '+type.name+' '+(i+1)+'"><img src="'+type.file+'" alt="" draggable="false"><span class="count-badge" aria-hidden="true"></span></button>').join('');
+ const choices=options.map(x=>'<button type="button" class="count-option" data-n="'+x+'" aria-label="'+x+'">'+x+'</button>').join('');
+ shell('CONTA','', '<div class="count-board"><div class="count-objects" data-n="'+n+'" data-kind="'+type.name+'" style="--count-cols:'+cols+';--count-rows:'+rows+'">'+figures+'</div><div class="count-question">QUANTI?</div><div class="count-choices">'+choices+'</div></div>');
+ main.querySelector('.gamewrap').classList.add('count-wide');
+ let touched=0,answered=false;
+ main.querySelectorAll('.count-item').forEach(b=>{
+  b.onclick=()=>{
+   if(answered||b.classList.contains('counted'))return;
+   b.classList.add('counted');touched++;
+   b.querySelector('.count-badge').textContent=String(touched);
+   countNumber(touched);
+  };
+ });
+ main.querySelectorAll('.count-option').forEach(b=>{
+  b.onclick=()=>{
+   if(answered)return;
+   if(+b.dataset.n===n){
+    answered=true;b.classList.add('good');
+    if(window.speechSynthesis)try{window.speechSynthesis.cancel()}catch(e){}
+    point();
+    later(()=>{countSolved++;renderCount()},780);
+   }else{
+    b.classList.add('bad');
+    later(()=>b.classList.remove('bad'),450);
+   }
+  };
+ });
 }
 function renderSame(){
   const target=sameItems[Math.floor(Math.random()*sameItems.length)];
@@ -351,14 +403,22 @@ function renderHabitat(){
       </div>
     </div>`);
   main.querySelector('.gamewrap').classList.add('habitat-wide');
-  const back=document.createElement('button');back.className='iconbtn habitat-back';back.textContent='← LIVELLI';back.onclick=()=>openTopic('animali');
+  const back=document.createElement('button');back.className='iconbtn habitat-back';back.textContent='⚙';back.setAttribute('aria-label','Scegli gli esercizi');back.onclick=()=>openTopic('animali');
   main.querySelector('.gamehead').append(back);
   let answered=false;
   document.querySelectorAll('.habitat-zone').forEach(b=>b.onclick=()=>{
     if(answered)return;
     if(b.dataset.env===animal.env){
       answered=true;b.classList.add('good');point();
-      later(renderHabitat,1300);
+      habitatCorrect++;
+      later(function(){
+       if(current==='habitat1'&&habitatCorrect>=6){
+        current='habitat2';habitatDeck=[];habitatCorrect=0;
+       }else if(current==='habitat2'&&habitatCorrect>=6){
+        current='colori';habitatCorrect=0;
+       }
+       render();
+      },780);
     }else{
       b.classList.add('wrong');say('Riprova');
       later(()=>b.classList.remove('wrong'),650);

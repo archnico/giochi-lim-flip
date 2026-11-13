@@ -237,3 +237,8 @@ html[data-diego-page=pregrafismo] .world-mare,
 html[data-diego-page=pregrafismo] .world-acqua {
   border-color:var(--land-ocean);
 }
+
+
+/* DIEGO FLOW · elementi disattivati non devono occupare spazio.
+   Le vecchie regole display:grid/flex non devono prevalere su hidden. */
+html[data-diego-edition] [hidden] {display:none !important}

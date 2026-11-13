@@ -157,6 +157,15 @@ function choose(g,value,x,y){
   g.setAttribute('aria-pressed','true');
   node('text',{x:x+38,y:y-42,class:'check','aria-hidden':'true'},g).textContent='✓';
   found++;if(!muted)DiegoAudio.play(found===total?'fantastico':'bravo');update();
+  if(found===total){
+   const finishedChapter=target;
+   numberScope.later(()=>{
+    if(target!==finishedChapter||found!==total)return;
+    const idx=chapterOrder.indexOf(target);
+    if(idx===chapterOrder.length-1)location.href='unisci-quantita.html';
+    else selectChapter(chapterOrder[idx+1]);
+   },780);
+  }
  }else{
   g.classList.remove('wrong');void g.getBoundingClientRect();g.classList.add('wrong');
   message.textContent='RIPROVA: CERCA IL '+target;
@@ -262,9 +271,11 @@ DiegoAudio.subscribe(function(enabled){
  b.setAttribute('aria-pressed',String(enabled));b.setAttribute('aria-label',enabled?'Disattiva suoni':'Attiva suoni');
 });
 document.getElementById('sound').addEventListener('click',()=>DiegoAudio.setEnabled(!DiegoAudio.isEnabled()));
-const requested=new URLSearchParams(location.search).get('numero');
-if(requested!==null&&chapterOrder.includes(Number(requested)))selectChapter(Number(requested));
-else showChapters();
+// Un solo clic dalla home: il numero iniziale compare subito.
+var requestedMatch=/(?:^|[?&])numero=([0-9])(?:&|$)/.exec(location.search);
+var requested=requestedMatch?Number(requestedMatch[1]):null;
+if(requested!==null&&chapterOrder.includes(requested))selectChapter(requested);
+else selectChapter(chapterOrder[0]);
 </script>
 </body>
 </html>

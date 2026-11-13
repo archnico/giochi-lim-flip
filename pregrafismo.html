@@ -360,8 +360,13 @@ function endGesture(id){if(!state.down||state.id!==id)return;flushTrace();state.
 function completeStroke(){flushTrace();state.down=false;state.id=null;state.touchMatrix=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+1)/state.parts.length)+'%';state.stroke++;
  if(state.stroke<state.parts.length){if(window.DiegoAudio)DiegoAudio.play('stella');var token=state.session;setMessage('⭐');later(function(){if(state.session!==token)return;activate()},520)}else finishLevel()}
 function finishLevel(){state.done=true;celebrate.hidden=false;document.getElementById('trace-progress').style.width='100%';var p=progress[chapters[state.chapter].id]||[];if(p.indexOf(state.level)<0){p.push(state.level);progress[chapters[state.chapter].id]=p;save()}  // Nessuna pioggia di 27 elementi: una stella grande e il delfino bastano.
- if(window.DiegoAudio)DiegoAudio.play('successo');setMessage('⭐');var token=state.session;later(function(){if(state.session===token&&state.done)nextLevel()},1850)}
-function nextLevel(){if(state.chapter<0)return;var n=state.level+1;if(n>=chapters[state.chapter].levels.length){chapterMenu()}else openLevel(state.chapter,n)}
+ if(window.DiegoAudio)DiegoAudio.play('successo');setMessage('⭐');var token=state.session;later(function(){if(state.session===token&&state.done)nextLevel()},750)}
+function nextLevel(){if(state.chapter<0)return;var n=state.level+1;
+ if(n>=chapters[state.chapter].levels.length){
+  if(state.chapter===chapters.length-1){location.href='parole.html';return;}
+  openLevel(state.chapter+1,0);
+ }else openLevel(state.chapter,n)
+}
 function panBoard(dx,dy){
  if(state.zoom<=1)return;
  var base=state.baseView||{x:0,y:0,w:1000,h:600};
@@ -442,7 +447,17 @@ if(usePointer){
 window.addEventListener('blur',function(){state.down=false;state.id=null;stopDemo()});
 document.addEventListener('visibilitychange',function(){if(document.hidden){state.down=false;state.id=null;stopDemo()}});
 window.addEventListener('pagehide',function(){clearTimers();if(audioCtx&&audioCtx.close)try{audioCtx.close()}catch(ignore){}});
-chapterMenu();
+// Avvio immediato dal primo percorso ancora da imparare. Il menu rimane
+// per l'adulto sul pulsante PERCORSI, ma non interrompe la sessione di Diego.
+var firstChapter=0,firstLevel=0;
+for(var ci=0;ci<chapters.length;ci++){
+ var completed=progress[chapters[ci].id]||[];
+ if(completed.length>=chapters[ci].levels.length)continue;
+ firstChapter=ci;firstLevel=0;
+ while(firstLevel<chapters[ci].levels.length-1&&completed.indexOf(firstLevel)>=0)firstLevel++;
+ break;
+}
+openLevel(firstChapter,firstLevel);
 window.PregrafismoTest={chapters:chapters,state:state,openLevel:openLevel,nextLevel:nextLevel,chapterMenu:chapterMenu,startGesture:startGesture,moveGesture:moveGesture,endGesture:endGesture,mapEvent:mapEvent,zoomBoard:zoomBoard,panBoard:panBoard};
 })();
 </script>

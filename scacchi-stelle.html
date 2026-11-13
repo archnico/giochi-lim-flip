@@ -20,6 +20,35 @@ main{max-width:1500px;margin:auto;padding:10px 24px;display:grid;grid-template-c
 .again{min-height:68px;border:0;background:#ffd34d;color:#1b1b1b;border-radius:18px;font-size:26px;font-weight:900}
 .progress{font-size:25px;font-weight:800}.hint{font-size:19px;color:#aebcc4}
 @media(max-width:850px){main{grid-template-columns:1fr;justify-items:center;padding:12px;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px}.board{/*diego-fallback*/width:90vw;/*end-fallback*/width:min(90vw,62vh)}.controls{width:100%;max-width:620px}.controls h1{font-size:26px}.instruction{min-height:0;font-size:25px}.pick button{min-height:57px}.pick img.pick-piece{display:inline-block;vertical-align:middle;width:31px;height:31px;margin:0 5px 0 0}.modes button{min-height:55px;font-size:13px;padding:5px 2px}.hint{font-size:15px}}
+
+.flow-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  font-size:clamp(19px,1.8vw,27px);font-weight:900;color:#FFF9EC;letter-spacing:.07em}
+#flowDots{font-size:clamp(16px,1.6vw,25px);color:#FFEFAE;white-space:nowrap}
+.teacher-tools{align-self:flex-end;width:100%;margin-top:2px}
+.teacher-tools>summary{display:block;cursor:pointer;width:54px;height:52px;line-height:49px;
+ text-align:center;border-radius:13px;background:#23596C;border:2px solid #B4CDC2;
+ font-size:28px;color:#FFF9EC;user-select:none;list-style:none;margin-left:auto}
+.teacher-tools>summary::-webkit-details-marker{display:none}
+.teacher-tools:not([open])>.teacher-panel{display:none!important}
+.teacher-panel{background:#12354E;border:2px solid #B4CDC2;border-radius:15px;
+ padding:10px;display:flex;flex-direction:column;gap:8px}
+.teacher-panel .pick button,.teacher-panel .modes button{min-height:52px}
+.teacher-panel .pick img.pick-piece{height:35px;width:35px}
+.teacher-steps{display:flex;gap:10px}
+.teacher-steps button,.auto-resume{flex:1;min-height:50px;border:2px solid #B4CDC2;border-radius:12px;
+ background:#FFEFAE;color:#12354E;font-weight:900;font-size:24px}
+.star-celebrate{position:fixed;left:50%;top:49%;z-index:8;color:#F99D1B;
+ font-size:clamp(70px,8vw,145px);text-shadow:0 3px 1px #12354E;
+ transform:translate(-50%,-50%) scale(.6);opacity:0;pointer-events:none}
+.star-celebrate.show{animation:chess-reward .55s ease-out both}
+@keyframes chess-reward{0%{opacity:0;transform:translate(-50%,-40%) scale(.4)}
+ 35%{opacity:1;transform:translate(-50%,-65%) scale(1.15)}
+ 100%{opacity:0;transform:translate(-50%,-100%) scale(.8)}}
+.sq.hint-square{box-shadow:inset 0 0 0 6px #0093A5,0 0 0 2px #FFEFAE}
+@media(max-width:850px){.teacher-tools>summary{width:47px;height:44px;line-height:40px}
+ .teacher-panel .pick button,.teacher-panel .modes button{font-size:14px;min-height:45px}
+ .controls{gap:5px}.controls h1{font-size:24px}.progress{font-size:21px}}
+@media(prefers-reduced-motion:reduce){.star-celebrate.show{animation:none}}
 </style><link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script></head><body>
 <header><strong>DIEGO · SCACCHI</strong><a href="index.html">⌂ MENU</a></header>
 <main>
@@ -28,6 +57,12 @@ main{max-width:1500px;margin:auto;padding:10px 24px;display:grid;grid-template-c
 <h1>⭐ Scacchi Stellari</h1>
 <div class="instruction" id="instruction" role="status">Tocca la stella!</div>
 <div class="progress" id="progress" aria-live="polite">★ 0 / 3</div>
+<div class="flow-strip" id="flowStrip" aria-label="Percorso progressivo"><span id="flowTitle">TORRE</span><span id="flowDots">● ○ ○</span></div>
+<div class="star-celebrate" id="starCelebrate" aria-hidden="true">★</div>
+<details class="teacher-tools" id="teacherTools"><summary aria-label="Opzioni per adulto">⚙</summary>
+<div class="teacher-panel">
+<button class="auto-resume" id="autoResume" type="button">▶ PERCORSO</button>
+<div class="teacher-steps"><button type="button" id="stageBack">←</button><button type="button" id="stageNext">→</button></div>
 <div class="pick" aria-label="Scegli il pezzo">
 <button data-piece="king"><img class="pick-piece" src="assets/scacchi/cburnett/wK.svg" alt="" aria-hidden="true" draggable="false"> RE</button>
 <button data-piece="rook"><img class="pick-piece" src="assets/scacchi/cburnett/wR.svg" alt="" aria-hidden="true" draggable="false"> TORRE</button>
@@ -39,7 +74,8 @@ main{max-width:1500px;margin:auto;padding:10px 24px;display:grid;grid-template-c
 <button data-mode="challenge">3 · 5 STELLE</button>
 </div>
 <button class="again" id="again">↻ RICOMINCIA</button>
-<div class="hint">Tocca il pezzo e poi la stella. Nei livelli 2 e 3 puoi raccogliere le stelle nell’ordine che preferisci.</div>
+<div class="hint">Il gioco passa da solo alla prova successiva.</div>
+</div></details>
 </section></main>
 <script src="diego-audio.js"></script><script>
 'use strict';
@@ -51,6 +87,28 @@ const plans={
  queen:{name:'REGINA',glyph:'♕',asset:'assets/scacchi/cburnett/wQ.svg',start:[6,0],
         targets:[[4,2],[4,5],[1,5]],challenge:[[4,2],[4,5],[1,5],[2,2],[6,6]]}
 };
+// Ogni episodio cambia una sola variabile per volta: quantita, contemporaneita, gesto.
+// Il gioco resta sulla stessa scacchiera: niente capitoli o conferme tra un episodio e l'altro.
+const flowSteps=[
+ {piece:'rook',stars:[[6,1]],parallel:false,oneTap:true},
+ {piece:'rook',stars:[[6,2],[3,2]],parallel:false,oneTap:true},
+ {piece:'rook',stars:[[6,2],[3,2]],parallel:true,oneTap:true},
+ {piece:'rook',stars:[[6,2],[3,2],[3,5]],parallel:true,oneTap:true},
+ {piece:'rook',stars:[[6,2],[3,2],[3,5]],parallel:true,oneTap:false},
+ {piece:'rook',stars:[[6,2],[3,2],[3,5],[1,5],[1,1]],parallel:true,oneTap:false},
+ {piece:'king',stars:[[5,4]],parallel:false,oneTap:true},
+ {piece:'king',stars:[[5,4],[4,4]],parallel:false,oneTap:true},
+ {piece:'king',stars:[[5,4],[4,4]],parallel:true,oneTap:true},
+ {piece:'king',stars:[[5,4],[4,4],[3,4]],parallel:true,oneTap:true},
+ {piece:'king',stars:[[5,4],[4,4],[3,4]],parallel:true,oneTap:false},
+ {piece:'king',stars:[[5,4],[5,5],[4,5],[3,4],[2,5]],parallel:true,oneTap:false},
+ {piece:'queen',stars:[[5,1]],parallel:false,oneTap:true},
+ {piece:'queen',stars:[[5,1],[3,3]],parallel:false,oneTap:true},
+ {piece:'queen',stars:[[5,1],[3,3]],parallel:true,oneTap:true},
+ {piece:'queen',stars:[[5,1],[3,3],[3,6]],parallel:true,oneTap:true},
+ {piece:'queen',stars:[[5,1],[3,3],[3,6]],parallel:true,oneTap:false},
+ {piece:'queen',stars:[[5,1],[3,3],[3,6],[6,6],[2,2]],parallel:true,oneTap:false}
+];
 const chessScope=DiegoRuntime.createScope();
 // Tre stelle subito, ma resta disponibile il livello Facile.
 // Query-string compatibile con il browser Samsung Tizen 5 (senza URLSearchParams).
@@ -64,7 +122,22 @@ function chessParam(name){
 }
 const requestedMode=chessParam('mode');
 const requestedPiece=chessParam('piece');
-let piece=['king','rook','queen'].indexOf(requestedPiece)>=0?requestedPiece:'rook',
+function rememberedStage(){
+ try{
+  const value=Number(localStorage.getItem('diego-scacchi-stage-v1'));
+  if(Number.isInteger(value)&&value>=0&&value<flowSteps.length)return Math.max(0,value-1);
+ }catch(ignore){}
+ return 0;
+}
+function saveStage(){
+ try{localStorage.setItem('diego-scacchi-stage-v1',String(flowIndex))}
+ catch(ignore){}
+}
+let autoFlow=!requestedMode||chessParam('flow')==='1',
+ flowIndex=Math.max(0,Math.min(flowSteps.length-1,
+            chessParam('stage')!==''?Number(chessParam('stage'))||0:rememberedStage())),
+ repeatCount=0,stallCount=0,mistakes=0,transit=0,assist=false,
+ piece=['king','rook','queen'].indexOf(requestedPiece)>=0?requestedPiece:'rook',
  mode=['easy','two','challenge'].indexOf(requestedMode)>=0?requestedMode:'two',
  position,step,selected,locked=false,remaining=[];
 const board=document.getElementById('board'),instruction=document.getElementById('instruction'),progress=document.getElementById('progress');
@@ -85,17 +158,71 @@ function allowed(a,b){
  if(!dr&&!dc)return false;
  return piece==='king'?Math.max(dr,dc)===1:piece==='rook'?dr===0||dc===0:dr===0||dc===0||dr===dc;
 }
-function totalStars(){return mode==='challenge'?plans[piece].challenge.length:plans[piece].targets.length}
+function activeFlow(){return flowSteps[flowIndex]}
+function oneTouch(){return autoFlow?activeFlow().oneTap||assist:mode==='easy'}
+function totalStars(){return autoFlow?activeFlow().stars.length:
+  mode==='challenge'?plans[piece].challenge.length:plans[piece].targets.length}
 function availableStars(){
- if(mode==='easy')return step<totalStars()?[plans[piece].targets[step]]:[];
+ if(autoFlow&&!activeFlow().parallel)return step<totalStars()?[activeFlow().stars[step]]:[];
+ if(!autoFlow&&mode==='easy')return step<totalStars()?[plans[piece].targets[step]]:[];
  return remaining;
+}
+function showFlow(){
+ document.body.classList.toggle('flow-mode',autoFlow);
+ document.querySelector('.teacher-tools').open=!autoFlow&&document.querySelector('.teacher-tools').open;
+ const title=document.getElementById('flowTitle'),dots=document.getElementById('flowDots');
+ title.textContent=plans[piece].name;
+ const tier=autoFlow?Math.floor(flowIndex/6):mode==='easy'?0:mode==='two'?1:2;
+ dots.textContent='★ '+(autoFlow?flowIndex%6+1:mode==='easy'?1:mode==='two'?2:3)+' / 6';
+ document.getElementById('autoResume').textContent=autoFlow?'★ IN CORSO':'▶ PERCORSO';
 }
 function reset(){
  chessScope.reset();DiegoAudio.stop();
- position=plans[piece].start.slice();step=0;selected=mode==='easy';locked=false;
- remaining=(mode==='challenge'?plans[piece].challenge:plans[piece].targets).map(p=>p.slice());
- instruction.textContent=mode==='easy'?'TOCCA LA STELLA!':'TOCCA IL PEZZO!';
- draw();
+ if(autoFlow){
+  const current=activeFlow();
+  piece=current.piece;
+  mode=current.parallel?'two':'easy';
+ }
+ position=plans[piece].start.slice();step=0;assist=false;mistakes=0;transit=0;
+ selected=oneTouch();locked=false;
+ remaining=(autoFlow?activeFlow().stars:mode==='challenge'?plans[piece].challenge:plans[piece].targets).map(p=>p.slice());
+ document.getElementById('starCelebrate').classList.remove('show');
+ instruction.textContent=oneTouch()?'TOCCA LA STELLA!':'TOCCA IL PEZZO!';
+ showFlow();draw();
+}
+function moveCloser(){
+ const stars=availableStars();
+ // Il primo passo verso una stella: aiuto soltanto dopo una difficolta.
+ if(!stars.length)return null;
+ const sorted=stars.slice().sort((a,b)=>Math.abs(a[0]-position[0])+Math.abs(a[1]-position[1])
+                             -Math.abs(b[0]-position[0])-Math.abs(b[1]-position[1]));
+ for(const star of sorted)if(allowed(position,star))return star;
+ const star=sorted[0],dr=star[0]-position[0],dc=star[1]-position[1];
+ const stepR=position[0]+(dr>0?1:dr<0?-1:0);
+ const stepC=position[1]+(dc>0?1:dc<0?-1:0);
+ return piece==='rook'?(dr?[stepR,position[1]]:[position[0],stepC]):[stepR,stepC];
+}
+function wrongMove(){
+ mistakes++;
+ if(autoFlow&&mistakes>=2){assist=true;selected=true;draw();}
+ instruction.textContent='PROVA ANCORA';
+}
+function advanceFlow(){
+ if(!autoFlow)return;
+ // Ripetere una prova gia difficile se sono stati necessari vari aiuti.
+ if(mistakes>=3){
+  repeatCount=0;stallCount++;
+  if(stallCount>=2){flowIndex=Math.max(0,flowIndex-1);stallCount=0;}
+  saveStage();reset();return;
+ }
+ stallCount=0;
+ const repeats=activeFlow().stars.length>=3?2:1;
+ repeatCount++;
+ if(repeatCount>=repeats){
+  repeatCount=0;flowIndex=(flowIndex+1)%flowSteps.length;
+  saveStage();
+ }
+ reset();
 }
 function draw(){
  progress.textContent='★ '+step+' / '+totalStars();
@@ -114,6 +241,10 @@ function draw(){
    cell.setAttribute('aria-label','Stella da raccogliere');
    cell.innerHTML='<svg class="star" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 7 L62 35 L92 38 L69 58 L77 90 L50 73 L23 90 L31 58 L8 38 L38 35 Z" fill="#F99D1B" stroke="#12354E" stroke-width="4"/></svg>';
   }
+  if(autoFlow&&assist){
+   const toward=moveCloser();
+   if(toward&&same(toward,[r,c]))cell.classList.add('hint-square');
+  }
   cell.addEventListener('click',()=>tap(r,c));board.append(cell);
  }
  fitChessboard();
@@ -122,49 +253,68 @@ function tap(r,c){
  if(locked||step>=totalStars())return;
  const dest=[r,c];
  if(same(dest,position)){
-  selected=true; // Never deselect the piece on a repeated tap.
-  instruction.textContent='ORA TOCCA LA STELLA!';
+  selected=true; // Il doppio tocco non toglie mai la selezione.
+  instruction.textContent='TOCCA LA STELLA!';
   draw();return;
  }
- if(!selected){instruction.textContent='PRIMA TOCCA IL PEZZO!';return;}
- if(!allowed(position,dest)){instruction.textContent='QUESTA MOSSA NON VA BENE';return;}
- const stars=availableStars();
- const index=stars.findIndex(p=>same(p,dest));
- // From level 2, non-star moves are permitted so the king can reach
- // distant stars; only collecting a star advances the progress counter.
+ if(!selected){instruction.textContent='TOCCA IL PEZZO!';return;}
+ if(!allowed(position,dest)){wrongMove();return;}
+ const stars=availableStars(),index=stars.findIndex(p=>same(p,dest));
  if(index<0){
-  if(mode==='easy'){instruction.textContent='CERCA LA STELLA!';return;}
-  position=dest;selected=false;
-  instruction.textContent='AVVICINATI ALLE STELLE!';
+  if(autoFlow?!activeFlow().parallel:mode==='easy'){wrongMove();return;}
+  position=dest;selected=oneTouch();transit++;
+  if(autoFlow&&transit>4){assist=true;selected=true;}
+  instruction.textContent=oneTouch()?'TOCCA LA STELLA!':'TOCCA IL PEZZO!';
   draw();return;
  }
- position=dest;step++;selected=mode==='easy';
- if(mode!=='easy')remaining.splice(index,1);
+ position=dest;step++;selected=oneTouch();
+ if(autoFlow?activeFlow().parallel:mode!=='easy')remaining.splice(index,1);
+ assist=false;transit=0;
  const finished=step===totalStars();
- instruction.textContent=finished?'⭐ ⭐ ⭐':'⭐';
+ instruction.textContent=finished?'★':'★';
  DiegoAudio.play(finished?'fantastico':'stella');
+ const reward=document.getElementById('starCelebrate');
+ reward.classList.remove('show');void reward.offsetWidth;reward.classList.add('show');
  draw();
- if(!finished){
-  locked=true;
-  chessScope.later(()=>{
-   locked=false;
-   instruction.textContent=mode==='easy'?'TOCCA LA STELLA!':'TOCCA IL PEZZO!';
-  },650);
- }
+ locked=true;
+ chessScope.later(()=>{
+  reward.classList.remove('show');
+  if(finished&&autoFlow){advanceFlow();return;}
+  locked=false;
+  if(!finished)instruction.textContent=oneTouch()?'TOCCA LA STELLA!':'TOCCA IL PEZZO!';
+ },finished?690:390);
 }
-document.querySelectorAll('[data-piece]').forEach(b=>b.addEventListener('click',()=>{piece=b.dataset.piece;reset()}));
-document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;reset()}));
+document.querySelectorAll('[data-piece]').forEach(b=>b.addEventListener('click',()=>{
+ autoFlow=false;piece=b.dataset.piece;reset();
+}));
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{
+ autoFlow=false;mode=b.dataset.mode;reset();
+}));
 document.getElementById('again').addEventListener('click',reset);
+document.getElementById('autoResume').addEventListener('click',()=>{
+ autoFlow=true;repeatCount=0;reset();
+ document.getElementById('teacherTools').open=false;
+});
+document.getElementById('stageBack').addEventListener('click',()=>{
+ autoFlow=true;flowIndex=Math.max(0,flowIndex-1);repeatCount=0;reset();
+});
+document.getElementById('stageNext').addEventListener('click',()=>{
+ autoFlow=true;flowIndex=Math.min(flowSteps.length-1,flowIndex+1);repeatCount=0;reset();
+});
 /* TASTI DIEGO: J/K cambia esercizio fra RE/TORRE/REGINA, R ricomincia. */
 document.addEventListener('keydown',e=>{
  if(e.ctrlKey||e.metaKey||e.altKey||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;
  const k=(e.key||'').toLowerCase();
- if(k==='r'){e.preventDefault();reset()}
+ if(k==='r'){e.preventDefault();repeatCount=0;reset()}
  else if(k==='j'||k==='k'){
   e.preventDefault();
-  const order=['king','rook','queen'];
-  const i=order.indexOf(piece);
-  piece=order[(i+(k==='j'?1:order.length-1))%order.length];
+  if(autoFlow){
+   flowIndex=Math.max(0,Math.min(flowSteps.length-1,flowIndex+(k==='j'?1:-1)));
+   repeatCount=0;stallCount=0;saveStage();
+  }else{
+   const order=['king','rook','queen'];
+   piece=order[(order.indexOf(piece)+(k==='j'?1:order.length-1))%order.length];
+  }
   reset();
  }
 });

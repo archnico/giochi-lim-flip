@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 260" role="img" aria-label="Cuffia rossa">
+<defs><linearGradient id="w" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FE7150"/><stop offset=".55" stop-color="#D83525"/><stop offset="1" stop-color="#A9201C"/></linearGradient><linearGradient id="b" x1="0" x2="1"><stop stop-color="#EF5133"/><stop offset=".5" stop-color="#CC301F"/><stop offset="1" stop-color="#AE221C"/></linearGradient></defs>
+<path d="M40 176Q20 93 75 51Q121 16 182 48Q246 80 238 178Z" fill="url(#w)" stroke="#9F2A20" stroke-width="4"/>
+<path d="M74 52Q91 94 82 175M114 38Q134 91 125 176M155 39Q175 95 170 176M193 54Q212 111 206 177" fill="none" stroke="#A92720" stroke-width="6" opacity=".52" stroke-linecap="round"/>
+<path d="M31 159Q137 142 248 164L245 209Q143 226 38 207Z" fill="url(#b)" stroke="#9F251E" stroke-width="5"/>
+<path d="M56 164L60 207M79 160L83 211M102 158L107 215M128 158L131 215M155 158L157 214M183 158L182 212M209 161L204 210M232 165L228 206" stroke="#92271F" stroke-width="5" opacity=".55" stroke-linecap="round"/>
+<path d="M47 181Q146 167 237 183" stroke="#FF9171" stroke-width="4" fill="none" opacity=".46"/>
+<path d="M103 41Q139 30 177 43" fill="none" stroke="#FF9470" stroke-width="6" opacity=".6" stroke-linecap="round"/>
+</svg>

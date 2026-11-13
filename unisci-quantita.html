@@ -40,16 +40,27 @@ h1{/*diego-fallback*/font-size:3.2vw;/*end-fallback*/font-size:clamp(28px,3.2vw,
 @media(max-width:800px){.page{padding:8px 9px}.back,.setting,.again{min-height:43px;padding:5px 9px;font-size:16px}.top{flex-wrap:wrap}.heading{/*diego-fallback*/--diego-gap:5px;grid-gap:5px;/*end-fallback*/gap:5px}.instruction{font-size:17px}.progress{font-size:20px}.columns{/*diego-fallback*/column-gap:11vw;grid-column-gap:11vw;/*end-fallback*/column-gap:clamp(48px,11vw,90px)}.pair-tile{border-width:3px;border-radius:13px}.quantity-tile{/*diego-fallback*/--diego-gap:5px;grid-gap:5px;/*end-fallback*/gap:5px}.dot{/*diego-fallback*/width:2.9vw;/*end-fallback*/width:clamp(12px,2.9vw,23px);/*diego-fallback*/height:2.9vw;/*end-fallback*/height:clamp(12px,2.9vw,23px)}.pair-tile.matched::after{font-size:17px;right:3px;top:0}.bottom{min-height:48px}.feedback{font-size:19px}}
 @media(max-height:680px){.page{/*diego-fallback*/--diego-gap:4px;grid-gap:4px;/*end-fallback*/gap:4px;padding-top:5px;padding-bottom:5px}.back,.setting,.again{min-height:38px}.instruction{margin:0}.bottom{min-height:44px}.column{/*diego-fallback*/--diego-gap:6px;grid-gap:6px;/*end-fallback*/gap:6px}.pair-tile{border-width:3px;border-radius:12px}.number-tile{/*diego-fallback*/font-size:8vh;/*end-fallback*/font-size:clamp(31px,8vh,58px)}}
 @media(max-width:380px){.dot{width:11px;height:11px}.quantity-tile{/*diego-fallback*/--diego-gap:3px;grid-gap:3px;/*end-fallback*/gap:3px}.settings{/*diego-fallback*/--diego-gap:3px;grid-gap:3px;/*end-fallback*/gap:3px}h1{font-size:24px}}
+
+.adult-options{position:relative}
+.adult-options summary{display:block;list-style:none;min-width:48px;min-height:46px;
+ border-radius:12px;border:2px solid #B4CDC2;background:#23596C;color:#FFF9EC;
+ font-size:28px;text-align:center;cursor:pointer;line-height:43px}
+.adult-options summary::-webkit-details-marker{display:none}
+.adult-options:not([open])>.settings{display:none!important}
+.adult-options .settings{position:absolute;right:0;top:47px;z-index:10;
+ background:#12354E;padding:10px;border:2px solid #B4CDC2;border-radius:14px;min-width:220px}
 </style>
 <link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script></head>
 <body>
 <div class="page" id="page">
   <div class="top">
     <a class="back" href="index.html?topic=matematica">← MATEMATICA</a>
-    <div class="settings">
-      <button class="setting" data-level="3" type="button">FACILE · 1–3</button>
-      <button class="setting active" data-level="5" type="button">1–5</button>
-    </div>
+    <details class="adult-options"><summary aria-label="Opzioni per adulto">⚙</summary>
+      <div class="settings">
+        <button class="setting active" data-level="3" type="button">1–3</button>
+        <button class="setting" data-level="5" type="button">1–5</button>
+      </div>
+    </details>
   </div>
   <div class="heading">
     <div>
@@ -74,7 +85,7 @@ h1{/*diego-fallback*/font-size:3.2vw;/*end-fallback*/font-size:clamp(28px,3.2vw,
 (function(){
   'use strict';
   var pairScope=DiegoRuntime.createScope();
-  var level=5, initial=true, done={}, chosen=null, complete=false;
+  var level=3, initial=true, done={}, chosen=null, complete=false,autoFlow=true;
   var board=document.getElementById('board'), lines=document.getElementById('lines');
   var numbers=document.getElementById('numbers'), quantities=document.getElementById('quantities');
   var feedback=document.getElementById('feedback'), progress=document.getElementById('progress');
@@ -136,6 +147,17 @@ h1{/*diego-fallback*/font-size:3.2vw;/*end-fallback*/font-size:clamp(28px,3.2vw,
       complete=true;page.classList.add('complete');
       feedback.textContent='⭐ ⭐ ⭐';
       again.textContent='★ NUOVA SCHEDA';
+      if(autoFlow){
+       pairScope.later(function(){
+        if(!complete)return;
+        if(level===3){
+         level=5;
+         for(var x=0;x<settings.length;x++)
+          settings[x].classList.toggle('active',settings[x].getAttribute('data-level')==='5');
+        }
+        newRound();
+       },760);
+      }
     }else{
       feedback.textContent='⭐';
     }
@@ -174,7 +196,7 @@ h1{/*diego-fallback*/font-size:3.2vw;/*end-fallback*/font-size:clamp(28px,3.2vw,
   var settings=document.querySelectorAll('[data-level]');
   for(var i=0;i<settings.length;i++){
     settings[i].addEventListener('click',function(){
-      level=Number(this.getAttribute('data-level'));
+      autoFlow=false;level=Number(this.getAttribute('data-level'));
       for(var j=0;j<settings.length;j++)settings[j].classList.toggle('active',settings[j]===this);
       newRound();
     });

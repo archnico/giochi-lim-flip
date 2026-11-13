@@ -161,7 +161,7 @@ function speak(){
   if(!done)unlock();
  }
  // Watchdog sul browser Tizen: l'audio non deve mai bloccare l'esercizio.
- revealTimer=setTimeout(finish,2600);
+ revealTimer=setTimeout(finish,1000);
  function fallback(){
   if(finished||token!==audioToken)return;
   try{
@@ -213,7 +213,7 @@ function renderTiles(){
  }
 }
 function load(){
- stopVoice();active=true;done=false;attempts=0;chosen=[];
+ clearTimeout(nextWordTimer);stopVoice();active=true;done=false;attempts=0;chosen=[];
  tiles=mix(words[index].word);
  $('counter').textContent=(index+1)+' / '+words.length;
  $('reward').hidden=true;$('tiles').hidden=false;
@@ -225,12 +225,15 @@ function nudge(){
  var bs=$('tiles').getElementsByTagName('button');
  for(var i=0;i<bs.length;i++)if(!bs[i].disabled&&tiles[i]===next)bs[i].className+=' hint'
 }
+var nextWordTimer=0;
 function win(){
  done=true;stopVoice();$('instruction').textContent='';
  $('tiles').hidden=true;$('reward').hidden=false;$('undo').disabled=true;
  $('listen').disabled=false;
  if(window.DiegoAudio)window.DiegoAudio.play('bravo');
  try{window.localStorage.setItem('diego-parole-completate',String(index+1))}catch(e){}
+ clearTimeout(nextWordTimer);
+ nextWordTimer=setTimeout(function(){if(done)next(1)},750);
 }
 function choose(i){
  if(!active||done||$('tiles').className.indexOf('locked')!==-1)return;
@@ -246,6 +249,8 @@ function begin(){
  $('intro').hidden=true;$('game').hidden=false;index=0;load()
 }
 $('start').onclick=begin;
+// Diego entra subito nel primo esercizio, senza ulteriore pulsante AVVIA.
+begin();
 $('listen').onclick=function(){if(done&&window.DiegoAudio)window.DiegoAudio.stop();speak()};
 $('undo').onclick=function(){if(done||!chosen.length)return;chosen.pop();refreshSlots();renderTiles();$('undo').disabled=!chosen.length};
 $('reset').onclick=load;

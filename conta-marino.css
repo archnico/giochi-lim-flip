@@ -1,0 +1,67 @@
+/* Conta marino, unico flusso: grandi immagini, tocco singolo, nessuna selezione livello.
+   Compatibile con Tizen 5, telefono e mouse. */
+html[data-diego-edition=flip] .gamewrap.count-wide{
+ max-width:none;width:100%;height:100%;min-height:0;overflow:hidden;gap:8px;
+}
+.count-wide .gamehead{flex:none;min-height:44px;gap:12px}
+.count-wide .gamehead h1{font-size:clamp(26px,3.2vw,46px)}
+.count-wide .sub{display:none}
+.count-wide .stage{flex:1;min-height:0;align-items:stretch;justify-content:stretch}
+.count-board{display:flex;flex-direction:column;align-items:center;justify-content:space-between;width:100%;height:100%;min-height:0;gap:8px}
+.count-objects{
+ flex:1;min-height:0;width:100%;max-width:1180px;
+ display:grid;grid-template-columns:repeat(var(--count-cols),minmax(0,1fr));
+ grid-template-rows:repeat(var(--count-rows),minmax(0,1fr));
+ gap:clamp(4px,1.5vh,16px);align-items:stretch;justify-items:stretch;
+}
+.count-item{
+ position:relative;display:flex;align-items:center;justify-content:center;
+ cursor:pointer;min-width:0;min-height:0;width:100%;height:100%;
+ padding:clamp(4px,1.2vh,12px);border-radius:22px;
+ background:#FFF9EC12;border:3px solid #B4CDC23A;
+ touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent;
+}
+.count-item img{
+ width:100%;height:100%;min-width:0;min-height:0;max-height:100%;
+ object-fit:contain;pointer-events:none;user-select:none;
+}
+.count-item.counted{border-color:#FFEFAE;background:#FFF3CA32}
+.count-item .count-badge{
+ display:none;position:absolute;right:3px;top:3px;min-width:42px;height:42px;
+ background:#FFEFAE;color:#12354E;border:3px solid #FFF9EC;border-radius:50%;
+ text-align:center;line-height:36px;font:bold 27px Arial,sans-serif;pointer-events:none;
+}
+.count-item.counted .count-badge{display:block}
+.count-item:focus-visible,.count-option:focus-visible{outline:5px solid #F99D1B;outline-offset:-4px}
+.count-question{flex:none;font-weight:900;letter-spacing:.04em;font-size:clamp(22px,2.7vw,38px);line-height:1.05;color:#FFEFAE;text-align:center}
+.count-choices{
+ flex:none;min-height:0;width:100%;max-width:920px;display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(8px,1.6vw,22px);
+ padding:0 0 2px;
+}
+.count-option{
+ min-height:clamp(68px,13vh,116px);font:bold clamp(36px,5vw,72px) Arial,sans-serif;
+ color:#12354E;background:#FFF9EC;border:4px solid #B4CDC2;
+ border-radius:clamp(15px,2vw,25px);cursor:pointer;touch-action:manipulation;
+ box-shadow:0 5px 0 #061D2F88;
+}
+.count-option.good{border-color:#08795E;background:#DEF4E7}
+.count-option.bad{border-color:#B94030;background:#FFE3DD}
+.count-option:active{transform:translateY(2px);box-shadow:0 3px 0 #061D2F88}
+@media(max-width:700px){
+ .count-wide .gamehead h1{font-size:29px}
+ .count-board{gap:6px}
+ .count-objects{gap:5px}
+ .count-item{border-radius:15px;border-width:2px;padding:3px}
+ .count-item .count-badge{min-width:32px;height:32px;line-height:27px;font-size:19px;border-width:2px}
+ .count-option{min-height:76px;font-size:54px}
+ .count-question{font-size:27px}
+}
+@media(max-height:520px){
+ .count-wide .gamehead{min-height:32px}
+ .count-wide .gamehead h1{font-size:25px}
+ .count-choices .count-option{min-height:58px;font-size:42px}
+ .count-question{font-size:23px}
+ .count-item{padding:3px}
+}
+@media(prefers-reduced-motion:reduce){.count-option:active{transform:none}}

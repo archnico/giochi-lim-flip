@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 300" role="img" aria-label="Chitarra">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFDF84"/><stop offset=".55" stop-color="#EFA530"/><stop offset="1" stop-color="#B96820"/></linearGradient></defs>
+<g transform="translate(55 8) rotate(18 90 145)">
+<path d="M104 87L113 7L150 7L157 87Z" fill="#A75A2A" stroke="#75421E" stroke-width="4"/>
+<path d="M103 6L110 0L154 0L161 9L154 38L109 37Z" fill="#C0773B" stroke="#75421E" stroke-width="3"/>
+<path d="M104 17L88 12M104 30L89 35M157 16L174 10M157 30L171 38" stroke="#FFF2BF" stroke-width="6" stroke-linecap="round"/>
+<path d="M109 53L153 53M108 69L155 69M106 83L156 83" stroke="#E3BB77" stroke-width="3"/>
+<path d="M108 88C85 87 66 110 72 133C78 152 92 157 78 181C54 194 45 217 53 249C64 291 137 289 173 262C207 231 194 188 170 180C155 170 167 151 181 133C193 105 165 80 142 89C130 96 118 97 108 88Z" fill="url(#g)" stroke="#874C20" stroke-width="6"/>
+<path d="M94 105C77 130 106 143 91 173M178 193C201 229 170 267 125 275" stroke="#FFF0AD" stroke-width="8" fill="none" opacity=".48" stroke-linecap="round"/>
+<circle cx="129" cy="172" r="26" fill="#12354E" stroke="#F8D893" stroke-width="7"/>
+<circle cx="129" cy="172" r="18" fill="#092B42"/>
+<path d="M102 239L159 239L155 252L107 252Z" fill="#704422"/>
+<path d="M115 9L112 244M121 9L120 245M127 9L127 245M134 9L134 245M142 9L141 245M148 9L149 244" stroke="#FFF1D3" stroke-width="1.7" opacity=".94"/>
+<path d="M109 107L150 107" stroke="#A16128" stroke-width="4" opacity=".6"/>
+</g>
+</svg>
