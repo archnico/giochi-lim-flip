@@ -409,8 +409,8 @@ html,body,#app{width:100%;max-width:none;margin:0}
  #menu .intro{position:relative;min-height:142px;padding:5px 140px;display:flex;flex-direction:column;justify-content:center}
  #menu .intro:before,#menu .intro:after{content:"";position:absolute;top:0;width:135px;height:136px;
   background-size:contain;background-position:center;background-repeat:no-repeat;pointer-events:none}
- #menu .intro:before{left:2px;background-image:url("assets/diegoland/esploratore_intero.webp")}
- #menu .intro:after{right:2px;background-image:url("assets/diegoland/squalo_giaguaro.webp")}
+ #menu .intro:before{left:2px;background-image:url("assets/diegoland/esploratore-canonico.webp")}
+ #menu .intro:after{right:2px;background-image:url("assets/diegoland/squalo-giaguaro-virata.webp")}
 }
 #celebrate .reward-sub{display:block;width:min(360px,36vw);height:min(180px,19vh);max-width:75%;
  object-fit:contain;pointer-events:none;animation:diego-pregra-sub .65s ease-out 1 both}

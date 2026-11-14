@@ -343,6 +343,69 @@ for category in ("pregrafismo","acqua","scacchi","matematica","animali",
            category+":" in index.split("const flipVisual={",1)[1].split("};",1)[0],
            "Menu adulto: manca la categoria/immagine "+category)
 
+# Pregrafismo: tema Diegoland e distinzione reale fra guida, progresso
+# preciso e tratto libero. Le regole di touch restano quelle collaudate.
+preg=(ROOT/'pregrafismo.html').read_text(encoding="utf8")
+old_preg=(ROOT/'pregrafismo.html.pre-diegoland-20261114.bak')
+pg_css=(ROOT/'pregrafismo-diegoland.css').read_text(encoding="utf8")
+pg_v2=(ROOT/'pregrafismo-v2.css').read_text(encoding="utf8")
+touch_icon=ROOT/'assets/diegoland/ui/tocco.svg'
+verify('<link rel="stylesheet" href="pregrafismo-diegoland.css">' in preg,
+       "Pregrafismo: il tema aggiornato non viene caricato")
+verify(touch_icon.is_file(),"Pregrafismo: icona tocco assente")
+if touch_icon.is_file():
+    try:
+        svg=ET.parse(touch_icon).getroot()
+        verify(svg.attrib.get("viewBox")=="0 0 64 64",
+               "Pregrafismo: icona tocco SVG malformata")
+    except ET.ParseError:
+        verify(False,"Pregrafismo: icona tocco SVG invalida")
+verify("assets/diegoland/stella-marina-canonica.webp" in preg
+       and "var star=svg('image'" in preg,
+       "Pregrafismo: arrivo e premio non usano la stella canonica")
+verify("assets/diegoland/ui/tocco.svg" in preg
+       and "pg-visual-instruction" in preg,
+       "Pregrafismo: istruzioni visive non locali")
+verify("var picture='<img src=" in preg and
+       "c.icon+'</span>'" not in preg,
+       "Pregrafismo: emoji nei capitoli ancora renderizzati")
+verify("lesson[2]||''" not in preg and
+       "lesson[3]||''" not in preg and
+       ".pc-corner {\n  display:none!important" in pg_css,
+       "Pregrafismo: vecchi emoji decorativi ancora visibili")
+verify("👆 → ⭐" not in preg and
+       "setMessage('⭐')" not in preg and
+       '">✏️</h1>' not in preg,
+       "Pregrafismo: emoji di sistema visibili nelle istruzioni")
+verify("stroke:'#F4E4B0'" in preg and
+       "stroke:'#B98741'" in preg and
+       "stroke:'#9AC9C0'" in preg,
+       "Pregrafismo: guida sabbia e progresso laguna non distinti")
+verify("stroke:var(--pg-hand)" in pg_css and
+       "--pg-hand:#0093A5" in pg_css and
+       "opacity:'.98'" in preg and
+       "opacity:effectiveMode()===0?'.22':'.9'" not in preg,
+       "Pregrafismo: tratto reale non contrastato in ogni modalità")
+verify("esploratore_intero.webp" not in pg_v2 and
+       "squalo_giaguaro.webp" not in pg_v2 and
+       "esploratore-canonico.webp" in pg_v2 and
+       "squalo-giaguaro-virata.webp" in pg_v2,
+       "Pregrafismo: illustrazioni superate nel selettore")
+verify("id=\"guide-hand\" cx=" in preg and
+       "setAttribute('cx',point.x)" in preg,
+       "Pregrafismo: puntatore demo SVG non collegato")
+# Conferma che la patch estetica non modifica la matematica o i limiti touch.
+if old_preg.is_file():
+    original=old_preg.read_text(encoding="utf8")
+    for a,b in (
+        ("function mapEvent(e){","function dist(a,b){"),
+        ("function moveStep(pt){","function moveGesture(ev,id){"),
+        ("function moveGesture(ev,id){","function endGesture(id){")
+    ):
+        verify(preg.split(a,1)[1].split(b,1)[0] ==
+               original.split(a,1)[1].split(b,1)[0],
+               "Pregrafismo: modificate accidentalmente le regole del touch")
+
 # La cache offline deve contenere ogni file del gioco, incluse le nuove icone.
 service_worker = (ROOT / "sw.js").read_text(encoding="utf-8")
 m = re.search(r"var FILES=(\[[^\n]*\]);", service_worker)
@@ -364,9 +427,11 @@ if m:
                  "./assets/diegoland/belafonte-canonica.webp",
                  "./assets/diegoland/vettori/numeri.svg",
                  "./parole.html", "./unisci-quantita.html",
-                 "./diegoland-arte.css", "./diego-menu.css", "./diego-audio.js"):
+                 "./diegoland-arte.css", "./diego-menu.css", "./pregrafismo-diegoland.css",
+                 "./assets/diegoland/ui/tocco.svg", "./diego-audio.js"):
         verify(path in files, f"File essenziale non in cache: {path}")
-    verify("f==='./assets/diegoland/scacchi-logo.webp'" in service_worker
+    verify("f==='./assets/diegoland/ui/tocco.svg'" in service_worker
+           and "f==='./assets/diegoland/scacchi-logo.webp'" in service_worker
            and "f.indexOf('./assets/diegoland/vettori/')===0" in service_worker
            and "f==='./assets/diegoland/squalo-giaguaro-nuoto.webp'" in service_worker
            and "f==='./assets/diegoland/squalo-giaguaro-virata.webp'" in service_worker

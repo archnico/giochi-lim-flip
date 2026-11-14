@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Tocca">
+ <g stroke="#12354E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M26 43V21a5 5 0 0 1 10 0v17l3-4a6 6 0 0 1 8 0l4 4q5 5 1 13l-3 7H31l-10-14c-3-4 4-9 8-5l-3-3Z" fill="#FFEFAE"/>
+  <path d="M18 17a18 18 0 0 1 19-14M13 28a22 22 0 0 1 0-11" fill="none" stroke="#0093A5" stroke-width="4"/>
+  <circle cx="31" cy="21" r="8" fill="none" stroke="#F48067" stroke-width="2.8"/>
+ </g>
+</svg>
