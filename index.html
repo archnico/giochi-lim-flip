@@ -216,20 +216,20 @@ const flipVisual={
   parole:'assets/icons/kit-v2/pregrafismo.svg',
   acqua:'assets/diegoland/sottomarino.webp',
   animali:'assets/diegoland/squalo_giaguaro.webp',
-  matematica:'assets/icons/kit-v2/matematica.svg',
+  matematica:'assets/diegoland/vettori/conchiglia.svg',
   scacchi:'assets/icons/kit-v2/scacchi.svg',
-  attenzione:'assets/icons/kit-v2/attenzione.svg',
-  associazioni:'assets/icons/kit-v2/associazioni.svg',
-  memoria:'assets/icons/kit-v2/memoria.svg',
-  match:'assets/icons/kit-v2/associazioni.svg',
-  count:'assets/icons/kit-v2/conta.svg',
-  numeri:'assets/icons/kit-v2/numeri.svg',
-  unisci:'assets/icons/kit-v2/unisci.svg',
-  same:'assets/icons/kit-v2/attenzione.svg',
-  odd:'assets/icons/kit-v2/attenzione.svg',
-  habitat1:'assets/icons/kit-v2/animali.svg',
-  habitat2:'assets/icons/kit-v2/animali.svg',
-  colori:'assets/icons/kit-v2/colori.svg',
+  attenzione:'assets/diegoland/vettori/manta.svg',
+  associazioni:'assets/diegoland/vettori/salvagente.svg',
+  memoria:'assets/diegoland/vettori/oblo.svg',
+  match:'assets/diegoland/vettori/salvagente.svg',
+  count:'assets/diegoland/vettori/stella.svg',
+  numeri:'assets/diegoland/vettori/ancora.svg',
+  unisci:'assets/diegoland/vettori/pesce.svg',
+  same:'assets/diegoland/vettori/pesce.svg',
+  odd:'assets/diegoland/vettori/granchio.svg',
+  habitat1:'assets/diegoland/vettori/pesce.svg',
+  habitat2:'assets/diegoland/vettori/manta.svg',
+  colori:'assets/diegoland/vettori/corallo.svg',
 };
 function flipCard(title,desc,id,visual,kind,href){
   const tag=href?'a':'button';
@@ -248,7 +248,7 @@ function home(){
     ['PAROLE','Disegna · Ascolta · Componi','pregrafismo']
   ];
   main.innerHTML='<div class="flip-home">'+primaries.map(function(a){return flipCard(a[0],a[1],a[2],flipVisual[a[2]],'game')}).join('')+
-   '<button type="button" class="flip-other" id="otherBtn"><img src="assets/icons/kit-v2/altri.svg" alt="">ALTRI</button></div>';
+   '<button type="button" class="flip-other" id="otherBtn"><img src="assets/diegoland/vettori/oblo.svg" alt="">ALTRI</button></div>';
   // Un unico tocco dalla home: i percorsi procedono da soli.
   const direct={animali:'habitat1',matematica:'numeri',acqua:'acqua',scacchi:'scacchi',pregrafismo:'pregrafismo'};
   main.querySelectorAll('[data-game]').forEach(function(b){b.onclick=function(){start(direct[b.dataset.game])}});
@@ -309,11 +309,20 @@ function renderMatch(){
 }
 
 // Quattro figure riconoscibili e un unico percorso graduale, senza menu di livelli.
+// Oggetti a contorni puliti, senza sfondi o ritagli; cambiano senza aprire menu.
 const countTypes=[
- {name:'CUFFIA',file:'assets/conta/cuffia.svg'},
- {name:'SUB',file:'assets/diegoland/sottomarino.webp'},
- {name:'SQUALO',file:'assets/diegoland/squalo_giaguaro.webp'},
- {name:'CHITARRA',file:'assets/conta/chitarra.svg'}
+ {name:'CUFFIA',file:'assets/diegoland/vettori/cuffia.svg'},
+ {name:'SUB',file:'assets/diegoland/vettori/sottomarino.svg'},
+ {name:'SQUALO',file:'assets/diegoland/vettori/squalo.svg'},
+ {name:'CHITARRA',file:'assets/diegoland/vettori/chitarra.svg'},
+ {name:'PESCE',file:'assets/diegoland/vettori/pesce.svg'},
+ {name:'POLPO',file:'assets/diegoland/vettori/polpo.svg'},
+ {name:'GRANCHIO',file:'assets/diegoland/vettori/granchio.svg'},
+ {name:'STELLA',file:'assets/diegoland/vettori/stella.svg'},
+ {name:'CONCHIGLIA',file:'assets/diegoland/vettori/conchiglia.svg'},
+ {name:'MEDUSA',file:'assets/diegoland/vettori/medusa.svg'},
+ {name:'CAVALLUCCIO',file:'assets/diegoland/vettori/cavalluccio.svg'},
+ {name:'BATISCAFO',file:'assets/diegoland/vettori/batiscafo.svg'}
 ];
 const countPlan=[1,2,3,2,3,4,3,4,5,4,5,6,5,6,7,6,7,8];
 let countSolved=0,countTouchedAudio=null;

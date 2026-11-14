@@ -28,3 +28,26 @@ html[data-diego-edition=flip] .flip-home .flip-acqua .flip-visual img{position:r
 /* Parola di ABBINA: grande e riascoltabile senza decorazioni da pulsante. */
 .match-word{display:block;width:100%;border:0;background:transparent;cursor:pointer;padding:0 8px}
 .match-word:focus-visible{outline:5px solid var(--gold,#ffe17f);outline-offset:3px;border-radius:14px}
+
+/* Collezione marina SVG: carta ritagliata, leggibile anche a 50 px.
+   Pattern statici e discreti: nessuna animazione o decodifica bitmap. */
+html[data-diego-edition=flip] .flip-games .flip-card::after{
+  content:"";position:absolute;right:0;bottom:0;width:43%;height:42%;
+  background:url("assets/diegoland/onde.svg") bottom right/100% 100% no-repeat;
+  opacity:.10;pointer-events:none;z-index:0;
+}
+html[data-diego-edition=flip] .flip-games .flip-card .flip-visual{position:relative;z-index:1}
+html[data-diego-edition=flip] .flip-card .flip-visual img[src*="/vettori/"],
+html[data-diego-edition=flip] .flip-other img[src*="/vettori/"]{
+  object-fit:contain!important;object-position:center;
+  max-width:100%;max-height:100%;user-select:none;pointer-events:none;
+  filter:drop-shadow(0 6px 2px #12354E24);
+}
+html[data-diego-edition=flip] .flip-other img[src*="/vettori/"]{min-height:60px}
+@media(max-width:800px){
+ html[data-diego-edition=flip] .flip-games .flip-card::after{opacity:.07}
+ html[data-diego-edition=flip] .flip-other img[src*="/vettori/"]{min-height:52px}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-diego-edition=flip] .flip-card .flip-visual img[src*="/vettori/"]{transition:none!important}
+}
