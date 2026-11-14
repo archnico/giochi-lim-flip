@@ -102,7 +102,7 @@ footer{min-height:52px;border-top:1px solid var(--line);padding:10px 20px;displa
 <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/app-180.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="diego-runtime.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-arte.css"><link rel="stylesheet" href="conta-marino.css"><link rel="stylesheet" href="diego-menu.css"><link rel="stylesheet" href="diego-premio.css">
-</head>
+<link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script></head>
 <body>
 <div id="app">
 <header><div class="brand">DIEGO</div><div class="toolbar"><button class="iconbtn" id="homeBtn" title="Torna al menu" aria-label="Torna al menu">⌂ <span class="tool-label">MENU</span></button><button class="iconbtn" id="testBtn" title="Prova il touch" aria-label="Prova il touch">⊕ <span class="tool-label">TEST</span></button><button class="iconbtn" id="fullBtn" title="Schermo intero" aria-label="Schermo intero">⛶ <span class="tool-label">SCHERMO</span></button></div></header>
@@ -369,7 +369,7 @@ function renderCount(){
 function renderSame(){
   const target=sameItems[Math.floor(Math.random()*sameItems.length)];
   const choices=shuffle([target,...shuffle(sameItems.filter(x=>x!==target)).slice(0,2)]);
-  shell('UGUALE','',`<div class="samewrap"><div class="sameexample" aria-label="Figura da cercare">${target}</div><div class="answers sameanswers">${choices.map(x=>`<button class="answer" data-a="${x}" aria-label="Scegli ${x}">${x}</button>`).join('')}</div></div>`);
+  shell('UGUALE','',`<div class="samewrap"><div class="sameexample" data-figure="${target}" aria-label="Figura da cercare">${target}</div><div class="answers sameanswers">${choices.map(x=>`<button class="answer" data-a="${x}" aria-label="Scegli ${x}">${x}</button>`).join('')}</div></div>`);
   let answered=false;
   document.querySelectorAll('.sameanswers .answer').forEach(b=>b.onclick=()=>{
     if(answered)return;

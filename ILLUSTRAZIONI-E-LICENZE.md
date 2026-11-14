@@ -24,3 +24,10 @@ scelto dall'utente (`assets/diegoland/sottomarino.webp` e
 `assets/diegoland/berretto.svg` (cuffia rossa frontale in SVG, ridisegnata per leggibilità il 14/11/2026).
 Le meccaniche di raccolta si ispirano agli esercizi Chess Basics
 di Lichess; il codice del gioco e i livelli sono implementati autonomamente.
+
+## Pittogrammi originali Diegoland — 14 novembre 2026
+
+I 64 file SVG in assets/diegoland/pittogrammi/ sono pittogrammi originali
+creati per Diego. Non utilizzano font emoji del dispositivo o risorse esterne.
+Restano separate le licenze degli asset OpenMoji e Cburnett.
+Gli emoji ancora presenti nei dataset sono identificatori interni.

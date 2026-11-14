@@ -29,7 +29,7 @@ h1{/*diego-fallback*/font-size:3.2vw;/*end-fallback*/font-size:clamp(28px,3.2vw,
 .dot{display:block;flex:0 0 auto;background:#122837;/*diego-fallback*/width:2.45vw;/*end-fallback*/width:clamp(17px,2.45vw,39px);/*diego-fallback*/height:2.45vw;/*end-fallback*/height:clamp(17px,2.45vw,39px);border-radius:50%}
 .pair-tile.selected,.pair-tile:focus-visible{border-color:var(--gold);box-shadow:0 0 0 6px #ffda6499,inset 0 0 0 3px #ffda64}
 .pair-tile.matched{border-color:var(--green);background:#e6fff0}
-.pair-tile.matched::after{content:"✓";position:absolute;right:12px;top:4px;/*diego-fallback*/font-size:2vw;/*end-fallback*/font-size:clamp(20px,2vw,34px);color:#157240}
+.pair-tile.matched::after{content:"";display:block;width:38px;height:38px;background:url("assets/diegoland/pittogrammi/check.svg") center/contain no-repeat;position:absolute;right:12px;top:4px;/*diego-fallback*/font-size:2vw;/*end-fallback*/font-size:clamp(20px,2vw,34px);color:#157240}
 .pair-tile.wrong{border-color:var(--red);background:#ffe6e4}
 .lines{position:absolute;z-index:1;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .bottom{min-height:62px;display:flex;align-items:center;justify-content:space-between;/*diego-fallback*/--diego-gap:14px;grid-gap:14px;/*end-fallback*/gap:14px;flex-shrink:0}
@@ -53,7 +53,7 @@ h1{/*diego-fallback*/font-size:3.2vw;/*end-fallback*/font-size:clamp(28px,3.2vw,
 .adult-options .settings{position:absolute;right:0;top:47px;z-index:10;
  background:#12354E;padding:10px;border:2px solid #B4CDC2;border-radius:14px;min-width:220px}
 </style>
-<link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script></head>
+<link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script></head>
 <body>
 <div class="page" id="page">
   <div class="top">

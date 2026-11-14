@@ -78,8 +78,8 @@ body,html{background:#102536}
 .match-photo:focus{outline:6px solid #ffe083;outline-offset:0}
 .match-photo:active{transform:scale(.99)}
 .match-photo.good{border-color:#87ddad;box-shadow:0 0 0 9px #4eca8b99,0 8px 30px #001d2e55}
-.match-photo.good:after{content:"✓";position:absolute;top:8px;right:14px;width:64px;height:64px;border-radius:50%;
-  background:#2caa75;color:#fff;text-align:center;line-height:64px;font:900 51px Arial,Helvetica,sans-serif}
+.match-photo.good:after{content:"";position:absolute;top:8px;right:14px;width:64px;height:64px;border-radius:50%;
+  background:#2caa75 url("assets/diegoland/pittogrammi/check.svg") center/74% no-repeat;color:#fff;text-align:center;line-height:64px;font:900 51px Arial,Helvetica,sans-serif}
 .match-photo.wrong{border-color:#ffb7a6;animation:shake .18s linear 2}
 #mini-celebrate{position:fixed;left:50%;top:48%;transform:translate(-50%,-50%);z-index:25;
   display:block;min-width:280px;text-align:center;pointer-events:none;
