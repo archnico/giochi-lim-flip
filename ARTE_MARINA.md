@@ -42,3 +42,11 @@ volta, senza spostare nel gioco prototipi non convalidati.
 La descrizione storica qui sopra delle 36 prove con tre pezzi è superata:
 il gioco attuale conserva la progressione continua con re, torre, regina,
 alfiere, cavallo e pedone; il logo rimane indipendente dalle regole didattiche.
+
+
+### Canone aggiuntivo — polpo e stella marina (14/11/2026)
+
+- `docs/POLPO_CANONICO_20261114.md`: polpo a otto tentacoli con occhi, come approvato.
+- `docs/STELLA_MARINA_CANONICA_20261114.md`: stella marina a cinque bracci, **senza occhi e senza sorriso**, come approvato.
+- Entrambe le figure sono già utilizzate in Conta, con archivio di provenienza, hash e cache offline.
+- Il prossimo eventuale soggetto deve essere approvato prima dell'integrazione.

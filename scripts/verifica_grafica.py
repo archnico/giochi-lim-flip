@@ -161,6 +161,28 @@ verify("assets/diegoland/vettori/squalo.svg" not in index + chess,
 verify(index.split("const countTypes=[",1)[1].split("];",1)[0].count("{name:") == 6,
        "Conta dovrebbe proporre soltanto sei tipi di oggetti familiari")
 
+# Icone approvate: stella marina senza volto e polpo blu a tentacoli.
+for title, filename, digest, dimensions in (
+    ("Stella marina", "stella-marina-canonica.webp", "dfa540c7822cbb26279de8cf7bf31ab195bcc8e9fc27978d33565c34ea88ef0a", (768, 768)),
+    ("Polpo", "polpo-canonico.webp", "37ce13cccf5519b5a28d7a3bf310e288bb65955874cb0e1b80f074039992e560", (768, 700)),
+):
+    p = ROOT / "assets/diegoland" / filename
+    verify(p.is_file(), f"{title}: risorsa canonica mancante")
+    if p.is_file():
+        verify(sha256(p.read_bytes()).hexdigest() == digest, f"{title}: canone alterato")
+        verify(p.stat().st_size < 120_000, f"{title}: risorsa pesante")
+        try:
+            from PIL import Image
+            with Image.open(p) as image:
+                verify(image.size == dimensions and "A" in image.getbands(),
+                       f"{title}: dimensioni o trasparenza errate")
+        except ImportError:
+            pass
+    verify(("assets/diegoland/" + filename) in index, f"{title}: versione provvisoria ancora in Conta")
+    verify(("../assets/diegoland/" + filename) in
+           (ROOT / "docs/ICONE_APPROVATE.html").read_text(encoding="utf8"),
+           f"{title}: assente dalla galleria canonica")
+
 # La cache offline deve contenere ogni file del gioco, incluse le nuove icone.
 service_worker = (ROOT / "sw.js").read_text(encoding="utf-8")
 m = re.search(r"var FILES=(\[[^\n]*\]);", service_worker)
@@ -173,6 +195,8 @@ if m:
     for path in ("./assets/diegoland/scacchi-logo.webp",
                  "./assets/diegoland/squalo-giaguaro-nuoto.webp",
                  "./assets/diegoland/squalo-giaguaro-virata.webp",
+                 "./assets/diegoland/stella-marina-canonica.webp",
+                 "./assets/diegoland/polpo-canonico.webp",
                  "./assets/diegoland/vettori/numeri.svg",
                  "./parole.html", "./unisci-quantita.html",
                  "./diegoland-arte.css", "./diego-audio.js"):
@@ -180,7 +204,9 @@ if m:
     verify("f==='./assets/diegoland/scacchi-logo.webp'" in service_worker
            and "f.indexOf('./assets/diegoland/vettori/')===0" in service_worker
            and "f==='./assets/diegoland/squalo-giaguaro-nuoto.webp'" in service_worker
-           and "f==='./assets/diegoland/squalo-giaguaro-virata.webp'" in service_worker,
+           and "f==='./assets/diegoland/squalo-giaguaro-virata.webp'" in service_worker
+           and "f==='./assets/diegoland/stella-marina-canonica.webp'" in service_worker
+           and "f==='./assets/diegoland/polpo-canonico.webp'" in service_worker,
            "Icone marine non precaricate offline")
 
 print(f"Diego — verifiche grafiche: {checks}, problemi: {len(errors)}")
