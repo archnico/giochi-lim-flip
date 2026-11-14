@@ -347,10 +347,10 @@ for category in ("pregrafismo","acqua","scacchi","matematica","animali",
 # preciso e tratto libero. Le regole di touch restano quelle collaudate.
 preg=(ROOT/'pregrafismo.html').read_text(encoding="utf8")
 old_preg=(ROOT/'pregrafismo.html.pre-diegoland-20261114.bak')
-pg_css=(ROOT/'pregrafismo-diegoland.css').read_text(encoding="utf8")
+pg_css=(ROOT/'pregrafismo-diegoland-v2.css').read_text(encoding="utf8")
 pg_v2=(ROOT/'pregrafismo-v2.css').read_text(encoding="utf8")
 touch_icon=ROOT/'assets/diegoland/ui/tocco.svg'
-verify('<link rel="stylesheet" href="pregrafismo-diegoland.css">' in preg,
+verify('<link rel="stylesheet" href="pregrafismo-diegoland-v2.css">' in preg,
        "Pregrafismo: il tema aggiornato non viene caricato")
 verify(touch_icon.is_file(),"Pregrafismo: icona tocco assente")
 if touch_icon.is_file():
@@ -427,7 +427,7 @@ if m:
                  "./assets/diegoland/belafonte-canonica.webp",
                  "./assets/diegoland/vettori/numeri.svg",
                  "./parole.html", "./unisci-quantita.html",
-                 "./diegoland-arte.css", "./diego-menu.css", "./pregrafismo-diegoland.css",
+                 "./diegoland-arte.css", "./diego-menu.css", "./pregrafismo-diegoland-v2.css",
                  "./assets/diegoland/ui/tocco.svg", "./diego-audio.js"):
         verify(path in files, f"File essenziale non in cache: {path}")
     verify("f==='./assets/diegoland/ui/tocco.svg'" in service_worker

@@ -44,7 +44,7 @@ confondersi, ma le regole per conteggiare una mossa valida non cambiano.
 
 - `pregrafismo.html`: simboli e percorsi visuali, livelli di traccia e stato.
 - `pregrafismo-v2.css`: riferimenti alle due illustrazioni canoniche.
-- `pregrafismo-diegoland.css`: **nuovo** livello CSS finale di tema.
+- `pregrafismo-diegoland-v2.css`: **nuovo** livello CSS finale di tema.
 - `assets/diegoland/ui/tocco.svg`: **nuova** icona funzionale neutra locale.
 - `sw.js`: versione cache aggiornata e precache dei nuovi file.
 - `scripts/verifica_grafica.py`: test del tema e protezione del tracciamento.

@@ -1,0 +1,244 @@
+/* Diego · Pregrafismo: tema canonico Wada / Zissou, 14 novembre 2026.
+   Invariati viewBox, mapping touch, tolleranze, avanzamento e progressione.
+   Tre livelli visivi: guida sabbia, avanzamento esatto laguna,
+   segno autentico del dito ceruleo intenso. */
+html[data-diego-page="pregrafismo"] {
+  --pg-bg:#E9F5F1;
+  --pg-paper:#FFF9EC;
+  --pg-deep:#12354E;
+  --pg-ocean:#0093A5;
+  --pg-lagoon:#B4CDC2;
+  --pg-pale:#FFEFAE;
+  --pg-sun:#F99D1B;
+  --pg-coral:#F48067;
+  --pg-guide:#F4E4B0;
+  --pg-precise:#9AC9C0;
+  --pg-hand:#0093A5;
+}
+html[data-diego-page="pregrafismo"] body,
+html[data-diego-page="pregrafismo"] #app,
+html[data-diego-page="pregrafismo"] #menu,
+html[data-diego-page="pregrafismo"] #play {
+  background:var(--pg-bg)!important;
+  color:var(--pg-deep);
+}
+html[data-diego-page="pregrafismo"] .top {
+  background:var(--pg-paper);
+  border-bottom:3px solid var(--pg-ocean);
+  box-shadow:none;
+}
+html[data-diego-page="pregrafismo"] .top .pregra-brand,
+html[data-diego-page="pregrafismo"] .intro h1,
+html[data-diego-page="pregrafismo"] .hud h1 {
+  color:var(--pg-deep);
+}
+html[data-diego-page="pregrafismo"] .top .pregra-brand img {
+  object-fit:contain;
+}
+html[data-diego-page="pregrafismo"] .btn,
+html[data-diego-page="pregrafismo"] .deck-tab {
+  background:#EFF5F1;
+  color:var(--pg-deep);
+  border:3px solid var(--pg-lagoon);
+  box-shadow:0 3px 0 #12354E18;
+  border-radius:16px;
+  font-weight:900;
+}
+html[data-diego-page="pregrafismo"] .btn.light,
+html[data-diego-page="pregrafismo"] .deck-tab.selected {
+  background:var(--pg-pale);
+  color:var(--pg-deep);
+  border-color:var(--pg-sun);
+  box-shadow:0 3px 0 #BD81242B;
+}
+html[data-diego-page="pregrafismo"] .btn:focus-visible,
+html[data-diego-page="pregrafismo"] .deck-tab:focus-visible,
+html[data-diego-page="pregrafismo"] .chapter:focus-visible {
+  outline:5px solid var(--pg-sun);
+  outline-offset:2px;
+}
+html[data-diego-page="pregrafismo"] .btn:active {
+  background:#D6E8E2;
+  transform:translateY(2px);
+  box-shadow:0 1px 0 #12354E18;
+}
+html[data-diego-page="pregrafismo"] #sound[aria-pressed="true"] {
+  border-color:var(--pg-sun);
+}
+html[data-diego-page="pregrafismo"] #toolToggle {
+  min-width:74px;
+}
+html[data-diego-page="pregrafismo"] .intro {
+  color:var(--pg-deep);
+}
+html[data-diego-page="pregrafismo"] .intro h1 {
+  display:flex;justify-content:center;align-items:center;
+  margin:0;
+}
+html[data-diego-page="pregrafismo"] .pg-intro-illustration {
+  display:block;width:72px;height:68px;object-fit:contain;
+}
+html[data-diego-page="pregrafismo"] .pg-visual-instruction {
+  display:inline-flex;align-items:center;justify-content:center;
+  gap:12px;margin:0;color:var(--pg-deep);
+  font-size:27px;font-weight:900;line-height:1;
+}
+html[data-diego-page="pregrafismo"] .pg-visual-instruction img {
+  display:block;width:48px;height:48px;object-fit:contain;
+  pointer-events:none;user-select:none;
+}
+html[data-diego-page="pregrafismo"] .pg-small-cue {
+  gap:8px;font-size:23px;
+}
+html[data-diego-page="pregrafismo"] .pg-small-cue img {
+  width:36px;height:36px;
+}
+html[data-diego-page="pregrafismo"] .chapter,
+html[data-diego-page="pregrafismo"] .chapter:nth-child(2n),
+html[data-diego-page="pregrafismo"] .chapter:nth-child(3n),
+html[data-diego-page="pregrafismo"] .chapter:last-child {
+  background:linear-gradient(130deg,var(--pg-paper),#E2F0EA);
+  color:var(--pg-deep);
+  border-color:var(--pg-lagoon);
+  box-shadow:0 4px 0 #12354E1E;
+}
+html[data-diego-page="pregrafismo"] .chapter:nth-child(2n) {
+  background:linear-gradient(130deg,#FFF7DE,#FFEBCD);
+}
+html[data-diego-page="pregrafismo"] .chapter:nth-child(3n) {
+  background:linear-gradient(130deg,#EFF6F6,#CFE9E7);
+}
+html[data-diego-page="pregrafismo"] .chapter .name {
+  color:var(--pg-deep);
+}
+html[data-diego-page="pregrafismo"] .chapter .stars {
+  color:#936A24;
+}
+html[data-diego-page="pregrafismo"] .chapter .symbol {
+  display:flex;align-items:center;justify-content:center;
+}
+html[data-diego-page="pregrafismo"] .chapter .symbol img {
+  display:block;width:100%;height:100%;
+  max-width:148px;max-height:128px;object-fit:contain;
+}
+html[data-diego-page="pregrafismo"] .hud h1 {
+  color:var(--pg-deep);
+}
+html[data-diego-page="pregrafismo"] .hud p {
+  color:var(--pg-deep);
+}
+html[data-diego-page="pregrafismo"] .hud .counter,
+html[data-diego-page="pregrafismo"] #mastery-stars {
+  color:var(--pg-deep);
+  background:var(--pg-pale);
+  border:2px solid #E3B74A;
+  box-shadow:none;
+}
+html[data-diego-page="pregrafismo"] .meter {
+  background:#D9EAE5;
+  border-color:var(--pg-lagoon);
+}
+html[data-diego-page="pregrafismo"] #trace-progress {
+  background:linear-gradient(90deg,#86C6BA,var(--pg-ocean));
+}
+html[data-diego-page="pregrafismo"] .board-wrap,
+html[data-diego-page="pregrafismo"] .world-viaggio,
+html[data-diego-page="pregrafismo"] .world-monti,
+html[data-diego-page="pregrafismo"] .world-arcobaleno,
+html[data-diego-page="pregrafismo"] .world-mare,
+html[data-diego-page="pregrafismo"] .world-bolle,
+html[data-diego-page="pregrafismo"] .world-forme,
+html[data-diego-page="pregrafismo"] .world-acqua {
+  background:radial-gradient(ellipse at 40% 30%,var(--pg-paper) 0%,#FFF8EC 80%,#F5F1E4 100%);
+  border:5px solid var(--pg-ocean);
+  box-shadow:inset 0 4px 20px #12354E0E;
+}
+html[data-diego-page="pregrafismo"] .board-wrap:before {
+  display:none;
+}
+html[data-diego-page="pregrafismo"] .pc-corner {
+  display:none!important;
+}
+/* Real touch ink is always visible, including in assisted mode.
+   Projected exact progress remains pale lagoon under the real hand trace. */
+html[data-diego-page="pregrafismo"] #board .live-ink {
+  stroke:var(--pg-hand);
+  stroke-width:22;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  fill:none;opacity:.98;
+  pointer-events:none;
+}
+html[data-diego-page="pregrafismo"] #guide-halo {
+  fill:#D9F0E3B8;stroke:#4EAA8E;stroke-width:4;
+}
+html[data-diego-page="pregrafismo"] #guide-hand {
+  fill:var(--pg-ocean);stroke:var(--pg-paper);
+}
+/* Fixed HUD labels and corner badges reuse the same ink/paper harmony. */
+html[data-diego-page="pregrafismo"] #message {
+  background:#FFF9ECEF;
+  color:var(--pg-deep);
+  border:2px solid #E9C56D;
+  box-shadow:0 3px 8px #12354E18;
+}
+html[data-diego-page="pregrafismo"] #zoom-readout {
+  color:var(--pg-deep);
+  background:var(--pg-paper);
+  border:2px solid var(--pg-lagoon);
+}
+html[data-diego-page="pregrafismo"] .board-tools .bottom-hint {
+  color:var(--pg-deep);font-size:24px;
+}
+html[data-diego-page="pregrafismo"] .board-tools .bottom-hint img {
+  width:38px;height:38px;
+}
+html[data-diego-page="pregrafismo"] .teacher-tools {
+  background:#FFF9ECF2;
+  border-color:var(--pg-lagoon);
+}
+html[data-diego-page="pregrafismo"] #celebrate {
+  background:#FFF9ECD9;
+}
+html[data-diego-page="pregrafismo"] #celebrate .reward-medal {
+  display:block;width:260px;height:245px;max-width:70vw;
+  object-fit:contain;pointer-events:none;
+  animation:pg-star-once .6s ease-out 1 both;
+}
+@keyframes pg-star-once {
+  0%{opacity:0;transform:scale(.75)}
+  60%{opacity:1;transform:scale(1.05)}
+  100%{opacity:1;transform:scale(1)}
+}
+@media(max-width:720px) {
+ html[data-diego-page="pregrafismo"] .pg-intro-illustration {
+   width:49px;height:47px;
+ }
+ html[data-diego-page="pregrafismo"] .pg-visual-instruction {
+   gap:6px;font-size:20px;
+ }
+ html[data-diego-page="pregrafismo"] .pg-visual-instruction img {
+   width:34px;height:34px;
+ }
+ html[data-diego-page="pregrafismo"] .pg-small-cue img {
+   width:29px;height:29px;
+ }
+ html[data-diego-page="pregrafismo"] #toolToggle {
+   min-width:55px;font-size:12px;padding:5px 4px;
+ }
+ html[data-diego-page="pregrafismo"] .top .toolbar {gap:3px}
+ html[data-diego-page="pregrafismo"] .board-wrap {
+   border-width:3px;border-radius:16px;
+ }
+ html[data-diego-page="pregrafismo"] #celebrate .reward-medal {
+   width:185px;height:175px;
+ }
+ html[data-diego-page="pregrafismo"] .chapter .symbol img {
+   max-width:65px;max-height:65px;
+ }
+}
+@media(prefers-reduced-motion:reduce) {
+ html[data-diego-page="pregrafismo"] #celebrate .reward-medal {
+   animation:none;
+ }
+}
