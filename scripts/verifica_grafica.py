@@ -6,6 +6,7 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 from urllib.parse import urlsplit
 import json
+from hashlib import sha256
 import re
 import subprocess
 import sys
@@ -129,6 +130,37 @@ if submarine.is_file():
         verify("assets/diegoland/acqua-sottomarino-canonico.webp" in (ROOT / page).read_text(encoding="utf8"),
                f"{page}: sottomarino non canonico")
 
+# Un solo squalo, due pose canoniche verificabili e non confuse fra loro.
+sharks = (
+    ("nuoto", (950, 511), "b4b669d28bb3410b8176dba50446fee9aa06abde9e34aa31fda2ee6837ca4cc8"),
+    ("virata", (598, 785), "897befb90f39f6aa2f842df3b96fe591f781c0e46cf94128829c71f843929d82"),
+)
+for pose, size, digest in sharks:
+    p = ROOT / ("assets/diegoland/squalo-giaguaro-" + pose + ".webp")
+    verify(p.is_file(), "Squalo " + pose + " mancante")
+    if p.is_file():
+        verify(p.stat().st_size < 100_000, "Squalo " + pose + " troppo pesante")
+        verify(sha256(p.read_bytes()).hexdigest() == digest, "Squalo " + pose + " alterato")
+        try:
+            from PIL import Image
+            with Image.open(p) as im:
+                verify(im.size == size and "A" in im.getbands(),
+                       "Squalo " + pose + ": dimensioni/trasparenza errate")
+        except ImportError:
+            pass
+verify("animali:'assets/diegoland/squalo-giaguaro-virata.webp'" in index,
+       "La home non mostra lo squalo V2 grande")
+verify("squalo-giaguaro-nuoto.webp" in index and "squalo-giaguaro-virata.webp" in index,
+       "Conta non dispone di entrambe le pose")
+verify("Math.floor(step/countTypes.length)%2" in index,
+       "Conta non alterna le pose tra esercizi senza mescolarle")
+verify("squalo-giaguaro-nuoto.webp" in chess and "squalo-giaguaro-virata.webp" in chess,
+       "Scacchi non usa le due pose approvate")
+verify("assets/diegoland/vettori/squalo.svg" not in index + chess,
+       "Vecchio squalo non canonico ancora in uso")
+verify(index.split("const countTypes=[",1)[1].split("];",1)[0].count("{name:") == 6,
+       "Conta dovrebbe proporre soltanto sei tipi di oggetti familiari")
+
 # La cache offline deve contenere ogni file del gioco, incluse le nuove icone.
 service_worker = (ROOT / "sw.js").read_text(encoding="utf-8")
 m = re.search(r"var FILES=(\[[^\n]*\]);", service_worker)
@@ -139,12 +171,16 @@ if m:
     for ref in files:
         verify((ROOT / ref).is_file(), f"Cache offline: manca {ref}")
     for path in ("./assets/diegoland/scacchi-logo.webp",
+                 "./assets/diegoland/squalo-giaguaro-nuoto.webp",
+                 "./assets/diegoland/squalo-giaguaro-virata.webp",
                  "./assets/diegoland/vettori/numeri.svg",
                  "./parole.html", "./unisci-quantita.html",
                  "./diegoland-arte.css", "./diego-audio.js"):
         verify(path in files, f"File essenziale non in cache: {path}")
     verify("f==='./assets/diegoland/scacchi-logo.webp'" in service_worker
-           and "f.indexOf('./assets/diegoland/vettori/')===0" in service_worker,
+           and "f.indexOf('./assets/diegoland/vettori/')===0" in service_worker
+           and "f==='./assets/diegoland/squalo-giaguaro-nuoto.webp'" in service_worker
+           and "f==='./assets/diegoland/squalo-giaguaro-virata.webp'" in service_worker,
            "Icone marine non precaricate offline")
 
 print(f"Diego — verifiche grafiche: {checks}, problemi: {len(errors)}")
