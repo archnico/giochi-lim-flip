@@ -8,7 +8,7 @@
 *{box-sizing:border-box}body{margin:0;min-height:100vh}
 button{font:inherit;touch-action:manipulation;cursor:pointer;-webkit-tap-highlight-color:transparent}
 header{display:flex;justify-content:space-between;align-items:center;padding:8px 20px;background:#12354e;border-bottom:3px solid #0093a5}
-header strong{font-size:clamp(20px,2vw,28px)}header a{color:#fff9ec;text-decoration:none;border:2px solid #b4cdc2;border-radius:12px;padding:7px 15px;font-size:20px;font-weight:800}
+header strong{font-size:clamp(20px,2vw,28px);display:flex;align-items:center;gap:9px}header .chess-brand-logo{width:clamp(40px,4.5vw,56px);height:clamp(40px,4.5vw,56px);object-fit:contain;flex:none;pointer-events:none;user-select:none}header a{color:#fff9ec;text-decoration:none;border:2px solid #b4cdc2;border-radius:12px;padding:7px 15px;font-size:20px;font-weight:800}
 main{max-width:1550px;margin:auto;padding:10px 18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,.48fr);grid-gap:20px;gap:20px;align-items:center}
 .board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-template-rows:repeat(8,minmax(0,1fr));width:75vh;width:min(76vh,76vw,840px);max-width:100%;aspect-ratio:1;border:7px solid #b4cdc2;border-radius:10px;overflow:hidden;box-shadow:0 8px 25px #05123077;touch-action:none}
 .sq{position:relative;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;overflow:hidden;border:0;border-radius:0;padding:0}
@@ -55,7 +55,7 @@ main{max-width:1550px;margin:auto;padding:10px 18px;display:grid;grid-template-c
 <link rel="stylesheet" href="diegoland.css">
 <link rel="stylesheet" href="diegoland-games.css">
 <script src="diego-runtime.js"></script></head><body>
-<header><strong>DIEGO · SCACCHI</strong><a href="index.html">⌂ MENU</a></header>
+<header><strong><img class="chess-brand-logo" src="assets/diegoland/scacchi-logo.webp" alt="" draggable="false">DIEGO · SCACCHI</strong><a href="index.html">⌂ MENU</a></header>
 <main>
 <div class="board" id="board" role="group" aria-label="Scacchiera a 64 caselle"></div>
 <section class="controls">
