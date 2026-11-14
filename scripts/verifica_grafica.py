@@ -228,6 +228,33 @@ verify("../assets/diegoland/chitarra-canonica.webp" in
        (ROOT / "docs/ICONE_APPROVATE.html").read_text(encoding="utf8"),
        "Chitarra non presente nella galleria delle icone approvate")
 
+# Salvagente approvato per la navigazione, NON come oggetto di Conta.
+lifebuoy = ROOT / "assets/diegoland/salvagente-canonico.webp"
+verify(lifebuoy.is_file(), "Salvagente canonico mancante")
+if lifebuoy.is_file():
+    verify(sha256(lifebuoy.read_bytes()).hexdigest()
+           == "da5fdcc2aa66b4e73ffd4b7436b6c731ac3f1e682e37698e4c431748a2342464",
+           "Salvagente canonico alterato")
+    verify(lifebuoy.stat().st_size < 125_000, "Salvagente troppo pesante")
+    try:
+        from PIL import Image
+        with Image.open(lifebuoy) as im:
+            verify(im.size == (768, 768) and im.mode == "RGBA",
+                   "Salvagente: dimensioni o trasparenza sbagliate")
+            verify(im.getpixel((384, 384))[3] < 8,
+                   "Salvagente: il foro centrale deve essere trasparente")
+    except ImportError:
+        pass
+verify(index.count("assets/diegoland/salvagente-canonico.webp") == 2,
+       "Salvagente: incoerenza nella navigazione Associazioni")
+verify("assets/diegoland/vettori/salvagente.svg" not in index,
+       "Salvagente provvisorio ancora usato")
+verify("SALVAGENTE" not in index.split("const countTypes=[",1)[1].split("];",1)[0],
+       "Salvagente introdotto senza richiesta in Conta")
+verify("../assets/diegoland/salvagente-canonico.webp" in
+       (ROOT / "docs/ICONE_APPROVATE.html").read_text(encoding="utf8"),
+       "Salvagente assente dalla galleria approvata")
+
 # La cache offline deve contenere ogni file del gioco, incluse le nuove icone.
 service_worker = (ROOT / "sw.js").read_text(encoding="utf-8")
 m = re.search(r"var FILES=(\[[^\n]*\]);", service_worker)
@@ -244,6 +271,7 @@ if m:
                  "./assets/diegoland/polpo-canonico.webp",
                  "./assets/diegoland/pesce-canonico.webp",
                  "./assets/diegoland/chitarra-canonica.webp",
+                 "./assets/diegoland/salvagente-canonico.webp",
                  "./assets/diegoland/vettori/numeri.svg",
                  "./parole.html", "./unisci-quantita.html",
                  "./diegoland-arte.css", "./diego-audio.js"):
@@ -255,7 +283,8 @@ if m:
            and "f==='./assets/diegoland/stella-marina-canonica.webp'" in service_worker
            and "f==='./assets/diegoland/polpo-canonico.webp'" in service_worker
            and "f==='./assets/diegoland/pesce-canonico.webp'" in service_worker
-           and "f==='./assets/diegoland/chitarra-canonica.webp'" in service_worker,
+           and "f==='./assets/diegoland/chitarra-canonica.webp'" in service_worker
+           and "f==='./assets/diegoland/salvagente-canonico.webp'" in service_worker,
            "Icone marine non precaricate offline")
 
 print(f"Diego — verifiche grafiche: {checks}, problemi: {len(errors)}")

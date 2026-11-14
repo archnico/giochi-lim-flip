@@ -62,3 +62,8 @@ alfiere, cavallo e pedone; il logo rimane indipendente dalle regole didattiche.
 - `docs/CHITARRA_CANONICA_20261114.md`: chitarra singola acustica, corallo/giallo petrolio, WebP trasparente.
 - Le 6 figure di Conta sono ormai approvate: SUB, SQUALO (2 pose), PESCE, POLPO, STELLA, CHITARRA.
 - Eventuali prossime proposte servono solo icone di navigazione e **non** aumentano senza consenso il lessico iconografico degli esercizi.
+
+### Salvagente approvato (14/11/2026)
+
+- `docs/SALVAGENTE_CANONICO_20261114.md`: salvagente corallo/avorio con corda, usato solo per navigazione Associazioni, NON in Conta.
+- Il canone delle sei figure per Conta resta chiuso. Per la collezione visiva restano da proporre **Belafonte** e **Zissou con barba corretta** prima di una pausa editoriale.
