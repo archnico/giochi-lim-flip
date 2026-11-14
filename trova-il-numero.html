@@ -52,7 +52,7 @@ footer{display:flex;justify-content:space-between;align-items:center;/*diego-fal
 @media(max-width:680px){.chooser{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:none;overflow:auto}.chapter{min-height:130px}main{overflow:auto}.controls{flex-wrap:wrap;justify-content:flex-end}.progressbox{/*diego-fallback*/--diego-gap:6px;grid-gap:6px;/*end-fallback*/gap:6px}}
 @media(max-height:630px){header{padding-top:5px;padding-bottom:5px}footer{min-height:56px;padding-top:4px;padding-bottom:4px}.control{min-height:42px}.board{border-radius:15px}}
 </style>
-<link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script></head>
+<link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diego-flusso.css"><link rel="stylesheet" href="diego-premio.css"><script src="diego-flusso.js"></script><link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script></head>
 <body>
 <header>
 <div><h1 id="heading">🔎 TROVA IL NUMERO</h1><p class="subtitle" id="subtitle">Scegli un capitolo: ogni numero è un gioco!</p></div>
@@ -79,9 +79,9 @@ footer{display:flex;justify-content:space-between;align-items:center;/*diego-fal
 <div class="progressbox"><span id="progress" role="status" aria-live="polite">TROVATI: 0 / 9</span><div id="bar" aria-hidden="true"><div id="fill"></div></div></div>
 <div id="message" aria-live="polite">CERCA IL NUMERO!</div>
 <button class="control" id="reset">↻ RICOMINCIA</button>
-<button class="control" id="next" hidden>PROSSIMO →</button>
+<button class="control" id="next" type="button" title="Avanti" aria-label="Salta senza penalità">▶</button>
 </footer>
-<script src="diego-audio.js"></script><script>
+<script src="diego-audio.js"></script><script src="diego-premio.js"></script><script>
 'use strict';
 // Dieci capitoli: 1–9 e 0. La scheda del 4 conserva le posizioni della fotografia.
 const chapterOrder=[1,2,3,4,5,6,7,8,9,0];
@@ -147,7 +147,7 @@ function update(){
  document.getElementById('fill').style.width=(found*100/total)+'%';
  message.textContent=found===total?'🌟':found?'✓':'CERCA IL '+target+'!';
  document.getElementById('celebration').classList.toggle('show',found===total);
- document.getElementById('next').hidden=found!==total;
+ document.getElementById('next').hidden=false;
 }
 function choose(g,value,x,y){
  if(g.classList.contains('found')||found===total)return;
@@ -159,12 +159,12 @@ function choose(g,value,x,y){
   found++;if(!muted)DiegoAudio.play(found===total?'fantastico':'bravo');update();
   if(found===total){
    const finishedChapter=target;
-   numberScope.later(()=>{
+   numberFlow.complete(()=>{
     if(target!==finishedChapter||found!==total)return;
     const idx=chapterOrder.indexOf(target);
     if(idx===chapterOrder.length-1)location.href='unisci-quantita.html';
     else selectChapter(chapterOrder[idx+1]);
-   },780);
+   });
   }
  }else{
   g.classList.remove('wrong');void g.getBoundingClientRect();g.classList.add('wrong');
@@ -206,6 +206,7 @@ function draw(){
 }
 function selectChapter(n){
  if(!chapterOrder.includes(n))return;
+ if(window.numberFlow)numberFlow.begin();
  target=n;
  document.getElementById('chooser').hidden=true;
  document.getElementById('board').hidden=false;
@@ -258,12 +259,12 @@ document.addEventListener('keydown',e=>{
  if(k==='escape'&&target!==null){e.preventDefault();showChapters()}
 });
 document.getElementById('reset').addEventListener('click',draw);
-document.getElementById('next').addEventListener('click',()=>{
- if(found!==total)return;
- const index=chapterOrder.indexOf(target);
- if(index===chapterOrder.length-1)showChapters();
- else selectChapter(chapterOrder[index+1]);
-});
+const numberFlow=DiegoFlusso.create('numeri',()=>{
+ const idx=chapterOrder.indexOf(target);
+ if(idx===chapterOrder.length-1)location.href='unisci-quantita.html';
+ else selectChapter(chapterOrder[idx+1]);
+},{button:document.getElementById('next')});
+window.numberFlow=numberFlow;
 document.getElementById('chapters').addEventListener('click',showChapters);
 document.getElementById('home').addEventListener('click',()=>{location.href='index.html?topic=matematica'});
 DiegoAudio.subscribe(function(enabled){

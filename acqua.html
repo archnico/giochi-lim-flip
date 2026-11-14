@@ -9,12 +9,12 @@ main{position:relative;min-height:0;overflow:hidden}.view{display:none;width:100
 @media(max-width:720px){#app{grid-template-rows:62px minmax(0,1fr)}header button{min-height:42px;padding:5px 10px}.menu-grid{grid-template-columns:1fr;overflow:auto}.mode{min-height:100px;flex-direction:row}.mode .art{font-size:60px}.animal{border-width:4px}.animal .name{font-size:22px}.poolscene{border-width:7px}}
 @media(max-height:650px){.menu h1{font-size:44px}.menu>p{font-size:18px}.mode{min-height:150px}.mode .art{font-size:65px}.tapbtn{min-height:70px}.pooltitle{font-size:27px}}
 .feedback{font-size:clamp(48px,5.5vw,88px);line-height:1;height:1.1em}
-</style><link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script></head><body><div id="app"><header><strong>🌊 DIEGO · ACQUA</strong><div class="right"><button id="sound" aria-pressed="true">🔊 SUONO</button><button id="back">⌂ MENU</button></div></header><main>
+</style><link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diego-flusso.css"><link rel="stylesheet" href="diego-premio.css"><script src="diego-flusso.js"></script><link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script></head><body><div id="app"><header><strong>🌊 DIEGO · ACQUA</strong><div class="right"><button id="sound" aria-pressed="true">🔊 SUONO</button><button id="back">⌂ MENU</button></div></header><main>
 <section id="menu" class="view menu active"><h1>🌊 IL MONDO DELL'ACQUA</h1><p>TOCCA · ASCOLTA · GIOCA</p><div class="menu-grid">
 <button class="mode" data-go="splash"><span class="art">💦</span>TOCCA L'ACQUA</button><button class="mode" data-go="pool"><span class="art">🏊</span>LA PISCINA</button></div></section>
 <section id="splash" class="view"><canvas id="sea" aria-label="Tocca o trascina il dito sull'acqua per creare onde"></canvas><div class="overlay">FAI SPLASH! 💦</div><div class="bubblehint">TOCCA O MUOVI IL DITO NELL'ACQUA</div></section>
 <section id="pool" class="view"><div class="pooltitle" id="pooltitle">TIENI PREMUTO PER RIEMPIRE LA PISCINA!</div><div class="poolscene"><div class="poolwater" id="water"></div><div class="tapjet" id="jet"></div><div class="pooltoy" id="toy">🛟</div></div><button class="tapbtn" id="tapwater">🚰 APRI L'ACQUA</button></section>
-</main></div><script src="diego-audio.js"></script><script>
+</main></div><script src="diego-audio.js"></script><script src="diego-premio.js"></script><script>
 'use strict';
 const $=id=>document.getElementById(id),waterScope=DiegoRuntime.createScope();
 let view='menu',soundOn=DiegoAudio.isEnabled(),ac=null,noise=null,poolLevel=0,hold=false,holdFrame=0,seaFrame=0,lastHold=0;
@@ -61,7 +61,7 @@ $('sound').textContent=soundOn?'🔊 SUONO':'🔇 MUTO';$('sound').setAttribute(
 DiegoAudio.subscribe(function(enabled){soundOn=enabled;$('sound').textContent=enabled?'SUONI':'MUTO';$('sound').setAttribute('aria-pressed',String(enabled));$('sound').setAttribute('aria-label',enabled?'Disattiva suoni':'Attiva suoni');if(!enabled){stopAllMarine();waterNodes.slice().forEach(s=>{try{s.stop()}catch(e){}});if(ac&&ac.suspend){const p=ac.suspend();if(p&&p.catch)p.catch(()=>{})}}});
 $('sound').onclick=()=>{DiegoAudio.setEnabled(!soundOn);if(soundOn)playMarine('bolle',false)};
 function stopSea(){cancelAnimationFrame(seaFrame);seaFrame=0;waves=[];droplets=[];lastSplashPoint=null;if(ctx)ctx.clearRect(0,0,seaWidth,seaHeight)}
-function show(id){stopHold();stopAllMarine();stopSea();waterScope.reset();DiegoAudio.stop();view=id;document.querySelectorAll('.view').forEach(e=>e.classList.toggle('active',e.id===id));if(id==='splash')resizeSea();if(id==='pool')resetPool()}
+function show(id){if(window.waterFlow)waterFlow.begin();stopHold();stopAllMarine();stopSea();waterScope.reset();DiegoAudio.stop();view=id;document.querySelectorAll('.view').forEach(e=>e.classList.toggle('active',e.id===id));if(id==='splash')resizeSea();if(id==='pool')resetPool()}
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));$('back').onclick=()=>{if(view==='menu')location.href='index.html?topic=acqua';else show('menu')};document.addEventListener('keydown',e=>{if(e.key==='Escape')show('menu')});
 /* Splash: sfondo CSS statico, solo gli schizzi sul canvas.
    Nessun limite artificiale a 29 fps; il browser decide il ritmo. */
@@ -135,9 +135,9 @@ function frame(now){
  if(waves.length||droplets.length)seaFrame=requestAnimationFrame(frame);
 }
 function resetPool(){stopHold();poolLevel=0;$('water').style.height='0%';$('toy').style.bottom='6px';$('pooltitle').textContent='TIENI PREMUTO PER RIEMPIRE LA PISCINA!';$('tapwater').textContent='🚰 APRI L\'ACQUA'}
-function updatePool(now){if(!hold||view!=='pool')return;const elapsed=Math.max(0,Math.min(50,now-lastHold));lastHold=now;poolLevel=Math.min(100,poolLevel+elapsed*.033);$('water').style.height=poolLevel+'%';$('toy').style.bottom='calc('+poolLevel+'% + 6px)';/* flusso naturale continuo: nessun generatore per ogni frame */if(poolLevel>=100){stopHold();$('pooltitle').textContent='🌊 ⭐';$('tapwater').textContent='🔁 ANCORA!';DiegoAudio.play('fantastico');return}holdFrame=requestAnimationFrame(updatePool)}
+function updatePool(now){if(!hold||view!=='pool')return;const elapsed=Math.max(0,Math.min(50,now-lastHold));lastHold=now;poolLevel=Math.min(100,poolLevel+elapsed*.033);$('water').style.height=poolLevel+'%';$('toy').style.bottom='calc('+poolLevel+'% + 6px)';/* flusso naturale continuo: nessun generatore per ogni frame */if(poolLevel>=100){stopHold();$('pooltitle').textContent='🌊 ⭐';$('tapwater').textContent='🔁 ANCORA!';DiegoAudio.play('fantastico');waterFlow.complete(function(){show('splash')});return}holdFrame=requestAnimationFrame(updatePool)}
 function stopHold(){hold=false;stopMarine('corrente');cancelAnimationFrame(holdFrame);$('jet').classList.remove('on');$('tapwater').classList.remove('pressing')}
-function startHold(){if(view!=='pool')return;if(poolLevel>=100){resetPool();return}if(hold)return;hold=true;lastHold=performance.now();$('tapwater').classList.add('pressing');$('jet').classList.add('on');if(!playMarine('corrente',true))syntheticWaterSound(.7);holdFrame=requestAnimationFrame(updatePool)}
+function startHold(){if(view!=='pool')return;if(poolLevel>=100){waterFlow.begin();resetPool();return}if(hold)return;hold=true;lastHold=performance.now();$('tapwater').classList.add('pressing');$('jet').classList.add('on');if(!playMarine('corrente',true))syntheticWaterSound(.7);holdFrame=requestAnimationFrame(updatePool)}
 DiegoRuntime.press($('tapwater'),{start:startHold,end:stopHold});
 $('tapwater').addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();startHold()}});
 window.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter')stopHold()});
@@ -157,5 +157,6 @@ document.addEventListener('keydown',e=>{
   show(modes[(i+(k==='j'?1:modes.length-1)+modes.length)%modes.length]);
  }
 });
+const waterFlow=DiegoFlusso.create('acqua',function(){show(view==='splash'?'pool':'splash')});window.waterFlow=waterFlow;
 const requested=new URLSearchParams(location.search).get('game');if(['splash','pool'].includes(requested))show(requested);
 </script></body></html>
