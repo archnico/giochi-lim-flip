@@ -119,6 +119,16 @@ verify("🌈</div>" not in parole and "textContent='TOCCA'" in parole, "Parole c
 verify('class="top-actions"' in unisci and "querySelector('.top-actions')" in audio,
        "Audio può sovrapporsi a Ricomincia in Unisci")
 
+# Lo stesso sottomarino canonico rappresenta sempre lo stesso oggetto.
+submarine = ROOT / "assets/diegoland/acqua-sottomarino-canonico.webp"
+verify(submarine.is_file(), "Icona Acqua canonica assente")
+if submarine.is_file():
+    verify(submarine.stat().st_size < 100_000, "Icona Acqua troppo pesante")
+    verify(submarine.read_bytes()[:4] == b"RIFF", "Icona Acqua non WebP")
+    for page in ("index.html", "pregrafismo.html", "scacchi-stelle.html"):
+        verify("assets/diegoland/acqua-sottomarino-canonico.webp" in (ROOT / page).read_text(encoding="utf8"),
+               f"{page}: sottomarino non canonico")
+
 # La cache offline deve contenere ogni file del gioco, incluse le nuove icone.
 service_worker = (ROOT / "sw.js").read_text(encoding="utf-8")
 m = re.search(r"var FILES=(\[[^\n]*\]);", service_worker)
