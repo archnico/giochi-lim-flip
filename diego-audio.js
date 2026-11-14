@@ -36,8 +36,8 @@
   function init() {
     if (d.getElementById('diego-audio-toggle') || d.getElementById('sound')) return;
     button = d.createElement('button'); button.type = 'button'; button.id = 'diego-audio-toggle';
-    button.style.cssText = 'font:700 18px Arial,sans-serif;min-width:92px;min-height:48px;padding:8px 12px;background:#fff;color:#153553;border:3px solid #5595c9;border-radius:14px;cursor:pointer;touch-action:manipulation;z-index:50;';
-    var toolbar = d.querySelector('.toolbar') || d.querySelector('header .nav') || d.querySelector('header');
+    button.style.cssText = 'font:700 18px Arial,sans-serif;min-width:92px;min-height:48px;padding:8px 12px;background:#23596C;color:#FFF9EC;border:3px solid #B4CDC2;border-radius:14px;cursor:pointer;touch-action:manipulation;z-index:50;';
+    var toolbar = d.querySelector('.toolbar') || d.querySelector('header .nav') || d.querySelector('header') || d.querySelector('.top-actions') || d.querySelector('.page > .top');
     if (toolbar) toolbar.appendChild(button);
     else { button.className = 'diego-standalone-audio'; d.body.appendChild(button); }
     button.onclick = function () { setEnabled(!enabled); if (enabled) play('bravo'); };

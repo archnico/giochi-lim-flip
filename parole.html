@@ -94,7 +94,7 @@ button:focus-visible{outline:5px solid #fff07e;outline-offset:3px}
 </header>
 <main id="screen">
 <section id="intro">
-  <div class="land" aria-hidden="true">🌈</div>
+  <div class="land" aria-hidden="true"><img src="assets/diegoland/vettori/conchiglia.svg" alt="" draggable="false"></div>
   <h1>PAROLE</h1>
   <button type="button" class="bigbtn" id="start" title="Inizia" aria-label="Inizia">▶</button>
 </section>
@@ -145,7 +145,7 @@ function available(){return !window.DiegoAudio||window.DiegoAudio.isEnabled()}
 function unlock(){
  if(!active)return;
  $('tiles').classList.remove('locked');
- if(!done)$('instruction').textContent='☝';
+ if(!done)$('instruction').textContent='TOCCA';
 }
 function speak(){
  if(!active)return;

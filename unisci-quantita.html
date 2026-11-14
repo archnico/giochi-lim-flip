@@ -41,6 +41,9 @@ h1{/*diego-fallback*/font-size:3.2vw;/*end-fallback*/font-size:clamp(28px,3.2vw,
 @media(max-height:680px){.page{/*diego-fallback*/--diego-gap:4px;grid-gap:4px;/*end-fallback*/gap:4px;padding-top:5px;padding-bottom:5px}.back,.setting,.again{min-height:38px}.instruction{margin:0}.bottom{min-height:44px}.column{/*diego-fallback*/--diego-gap:6px;grid-gap:6px;/*end-fallback*/gap:6px}.pair-tile{border-width:3px;border-radius:12px}.number-tile{/*diego-fallback*/font-size:8vh;/*end-fallback*/font-size:clamp(31px,8vh,58px)}}
 @media(max-width:380px){.dot{width:11px;height:11px}.quantity-tile{/*diego-fallback*/--diego-gap:3px;grid-gap:3px;/*end-fallback*/gap:3px}.settings{/*diego-fallback*/--diego-gap:3px;grid-gap:3px;/*end-fallback*/gap:3px}h1{font-size:24px}}
 
+.top-actions{display:flex;align-items:center;gap:10px;justify-content:flex-end;margin-left:auto}
+.top-actions #diego-audio-toggle{min-width:76px!important;min-height:46px!important;padding:5px 9px!important;font-size:16px!important}
+@media(max-width:380px){.top-actions{gap:5px}.top-actions #diego-audio-toggle{min-width:67px!important;font-size:14px!important}}
 .adult-options{position:relative}
 .adult-options summary{display:block;list-style:none;min-width:48px;min-height:46px;
  border-radius:12px;border:2px solid #B4CDC2;background:#23596C;color:#FFF9EC;
@@ -55,17 +58,17 @@ h1{/*diego-fallback*/font-size:3.2vw;/*end-fallback*/font-size:clamp(28px,3.2vw,
 <div class="page" id="page">
   <div class="top">
     <a class="back" href="index.html?topic=matematica">← MATEMATICA</a>
-    <details class="adult-options"><summary aria-label="Opzioni per adulto">⚙</summary>
+    <div class="top-actions"><details class="adult-options"><summary aria-label="Opzioni per adulto">⚙</summary>
       <div class="settings">
         <button class="setting active" data-level="3" type="button">1–3</button>
         <button class="setting" data-level="5" type="button">1–5</button>
       </div>
-    </details>
+    </details></div>
   </div>
   <div class="heading">
     <div>
-      <h1>Unisci numeri e quantità</h1>
-      <p class="instruction">Tocca un numero e poi i pallini giusti</p>
+      <h1>UNISCI</h1>
+      <p class="instruction" aria-label="Tocca un numero e poi la quantità giusta">1 → ●</p>
     </div>
     <div class="progress" id="progress" aria-live="polite">0 / 5 ★</div>
   </div>

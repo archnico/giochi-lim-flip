@@ -211,7 +211,7 @@ function selectChapter(n){
  document.getElementById('board').hidden=false;
  document.getElementById('footer').hidden=false;
  document.getElementById('chapters').hidden=false;
- document.getElementById('heading').textContent='🔎 TROVA TUTTI I NUMERI '+n;
+ document.getElementById('heading').textContent='🔎 TROVA '+n;
  document.getElementById('subtitle').textContent='CAPITOLO '+(chapterOrder.indexOf(n)+1)+' DI 10 · Tocca i numeri '+n+' nei cerchi';
  document.getElementById('sheet').setAttribute('aria-label','Trova tutti i numeri '+n);
  history.replaceState(null,'',location.pathname+'?numero='+n);

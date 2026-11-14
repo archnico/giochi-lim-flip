@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Numeri">
+<g stroke="#12354E" stroke-width="6" stroke-linejoin="round">
+<circle cx="82" cy="86" r="55" fill="#F99D1B"/>
+<circle cx="177" cy="87" r="55" fill="#B4CDC2"/>
+<circle cx="130" cy="180" r="55" fill="#F48067"/>
+</g>
+<g fill="#12354E" font-family="Arial,Helvetica,sans-serif" font-size="74" font-weight="900" text-anchor="middle">
+<text x="82" y="112">1</text><text x="177" y="113">2</text><text x="130" y="206">3</text>
+</g>
+<g stroke="#FFF9EC" stroke-width="6" fill="none" stroke-linecap="round">
+<path d="M49 74q6-17 22-20M145 74q6-17 22-20M98 167q7-17 22-20"/>
+</g>
+</svg>
