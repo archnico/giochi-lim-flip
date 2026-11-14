@@ -287,17 +287,61 @@ verify("pregrafismo:'assets/diegoland/esploratore-canonico.webp'" in index,
        "PAROLE: manca l'esploratore dalla barba bianca")
 verify("esploratore_intero.webp" not in index,
        "PAROLE: vecchio esploratore ancora in uso")
-verify('id="otherBtn"><img src="assets/diegoland/belafonte-canonica.webp"' in index,
-       "ALTRI: nave approvata non associata al pulsante grande")
+verify('<div class="diego-menu-heading">' in index and
+       '<img src="assets/diegoland/belafonte-canonica.webp"' in index,
+       "Belafonte non compare nell'intestazione del menu unico")
 verify("belafonte-canonica.webp" not in
        index.split("const countTypes=[",1)[1].split("];",1)[0],
        "Belafonte erroneamente introdotta in Conta")
 verify("esploratore-canonico.webp" not in
        index.split("const countTypes=[",1)[1].split("];",1)[0],
        "Esploratore erroneamente introdotto in Conta")
-verify("src$=\"belafonte-canonica.webp\"" in
-       (ROOT / "diegoland-arte.css").read_text(encoding="utf8"),
+verify('diego-menu-heading img' in
+       (ROOT / "diego-menu.css").read_text(encoding="utf8"),
        "Belafonte: manca la regola per la silhouette larga")
+
+# Menu adulto: tutte le otto categorie in home e nessuna sezione "Altri".
+menu_script=index.split("function home(){",1)[1].split("function flipGameCard(",1)[0]
+topics_data=index.split("const topics=[",1)[1].split("];",1)[0]
+verify(topics_data.count("{id:") == 8,
+       "Menu adulto: attese esattamente otto categorie")
+verify("topics.map(function(t)" in menu_script and
+       "diego-menu-grid" in menu_script and
+       "data-topic" in menu_script,
+       "Menu adulto: non tutte le categorie sono generate in superficie")
+verify("otherBtn" not in index and "openOthers" not in index and
+       "ALTRI GIOCHI" not in index,
+       "Menu adulto: persiste la vecchia sezione Altri")
+verify("if(t.ids.length===1)start(t.ids[0]);else openTopic(t.id)" in index,
+       "Menu adulto: apertura diretta per le categorie con un gioco non attiva")
+verify("function openTopic(id)" in index and "backTopic" in index,
+       "Menu adulto: selezione dei giochi interni o ritorno al menu assenti")
+verify("diego-menu.css" in index,
+       "Menu adulto: foglio di stile non caricato")
+games_data=index.split("const games=[",1)[1].split("];",1)[0]
+all_games=set(re.findall(r"\{id:'([^']+)'", games_data))
+topic_groups=re.findall(r"ids:\[([^\]]*)\]",topics_data)
+surface_games=[id for group in topic_groups for id in re.findall(r"'([^']+)'",group)]
+verify(len(topic_groups)==8 and len(surface_games)==len(set(surface_games)) and
+       set(surface_games)==all_games,
+       "Menu unico: giochi duplicati o mancanti tra le otto categorie")
+verify("vettori/ancora.svg" not in index and
+       "vettori/granchio.svg" not in index and
+       "vettori/manta.svg" not in index and
+       "vettori/corallo.svg" not in index,
+       "Navigazione: vecchie illustrazioni non approvate ancora in uso")
+verify("numeri:'assets/diegoland/vettori/numeri.svg'" in index,
+       "Trova il numero: simbolo numerico assente nella lista dell'adulto")
+css=(ROOT / "diego-menu.css").read_text(encoding="utf8")
+verify("grid-template-columns:repeat(4,minmax(0,1fr))" in css and
+       "grid-template-columns:repeat(2,minmax(0,1fr))" in css and
+       "grid-template-columns:minmax(0,1fr)" in css,
+       "Menu adulto: griglia non adattiva 4/2/1 colonne")
+for category in ("pregrafismo","acqua","scacchi","matematica","animali",
+                 "attenzione","associazioni","memoria"):
+    verify("id:'"+category+"'" in topics_data and
+           category+":" in index.split("const flipVisual={",1)[1].split("};",1)[0],
+           "Menu adulto: manca la categoria/immagine "+category)
 
 # La cache offline deve contenere ogni file del gioco, incluse le nuove icone.
 service_worker = (ROOT / "sw.js").read_text(encoding="utf-8")
@@ -320,7 +364,7 @@ if m:
                  "./assets/diegoland/belafonte-canonica.webp",
                  "./assets/diegoland/vettori/numeri.svg",
                  "./parole.html", "./unisci-quantita.html",
-                 "./diegoland-arte.css", "./diego-audio.js"):
+                 "./diegoland-arte.css", "./diego-menu.css", "./diego-audio.js"):
         verify(path in files, f"File essenziale non in cache: {path}")
     verify("f==='./assets/diegoland/scacchi-logo.webp'" in service_worker
            and "f.indexOf('./assets/diegoland/vettori/')===0" in service_worker

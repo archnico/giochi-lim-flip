@@ -84,3 +84,10 @@ decorazione didattica introdotta per varietà fine a se stessa. Fino a nuovi
 bisogni educativi si lavora soltanto su nitidezza, dimensioni, integrazione,
 contrasto e prestazioni su Samsung Flip e smartphone. I sei soggetti di
 Conta e le meccaniche degli esercizi rimangono invariati.
+
+## Menu adulto unificato (14/11/2026)
+La Belafonte approvata è stata trasferita dal pulsante «ALTRI», ora abolito,
+alla testata del **menu unico**. Otto categorie sempre in superficie su LIM
+(4×2), su telefono in una pagina scorrevole; dettagli in
+`docs/MENU_UNICO_ADULTI_20261114.md`. Il vocabolario degli esercizi
+rimane minimo e la collezione di icone approvate non cresce.

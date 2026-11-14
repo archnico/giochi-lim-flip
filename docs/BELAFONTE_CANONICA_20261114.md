@@ -17,8 +17,8 @@ con silhouette netta; nessun volto, scritta o comando.
   1480×493 RGBA, 128.936 byte, SHA-256
   `9a49b0ff64361e31c7c5fba4958e8beef8e3e005aedba1374ebfa2601393d57f`.
 - Asset **raster WebP** con estetica illustrativa, non SVG nativo.
-- Uso: illustrazione ampia sul pulsante «ALTRI» della home e galleria approvata.
-  Non è un obiettivo di «Conta» né un nuovo gioco: la scritta ALTRI e il pulsante
-  di grande superficie rimangono. Precaricata per il funzionamento offline.
-- Il ruolo editoriale della Belafonte è collegare l'esplorazione dei giochi,
+- Uso attuale: illustrazione decorativa ampia nella testata del menu unico per adulti e galleria approvata.
+  Non è un obiettivo di «Conta» né un nuovo gioco: il pulsante «Altri» è stato eliminato.
+  La nave identifica il menu unico e viene caricata anche offline.
+- Il ruolo editoriale della Belafonte è identificare il menu generale,
   non aggiungere vocaboli e compiti didattici nuovi.

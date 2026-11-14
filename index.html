@@ -101,7 +101,7 @@ footer{min-height:52px;border-top:1px solid var(--line);padding:10px 20px;displa
 <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/app-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/app-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="diego-runtime.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-arte.css"><link rel="stylesheet" href="conta-marino.css">
+<link rel="stylesheet" href="diego-runtime.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-arte.css"><link rel="stylesheet" href="conta-marino.css"><link rel="stylesheet" href="diego-menu.css">
 </head>
 <body>
 <div id="app">
@@ -118,7 +118,7 @@ const games=[
   {id:'parole',icon:'🔤',title:'Componi la parola',desc:'Ascolta e ordina le lettere · senza intrusi'},
   {id:'scacchi',icon:'♖',title:'Scacchi',desc:'Sei pezzi: prendi sottomarini, squali e berretti'},
   {id:'match',icon:'🧩',title:'Abbina',desc:'Una parola grande · scegli fra due foto'},
-  {id:'count',icon:'🔢',title:'Conta',desc:'Conta cuffie, squali, sub e chitarre'},
+  {id:'count',icon:'🔢',title:'Conta',desc:'Conta sei tipi di oggetti familiari'},
   {id:'unisci',icon:'🔗',title:'Unisci numeri e quantità',desc:'Collega i numeri ai pallini · 1–5'},
   {id:'numeri',icon:'🔎',title:'Trova il numero',desc:'10 capitoli · Cerca i numeri da 0 a 9'},
   {id:'same',icon:'👀',title:'Trova uguale',desc:'Tocca la figura identica'},
@@ -218,41 +218,47 @@ const flipVisual={
   animali:'assets/diegoland/squalo-giaguaro-virata.webp',
   matematica:'assets/diegoland/vettori/numeri.svg',
   scacchi:'assets/diegoland/scacchi-logo.webp',
-  attenzione:'assets/diegoland/vettori/manta.svg',
+  attenzione:'assets/diegoland/stella-marina-canonica.webp',
   associazioni:'assets/diegoland/salvagente-canonico.webp',
-  memoria:'assets/diegoland/vettori/oblo.svg',
+  memoria:'assets/diegoland/polpo-canonico.webp',
   match:'assets/diegoland/salvagente-canonico.webp',
   count:'assets/diegoland/stella-marina-canonica.webp',
-  numeri:'assets/diegoland/vettori/ancora.svg',
+  numeri:'assets/diegoland/vettori/numeri.svg',
   unisci:'assets/diegoland/pesce-canonico.webp',
   same:'assets/diegoland/pesce-canonico.webp',
-  odd:'assets/diegoland/vettori/granchio.svg',
+  odd:'assets/diegoland/squalo-giaguaro-nuoto.webp',
   habitat1:'assets/diegoland/pesce-canonico.webp',
-  habitat2:'assets/diegoland/vettori/manta.svg',
-  colori:'assets/diegoland/vettori/corallo.svg',
+  habitat2:'assets/diegoland/squalo-giaguaro-nuoto.webp',
+  colori:'assets/diegoland/polpo-canonico.webp',
 };
 function flipCard(title,desc,id,visual,kind,href){
   const tag=href?'a':'button';
   const attr=href?' href="'+href+'"':' type="button"';
   const data=kind==='topic'?' data-topic="'+id+'"':kind==='other'?' data-other="'+id+'"':' data-game="'+id+'"';
-  return '<'+tag+' class="flip-card flip-'+id+'"'+attr+data+'><div class="flip-copy"><h2>'+title+'</h2></div><div class="flip-visual"><img src="'+visual+'" alt="" draggable="false"></div></'+tag+'>';
+  return '<'+tag+' class="flip-card flip-'+id+'"'+attr+data+'><div class="flip-copy"><h2>'+title+'</h2>'+(desc?'<p>'+desc+'</p>':'')+'</div><div class="flip-visual"><img src="'+visual+'" alt="" draggable="false"></div></'+tag+'>';
 }
 function home(){
   clearRound();current=null;topic=null;stars=0;
   statusEl.textContent='';
-  const primaries=[
-    ['ANIMALI','Dove vive? · Colori','animali'],
-    ['NUMERI','Numeri · Conta · Unisci','matematica'],
-    ['ACQUA','Splash! · Piscina','acqua'],
-    ['SCACCHI','Re · Torre · Alfiere','scacchi'],
-    ['PAROLE','Disegna · Ascolta · Componi','pregrafismo']
-  ];
-  main.innerHTML='<div class="flip-home">'+primaries.map(function(a){return flipCard(a[0],a[1],a[2],flipVisual[a[2]],'game')}).join('')+
-   '<button type="button" class="flip-other" id="otherBtn"><img src="assets/diegoland/belafonte-canonica.webp" alt="" draggable="false">ALTRI</button></div>';
-  // Un unico tocco dalla home: i percorsi procedono da soli.
-  const direct={animali:'habitat1',matematica:'numeri',acqua:'acqua',scacchi:'scacchi',pregrafismo:'pregrafismo'};
-  main.querySelectorAll('[data-game]').forEach(function(b){b.onclick=function(){start(direct[b.dataset.game])}});
-  main.querySelector('#otherBtn').onclick=openOthers;
+  // Il menu è dell'adulto. Tutte le categorie sono visibili, niente "Altri".
+  // Una categoria con un solo gioco si apre subito, le altre mostrano i propri giochi.
+  const cards=topics.map(function(t){
+    const mode=t.ids.length===1?'Avvia '+t.title:'Apri '+t.title;
+    return '<button type="button" class="diego-menu-card flip-'+t.id+'" data-topic="'+t.id+'" aria-label="'+mode+'">'+
+      '<div class="diego-menu-copy"><h2>'+t.title+'</h2><p>'+t.desc+'</p></div>'+
+      '<div class="diego-menu-art"><img src="'+flipVisual[t.id]+'" alt="" draggable="false"></div></button>';
+  }).join('');
+  main.innerHTML='<section class="diego-menu" aria-label="Categorie dei giochi">'+
+    '<div class="diego-menu-heading"><div><h1>GIOCHI</h1><p>Scegli una categoria</p></div>'+
+    '<img src="assets/diegoland/belafonte-canonica.webp" alt="" draggable="false"></div>'+
+    '<div class="diego-menu-grid">'+cards+'</div></section>';
+  main.querySelectorAll('.diego-menu-card').forEach(function(b){
+    b.onclick=function(){
+      const t=topics.find(function(x){return x.id===b.dataset.topic});
+      if(!t)return;
+      if(t.ids.length===1)start(t.ids[0]);else openTopic(t.id);
+    };
+  });
 }
 function flipGameCard(g){
   const href=g.id==='numeri'?'trova-il-numero.html':null;
@@ -266,14 +272,6 @@ function openTopic(id){
   main.innerHTML='<div class="gamewrap flip-section"><div class="gamehead"><h1>'+t.title+'</h1><button type="button" class="flip-back" id="backTopic" title="Indietro" aria-label="Indietro">←</button></div><div class="flip-games">'+games.filter(function(g){return t.ids.indexOf(g.id)!==-1}).map(flipGameCard).join('')+'</div></div>';
   main.querySelector('#backTopic').onclick=home;
   main.querySelectorAll('button[data-game]').forEach(function(b){b.onclick=function(){start(b.dataset.game)}});
-}
-function openOthers(){
-  clearRound();current=null;topic=null;stars=0;
-  const other=topics; // Menu per l'adulto: tutti gli argomenti rimangono accessibili.
-  statusEl.textContent='';
-  main.innerHTML='<div class="gamewrap flip-section"><div class="gamehead"><h1>ALTRI GIOCHI</h1><button type="button" class="flip-back" id="backOthers" title="Indietro" aria-label="Indietro">←</button></div><div class="flip-games">'+other.map(function(t){return flipCard(t.title,t.desc,t.id,flipVisual[t.id],'topic')}).join('')+'</div></div>';
-  main.querySelector('#backOthers').onclick=home;
-  main.querySelectorAll('[data-topic]').forEach(function(b){b.onclick=function(){openTopic(b.dataset.topic)}});
 }
 
 function start(id){if(id==='pregrafismo'){location.href='pregrafismo.html';return}if(id==='parole'){location.href='parole.html';return}if(id==='scacchi'){location.href='scacchi-stelle.html';return}if(id==='acqua'){location.href='acqua.html?game=splash';return}if(id==='numeri'){location.href='trova-il-numero.html';return}if(id==='unisci'){location.href='unisci-quantita.html';return}current=id;stars=0;if(id==='count'){countSolved=0;countTouchedAudio=null}statusEl.textContent=games.find(g=>g.id===id).title;if(id==='habitat1'||id==='habitat2'){habitatDeck=[];habitatCorrect=0}render()}
