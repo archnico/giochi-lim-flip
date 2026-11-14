@@ -59,6 +59,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 <link rel="stylesheet" href="pregrafismo-v2.css">
 <link rel="stylesheet" href="diegoland.css">
 <link rel="stylesheet" href="pregrafismo-diegoland-v2.css">
+<link rel="stylesheet" href="diego-premio.css">
 <script src="diego-runtime.js"></script>
 </head>
 <body>
@@ -108,7 +109,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
       <button id="chaptersBtn" type="button" class="btn" title="Percorsi" aria-label="Torna ai percorsi">←</button>
       <button id="again" type="button" class="btn" title="Riprova" aria-label="Ricomincia">↻</button>
       <span class="bottom-hint pg-visual-instruction" aria-hidden="true"><img src="assets/diegoland/ui/tocco.svg" alt="" draggable="false"><span>→</span><img src="assets/diegoland/stella-marina-canonica.webp" alt="" draggable="false"></span>
-      <button id="next" type="button" class="btn light" title="Avanti" aria-label="Esercizio successivo">▶</button>
+      <button id="next" type="button" class="btn light" title="Salta o vai avanti" aria-label="Esercizio successivo, salta senza penalità">▶</button>
     </div>
     <div id="teacherTools" class="teacher-tools" hidden>
       <button id="prev" type="button" class="btn">← PRIMA</button>
@@ -123,6 +124,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
   </div>
 </div>
 <script src="diego-audio.js"></script>
+<script src="diego-premio.js"></script>
 <script src="diego-lessico.js"></script>
 <script src="pregrafismo-scene.js"></script>
 <script src="pregrafismo-pc-data.js"></script>
@@ -269,7 +271,7 @@ function chapterMenu(){state.session++;clearTimers();state.down=false;state.done
 }
 function stopDemo(){if(demoTimer){clearInterval(demoTimer);demoTimer=0}guide.setAttribute('visibility','hidden')}
 function showDemo(){if(state.chapter<0||state.done||state.down)return;stopDemo();var data=state.parts[state.stroke];if(!data)return;var t0=Date.now(),duration=Math.max(2100,Math.min(4200,data.length*4));guide.setAttribute('visibility','visible');setMessage('GUARDA');demoTimer=setInterval(function(){if(state.down||state.done){stopDemo();return}var p=Math.min(1,(Date.now()-t0)/duration),point=data.path.getPointAtLength(p*data.length);document.getElementById('guide-halo').setAttribute('cx',point.x);document.getElementById('guide-halo').setAttribute('cy',point.y);document.getElementById('guide-hand').setAttribute('cx',point.x);document.getElementById('guide-hand').setAttribute('cy',point.y);if(p>=1){stopDemo();setMessage('TOCCA') }},70)}
-function openLevel(ci,li,repeat){state.session++;clearTimers();state.chapter=ci;
+function openLevel(ci,li,repeat){state.session++;clearTimers();if(window.DiegoPremio)DiegoPremio.stop(celebrate);state.chapter=ci;
  state.deck=chapters[ci].kind||'extra';
  state.level=(li+chapters[ci].levels.length)%chapters[ci].levels.length;
  if(!repeat)state.masteryStep=0;
@@ -427,9 +429,12 @@ function finishLevel(){
  if(state.mastery&&state.masteryStep===4)masteryProgress[key]=true;
  save();labelButtons();
  if(window.DiegoAudio)DiegoAudio.play('successo');setMessage('OK');
- var token=state.session;later(function(){if(state.session===token&&state.done)nextLevel()},750)
+ var token=state.session;
+ if(window.DiegoPremio)DiegoPremio.show(celebrate,function(){if(state.session===token&&state.done)nextLevel()});
+ else later(function(){if(state.session===token&&state.done)nextLevel()},1200)
 }
 function nextLevel(){if(state.chapter<0)return;
+ if(window.DiegoPremio)DiegoPremio.stop(celebrate);
  if(state.mastery&&state.done&&state.masteryStep<4){state.masteryStep++;openLevel(state.chapter,state.level,true);return}
  var n=state.level+1;
  if(n>=chapters[state.chapter].levels.length){

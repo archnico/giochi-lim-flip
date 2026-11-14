@@ -1,0 +1,126 @@
+/* Diego · flusso libero e premi touch marini, palette Wada/Zissou. */
+.diego-premio-attivo { position: relative; }
+#celebrate.diego-premio-attivo { pointer-events: none; }
+#celebrate.diego-premio-attivo .reward-medal,
+#celebrate.diego-premio-attivo .reward-sub { display: none !important; }
+#reward.diego-premio-attivo { width: 100%; max-width: 100%; }
+.diego-premio-play {
+  width: min(98%, 780px);
+  margin: 0 auto;
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(7px, 1.5vw, 22px);
+  pointer-events: auto;
+}
+.diego-premio-oggetto {
+  width: clamp(82px, 12vw, 215px);
+  height: clamp(92px, 15vh, 188px);
+  padding: 7px;
+  border: 3px solid #B4CDC2;
+  border-radius: 25px;
+  background: #FFF9EC;
+  box-shadow: 0 7px 0 #539AA0, 0 12px 22px #12354E28;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  flex: 0 1 auto;
+}
+.diego-premio-oggetto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.diego-premio-oggetto:active { transform: translateY(3px) scale(.96); }
+.diego-premio-oggetto:focus-visible { outline: 5px solid #F99D1B; outline-offset: 3px; }
+.diego-premio-oggetto.diego-premio-salta { animation: diego-premio-ballo .62s ease-out both; }
+.diego-premio-bolle {
+  position: absolute;
+  top: -38px;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 12px;
+  color: #0093A5;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+}
+.diego-premio-bolle.diego-premio-bolle-on { animation: diego-premio-bolle .75s ease-out both; }
+@keyframes diego-premio-ballo {
+  0% { transform: scale(1) rotate(0); }
+  35% { transform: translateY(-20px) scale(1.12) rotate(-9deg); }
+  70% { transform: translateY(-6px) rotate(7deg); }
+  100% { transform: translateY(0) scale(1) rotate(0); }
+}
+@keyframes diego-premio-bolle {
+  0% { opacity: 0; transform: translateY(14px) scale(.6); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-60px) scale(1.25); }
+}
+/* Il comando avanti e' un diritto: visibile anche prima di risolvere. */
+#play .board-tools #next {
+  margin-left: auto;
+  min-width: 120px;
+  min-height: 74px;
+  background: #FFEFAE;
+  color: #12354E;
+  border: 4px solid #F99D1B;
+  border-radius: 23px;
+  box-shadow: 0 6px 0 #B67F3F;
+  font-size: clamp(32px, 3.6vw, 56px);
+  padding: 4px 22px;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+#game .controls #next {
+  background: #FFEFAE;
+  color: #12354E;
+  border: 4px solid #F99D1B;
+  border-radius: 20px;
+  box-shadow: 0 6px 0 #B67F3F;
+  min-height: 76px;
+  font-size: clamp(32px, 3.5vw, 52px);
+  line-height: 1;
+}
+.gamewrap #nextBtn {
+  display: block;
+  align-self: flex-end;
+  min-width: 130px;
+  min-height: 65px;
+  margin-right: 3px;
+  background: #FFEFAE;
+  border: 4px solid #F99D1B;
+  color: #12354E;
+  box-shadow: 0 5px 0 #B67F3F;
+  font-size: clamp(25px, 3vw, 40px);
+  line-height: 1;
+  padding: 4px 20px;
+}
+@media (max-width: 720px) {
+  .diego-premio-play { gap: 6px; width: 100%; }
+  .diego-premio-oggetto {
+    width: clamp(76px, 24vw, 116px);
+    height: clamp(74px, 13vh, 104px);
+    border-width: 2px;
+    border-radius: 16px;
+    padding: 3px;
+  }
+  #play .board-tools #next { min-width: 80px; min-height: 58px; font-size: 36px; padding: 4px 13px; border-width: 3px; }
+  #game .controls #next { min-height: 61px; font-size: 34px; grid-column: 3 / 4; }
+  .gamewrap #nextBtn { min-width: 85px; min-height: 54px; padding: 4px 13px; font-size: 30px; }
+}
+@media (max-height: 580px) {
+  .diego-premio-oggetto { height: 78px; }
+  #play .board-tools #next { min-height: 49px; }
+  #game .controls #next { min-height: 49px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .diego-premio-oggetto.diego-premio-salta,
+  .diego-premio-bolle.diego-premio-bolle-on { animation: none; }
+}

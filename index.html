@@ -101,7 +101,7 @@ footer{min-height:52px;border-top:1px solid var(--line);padding:10px 20px;displa
 <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/app-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/app-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="diego-runtime.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-arte.css"><link rel="stylesheet" href="conta-marino.css"><link rel="stylesheet" href="diego-menu.css">
+<link rel="stylesheet" href="diego-runtime.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-arte.css"><link rel="stylesheet" href="conta-marino.css"><link rel="stylesheet" href="diego-menu.css"><link rel="stylesheet" href="diego-premio.css">
 </head>
 <body>
 <div id="app">
@@ -187,7 +187,7 @@ function later(fn,ms){const token=roundToken;return gameScope.later(()=>{if(toke
 function shuffle(a){const result=a.slice();for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const v=result[i];result[i]=result[j];result[j]=v}return result}
 function say(t){notice.textContent='↻';notice.setAttribute('aria-label',t||'Riprova');notice.classList.add('show');clearTimeout(say.t);say.t=setTimeout(()=>notice.classList.remove('show'),650)}
 function scoreHtml(){return `<div class="score" aria-label="Stelle ottenute su cinque">${[1,2,3,4,5].map(n=>`<span class="star ${n<=stars?'on':''}">★</span>`).join('')}</div>`}
-function shell(title,sub,body,next=false){clearRound();main.innerHTML=`<div class="gamewrap"><div class="gamehead"><div><h1>${title}</h1><div class="sub">${sub}</div></div><div id="scorebox">${scoreHtml()}</div></div><div class="stage">${body}</div><button class="nextbtn" id="nextBtn" ${next?'':'hidden'}>ANCORA →</button></div>`;}
+function shell(title,sub,body,next=false){clearRound();main.innerHTML=`<div class="gamewrap"><div class="gamehead"><div><h1>${title}</h1><div class="sub">${sub}</div></div><div id="scorebox">${scoreHtml()}</div></div><div class="stage">${body}</div><button type="button" class="nextbtn" id="nextBtn" title="Salta o vai avanti" aria-label="Esercizio successivo, salta senza penalità">▶</button></div>`;document.getElementById('nextBtn').onclick=render;}
 function refreshScore(){const b=document.getElementById('scorebox');if(b)b.innerHTML=scoreHtml()}
 function miniCelebration(){
   // Un solo simbolo grande: niente testo, scintille multiple o animazioni permanenti.

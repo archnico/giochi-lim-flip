@@ -81,6 +81,7 @@ button:focus-visible{outline:5px solid #fff07e;outline-offset:3px}
 </style>
 <link rel="stylesheet" href="parole-layout.css">
 <link rel="stylesheet" href="diegoland.css">
+<link rel="stylesheet" href="diego-premio.css">
 </head>
 <body>
 <div id="app">
@@ -114,12 +115,13 @@ button:focus-visible{outline:5px solid #fff07e;outline-offset:3px}
     <button type="button" class="tool" id="undo" title="Annulla" aria-label="Annulla">↶</button>
     <button type="button" class="tool" id="reset" title="Riprova" aria-label="Riprova">↻</button>
     <button type="button" class="tool light" id="prev" title="Prima" aria-label="Prima">◀</button>
-    <button type="button" class="tool" id="next" title="Dopo" aria-label="Dopo">▶</button>
+    <button type="button" class="tool" id="next" title="Salta o vai avanti" aria-label="Esercizio successivo, salta senza penalità">▶</button>
   </div>
 </section>
 </main>
 </div>
 <script src="diego-audio.js"></script>
+<script src="diego-premio.js"></script>
 <script src="diego-lessico.js"></script>
 <script>
 (function(){
@@ -214,7 +216,7 @@ function renderTiles(){
  }
 }
 function load(){
- clearTimeout(nextWordTimer);stopVoice();active=true;done=false;attempts=0;chosen=[];
+ clearTimeout(nextWordTimer);if(window.DiegoPremio)DiegoPremio.stop($('reward'));stopVoice();active=true;done=false;attempts=0;chosen=[];
  tiles=mix(words[index].word);
  $('counter').textContent=(index+1)+' / '+words.length;
  $('reward').hidden=true;$('tiles').hidden=false;
@@ -229,14 +231,15 @@ function nudge(){
 var nextWordTimer=0;
 function win(){
  done=true;stopVoice();$('instruction').textContent='';
- $('tiles').hidden=true;$('reward').hidden=false;$('undo').disabled=true;
+ $('tiles').hidden=true;$('reward').hidden=false;$('reward').textContent='';$('undo').disabled=true;
  $('listen').disabled=false;
  if(window.DiegoAudio)window.DiegoAudio.play('bravo');
  try{window.localStorage.setItem('diego-parole-completate',String(index+1))}catch(e){}
  window.DiegoLessico.registra(words[index].word,'componi');
  if(serie===1)words=window.DiegoLessico.parole(1);
  clearTimeout(nextWordTimer);
- nextWordTimer=setTimeout(function(){if(done)next(1)},750);
+ if(window.DiegoPremio)DiegoPremio.show($('reward'),function(){if(done)next(1)});
+ else {$('reward').textContent='★';nextWordTimer=setTimeout(function(){if(done)next(1)},1200);}
 }
 function choose(i){
  if(!active||done||$('tiles').className.indexOf('locked')!==-1)return;
