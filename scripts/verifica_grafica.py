@@ -183,6 +183,28 @@ for title, filename, digest, dimensions in (
            (ROOT / "docs/ICONE_APPROVATE.html").read_text(encoding="utf8"),
            f"{title}: assente dalla galleria canonica")
 
+# PESCE è unico: lo stesso asset approvato su menu e Conta.
+fish_file = ROOT / "assets/diegoland/pesce-canonico.webp"
+verify(fish_file.is_file(), "Pesce canonico mancante")
+if fish_file.is_file():
+    verify(sha256(fish_file.read_bytes()).hexdigest()
+           == "a93b3781bb7eddd314550252f0f767ec3d2735d8e6715801b9c614bce7aa96b4",
+           "Pesce canonico alterato")
+    verify(fish_file.stat().st_size < 110_000, "Pesce canonico troppo pesante")
+    try:
+        from PIL import Image
+        with Image.open(fish_file) as im:
+            verify(im.size == (950, 665) and im.mode == "RGBA", "Pesce dimensioni/trasparenza")
+    except ImportError:
+        pass
+verify(index.count("assets/diegoland/pesce-canonico.webp") == 4,
+       "Pesce: incongruenza tra tessere e Conta")
+verify("assets/diegoland/vettori/pesce.svg" not in index,
+       "Icona del pesce provvisoria ancora in uso")
+verify("../assets/diegoland/pesce-canonico.webp" in
+       (ROOT / "docs/ICONE_APPROVATE.html").read_text(encoding="utf8"),
+       "Pesce assente dalla galleria approvata")
+
 # La cache offline deve contenere ogni file del gioco, incluse le nuove icone.
 service_worker = (ROOT / "sw.js").read_text(encoding="utf-8")
 m = re.search(r"var FILES=(\[[^\n]*\]);", service_worker)
@@ -197,6 +219,7 @@ if m:
                  "./assets/diegoland/squalo-giaguaro-virata.webp",
                  "./assets/diegoland/stella-marina-canonica.webp",
                  "./assets/diegoland/polpo-canonico.webp",
+                 "./assets/diegoland/pesce-canonico.webp",
                  "./assets/diegoland/vettori/numeri.svg",
                  "./parole.html", "./unisci-quantita.html",
                  "./diegoland-arte.css", "./diego-audio.js"):
@@ -206,7 +229,8 @@ if m:
            and "f==='./assets/diegoland/squalo-giaguaro-nuoto.webp'" in service_worker
            and "f==='./assets/diegoland/squalo-giaguaro-virata.webp'" in service_worker
            and "f==='./assets/diegoland/stella-marina-canonica.webp'" in service_worker
-           and "f==='./assets/diegoland/polpo-canonico.webp'" in service_worker,
+           and "f==='./assets/diegoland/polpo-canonico.webp'" in service_worker
+           and "f==='./assets/diegoland/pesce-canonico.webp'" in service_worker,
            "Icone marine non precaricate offline")
 
 print(f"Diego — verifiche grafiche: {checks}, problemi: {len(errors)}")
