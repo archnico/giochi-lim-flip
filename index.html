@@ -212,7 +212,7 @@ const topics=[
 let topic=null;
 // EDIZIONE FLIP: navigazione visuale indipendente dalla versione PC.
 const flipVisual={
-  pregrafismo:'assets/diegoland/esploratore_intero.webp',
+  pregrafismo:'assets/diegoland/esploratore-canonico.webp',
   parole:'assets/icons/kit-v2/pregrafismo.svg',
   acqua:'assets/diegoland/acqua-sottomarino-canonico.webp',
   animali:'assets/diegoland/squalo-giaguaro-virata.webp',
@@ -248,7 +248,7 @@ function home(){
     ['PAROLE','Disegna · Ascolta · Componi','pregrafismo']
   ];
   main.innerHTML='<div class="flip-home">'+primaries.map(function(a){return flipCard(a[0],a[1],a[2],flipVisual[a[2]],'game')}).join('')+
-   '<button type="button" class="flip-other" id="otherBtn"><img src="assets/diegoland/vettori/oblo.svg" alt="">ALTRI</button></div>';
+   '<button type="button" class="flip-other" id="otherBtn"><img src="assets/diegoland/belafonte-canonica.webp" alt="" draggable="false">ALTRI</button></div>';
   // Un unico tocco dalla home: i percorsi procedono da soli.
   const direct={animali:'habitat1',matematica:'numeri',acqua:'acqua',scacchi:'scacchi',pregrafismo:'pregrafismo'};
   main.querySelectorAll('[data-game]').forEach(function(b){b.onclick=function(){start(direct[b.dataset.game])}});

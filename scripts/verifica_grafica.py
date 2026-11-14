@@ -255,6 +255,50 @@ verify("../assets/diegoland/salvagente-canonico.webp" in
        (ROOT / "docs/ICONE_APPROVATE.html").read_text(encoding="utf8"),
        "Salvagente assente dalla galleria approvata")
 
+# Chiusura: nave ed esploratore approvati, puramente navigazionali.
+for name,filename,digest,dimensions,max_bytes in (
+    ("Belafonte", "belafonte-canonica.webp",
+     "9a49b0ff64361e31c7c5fba4958e8beef8e3e005aedba1374ebfa2601393d57f",
+     (1480,493), 150_000),
+    ("Esploratore", "esploratore-canonico.webp",
+     "7dfdd995af8ea3538c08511fbcc00fdb2d0e911326c9ebdd2d0afafb0ee2887b",
+     (430,900), 75_000),
+):
+    pth = ROOT / "assets/diegoland" / filename
+    verify(pth.is_file(), f"{name}: asset canonico assente")
+    if pth.is_file():
+        verify(sha256(pth.read_bytes()).hexdigest()==digest,
+               f"{name}: il file approvato è stato alterato")
+        verify(pth.stat().st_size < max_bytes, f"{name}: risorsa pesante")
+        try:
+            from PIL import Image
+            with Image.open(pth) as im:
+                verify(im.size == dimensions and im.mode == "RGBA",
+                       f"{name}: dimensioni/trasparenza non coerenti")
+                verify(im.getpixel((0,0))[3] == 0,
+                       f"{name}: sfondo non trasparente")
+        except ImportError:
+            pass
+    verify(("../assets/diegoland/"+filename) in
+           (ROOT / "docs/ICONE_APPROVATE.html").read_text(encoding="utf8"),
+           f"{name}: manca nella galleria canonica")
+
+verify("pregrafismo:'assets/diegoland/esploratore-canonico.webp'" in index,
+       "PAROLE: manca l'esploratore dalla barba bianca")
+verify("esploratore_intero.webp" not in index,
+       "PAROLE: vecchio esploratore ancora in uso")
+verify('id="otherBtn"><img src="assets/diegoland/belafonte-canonica.webp"' in index,
+       "ALTRI: nave approvata non associata al pulsante grande")
+verify("belafonte-canonica.webp" not in
+       index.split("const countTypes=[",1)[1].split("];",1)[0],
+       "Belafonte erroneamente introdotta in Conta")
+verify("esploratore-canonico.webp" not in
+       index.split("const countTypes=[",1)[1].split("];",1)[0],
+       "Esploratore erroneamente introdotto in Conta")
+verify("src$=\"belafonte-canonica.webp\"" in
+       (ROOT / "diegoland-arte.css").read_text(encoding="utf8"),
+       "Belafonte: manca la regola per la silhouette larga")
+
 # La cache offline deve contenere ogni file del gioco, incluse le nuove icone.
 service_worker = (ROOT / "sw.js").read_text(encoding="utf-8")
 m = re.search(r"var FILES=(\[[^\n]*\]);", service_worker)
@@ -272,6 +316,8 @@ if m:
                  "./assets/diegoland/pesce-canonico.webp",
                  "./assets/diegoland/chitarra-canonica.webp",
                  "./assets/diegoland/salvagente-canonico.webp",
+                 "./assets/diegoland/esploratore-canonico.webp",
+                 "./assets/diegoland/belafonte-canonica.webp",
                  "./assets/diegoland/vettori/numeri.svg",
                  "./parole.html", "./unisci-quantita.html",
                  "./diegoland-arte.css", "./diego-audio.js"):
@@ -284,7 +330,9 @@ if m:
            and "f==='./assets/diegoland/polpo-canonico.webp'" in service_worker
            and "f==='./assets/diegoland/pesce-canonico.webp'" in service_worker
            and "f==='./assets/diegoland/chitarra-canonica.webp'" in service_worker
-           and "f==='./assets/diegoland/salvagente-canonico.webp'" in service_worker,
+           and "f==='./assets/diegoland/salvagente-canonico.webp'" in service_worker
+           and "f==='./assets/diegoland/esploratore-canonico.webp'" in service_worker
+           and "f==='./assets/diegoland/belafonte-canonica.webp'" in service_worker,
            "Icone marine non precaricate offline")
 
 print(f"Diego — verifiche grafiche: {checks}, problemi: {len(errors)}")

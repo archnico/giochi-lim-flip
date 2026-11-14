@@ -67,3 +67,20 @@ alfiere, cavallo e pedone; il logo rimane indipendente dalle regole didattiche.
 
 - `docs/SALVAGENTE_CANONICO_20261114.md`: salvagente corallo/avorio con corda, usato solo per navigazione Associazioni, NON in Conta.
 - Il canone delle sei figure per Conta resta chiuso. Per la collezione visiva restano da proporre **Belafonte** e **Zissou con barba corretta** prima di una pausa editoriale.
+
+
+### Chiusura collezione iconografica (14/11/2026)
+
+**Ultime due approvazioni concluse**:
+- [Belafonte](docs/BELAFONTE_CANONICA_20261114.md): nave oceanografica
+  orizzontale in grande formato sul pulsante ALTRI della home.
+- [Esploratore](docs/ESPLORATORE_CANONICO_20261114.md): barba e baffi
+  **bianchi**, figura intera, immagine della tessera PAROLE.
+- [Galleria canonica](docs/ICONE_APPROVATE.html): undici immagini, dieci soggetti,
+  inclusi i due squalo giaguaro della stessa specie.
+
+La famiglia di figure è **chiusa**: nessun altro animale, ancora, cuffia o
+decorazione didattica introdotta per varietà fine a se stessa. Fino a nuovi
+bisogni educativi si lavora soltanto su nitidezza, dimensioni, integrazione,
+contrasto e prestazioni su Samsung Flip e smartphone. I sei soggetti di
+Conta e le meccaniche degli esercizi rimangono invariati.
