@@ -1,9 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<defs><linearGradient id="w" x1="0" x2="0.8" y1="0" y2="1"><stop stop-color="#f48067"/><stop offset="1" stop-color="#dd4027"/></linearGradient></defs>
-<path d="M18 75 Q12 61 21 45 Q32 22 64 19 Q89 16 107 40 Q117 56 109 77 L100 89 Q68 96 29 88 Z" fill="#12354e" opacity=".28" transform="translate(2 3)"/>
-<path d="M18 70 Q14 53 25 38 Q40 19 62 19 Q89 18 104 39 Q115 56 108 74 L98 84 Q63 92 26 82Z" fill="url(#w)" stroke="#12354e" stroke-width="5" stroke-linejoin="round"/>
-<path d="M24 51 Q57 41 104 53 M27 60 Q60 49 105 61" stroke="#f9a08b" stroke-width="2" fill="none" opacity=".65"/>
-<path d="M23 76 Q60 67 107 74 L107 91 Q65 105 23 91Z" fill="#dd4027" stroke="#12354e" stroke-width="5" stroke-linejoin="round"/>
-<path d="M31 84 Q66 92 98 83" stroke="#f48067" stroke-width="3" fill="none"/>
-<path d="M62 22 L62 31" stroke="#12354e" stroke-width="5" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Cuffia rossa di lana">
+<defs><linearGradient id="cuffia" x1="0" y1="0" x2=".85" y2="1"><stop offset="0" stop-color="#F48067"/><stop offset=".48" stop-color="#DD4027"/><stop offset="1" stop-color="#BE271C"/></linearGradient></defs>
+<path d="M19 83V64C19 39 39 18 64 18S109 39 109 64V83Z" fill="url(#cuffia)" stroke="#12354E" stroke-width="5.5" stroke-linejoin="round"/>
+<path d="M64 20V81M47 24Q41 52 45 83M81 24Q87 52 83 83M30 39Q28 61 33 82M98 39Q100 61 95 82" stroke="#A8261D" stroke-width="4" stroke-linecap="round" fill="none"/>
+<path d="M29 40Q35 28 46 25" stroke="#FFC0A2" stroke-width="3.5" stroke-linecap="round" opacity=".9" fill="none"/>
+<rect x="12" y="76" width="104" height="35" rx="11" fill="#DD4027" stroke="#12354E" stroke-width="5.5"/>
+<path d="M22 87H106M22 99H106" fill="none" stroke="#FB8B71" stroke-width="3.5" opacity=".75" stroke-linecap="round"/>
+<path d="M31 80V108M43 80V108M55 80V108M67 80V108M79 80V108M91 80V108" fill="none" stroke="#AD281C" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+<path d="M26 111Q64 117 102 111" fill="none" stroke="#12354E" stroke-width="4" stroke-linecap="round"/>
 </svg>

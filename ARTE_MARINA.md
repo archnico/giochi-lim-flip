@@ -14,3 +14,8 @@ Le derivazioni WebP in `assets/diegoland/` sono state ricavate dal **set esatto 
 Applicazione iniziale: figure sulle grandi tessere Home (Pregrafismo, Acqua, Animali) e palette CSS `diegoland-arte.css`. Le immagini didattiche negli esercizi e le aree toccabili non vengono ridotte. Gli asset WebP sono locali e sono inseriti nell’elenco dei file del Service Worker; nessuna risorsa remota a runtime.
 
 Collaudo reale su Samsung Flip 2 WM55R e telefono: ancora da completare; sintassi JavaScript, riferimenti asset e integrità immagine verificati da n1.
+
+
+## Rifinitura visiva del 14 novembre 2026
+
+Ritagli collage originali conservati: eliminati i pixel isolati intorno allo squalo e sotto Zissou, rifinita la trasparenza e preparate derivazioni WebP 3× per la LIM. La cuffia rossa sul tabellone è stata ridisegnata come pittogramma frontale in SVG, con risvolto a coste riconoscibile anche da piccola. Originali non ripuliti custoditi su n1 in `~/src/diego/Consegne/arte_20261114_originali/`; rigenerazione: `tools/refine_diegoland_assets.py` (solo sorgenti locali, non distribuito nel sito). Screenshot Home e scacchiera verificati su Firefox; collaudo tattile su WM55R e telefono ancora da fare.

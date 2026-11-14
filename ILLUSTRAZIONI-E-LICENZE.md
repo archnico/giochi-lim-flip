@@ -20,6 +20,6 @@ Licenza: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 Gli obiettivi al posto delle stelle includono i ritagli del collage marino
 scelto dall'utente (`assets/diegoland/sottomarino.webp` e
 `squalo_giaguaro.webp`) e il pittogramma originale
-`assets/diegoland/berretto.svg` (progettato per Diego).
+`assets/diegoland/berretto.svg` (cuffia rossa frontale in SVG, ridisegnata per leggibilità il 14/11/2026).
 Le meccaniche di raccolta si ispirano agli esercizi Chess Basics
 di Lichess; il codice del gioco e i livelli sono implementati autonomamente.
