@@ -205,6 +205,29 @@ verify("../assets/diegoland/pesce-canonico.webp" in
        (ROOT / "docs/ICONE_APPROVATE.html").read_text(encoding="utf8"),
        "Pesce assente dalla galleria approvata")
 
+# CHITARRA approvata: la stessa icona usata in Conta e nel canone.
+guitar_file = ROOT / "assets/diegoland/chitarra-canonica.webp"
+verify(guitar_file.is_file(), "Chitarra canonica mancante")
+if guitar_file.is_file():
+    verify(sha256(guitar_file.read_bytes()).hexdigest()
+           == "708a69a2db5c491e8dee4248998832ac14f622d894540d0cbea52a4f31e50b7e",
+           "Chitarra canonica alterata")
+    verify(guitar_file.stat().st_size < 100_000, "Chitarra troppo pesante per LIM")
+    try:
+        from PIL import Image
+        with Image.open(guitar_file) as im:
+            verify(im.size == (768, 768) and im.mode == "RGBA",
+                   "Chitarra: dimensioni/trasparenza errate")
+    except ImportError:
+        pass
+verify("{name:'CHITARRA',file:'assets/diegoland/chitarra-canonica.webp'}" in index,
+       "Conta mostra una chitarra non canonica")
+verify("assets/diegoland/vettori/chitarra.svg" not in index,
+       "Icona chitarra provvisoria ancora usata")
+verify("../assets/diegoland/chitarra-canonica.webp" in
+       (ROOT / "docs/ICONE_APPROVATE.html").read_text(encoding="utf8"),
+       "Chitarra non presente nella galleria delle icone approvate")
+
 # La cache offline deve contenere ogni file del gioco, incluse le nuove icone.
 service_worker = (ROOT / "sw.js").read_text(encoding="utf-8")
 m = re.search(r"var FILES=(\[[^\n]*\]);", service_worker)
@@ -220,6 +243,7 @@ if m:
                  "./assets/diegoland/stella-marina-canonica.webp",
                  "./assets/diegoland/polpo-canonico.webp",
                  "./assets/diegoland/pesce-canonico.webp",
+                 "./assets/diegoland/chitarra-canonica.webp",
                  "./assets/diegoland/vettori/numeri.svg",
                  "./parole.html", "./unisci-quantita.html",
                  "./diegoland-arte.css", "./diego-audio.js"):
@@ -230,7 +254,8 @@ if m:
            and "f==='./assets/diegoland/squalo-giaguaro-virata.webp'" in service_worker
            and "f==='./assets/diegoland/stella-marina-canonica.webp'" in service_worker
            and "f==='./assets/diegoland/polpo-canonico.webp'" in service_worker
-           and "f==='./assets/diegoland/pesce-canonico.webp'" in service_worker,
+           and "f==='./assets/diegoland/pesce-canonico.webp'" in service_worker
+           and "f==='./assets/diegoland/chitarra-canonica.webp'" in service_worker,
            "Icone marine non precaricate offline")
 
 print(f"Diego — verifiche grafiche: {checks}, problemi: {len(errors)}")

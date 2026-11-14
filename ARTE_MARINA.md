@@ -56,3 +56,9 @@ alfiere, cavallo e pedone; il logo rimane indipendente dalle regole didattiche.
 - `docs/PESCE_CANONICO_20261114.md`: nuovo pesce turchese/coda gialla, WebP trasparente, un solo esemplare.
 - Usato in `Conta` e nelle icone secondarie, non al posto delle fotografie degli esercizi.
 - La chitarra è il prossimo soggetto da proporre, **non ancora approvato**.
+
+### Chitarra approvata (14/11/2026)
+
+- `docs/CHITARRA_CANONICA_20261114.md`: chitarra singola acustica, corallo/giallo petrolio, WebP trasparente.
+- Le 6 figure di Conta sono ormai approvate: SUB, SQUALO (2 pose), PESCE, POLPO, STELLA, CHITARRA.
+- Eventuali prossime proposte servono solo icone di navigazione e **non** aumentano senza consenso il lessico iconografico degli esercizi.
