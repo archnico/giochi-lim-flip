@@ -5,8 +5,9 @@ Tigre, panda, leone, rana, elefante, zebra, fenicottero, coccinella, pinguino e 
 
 ## Scacchi Stellari — set Cburnett di Lichess
 
-I tre SVG in assets/scacchi/cburnett/ (wK.svg, wR.svg, wQ.svg) rappresentano
-re, torre e regina bianchi del set Cburnett di Colin M.L. Burnett.
+I sei SVG in assets/scacchi/cburnett/ (wK.svg, wR.svg, wQ.svg,
+wB.svg, wN.svg, wP.svg) rappresentano re, torre, regina, alfiere,
+cavallo e pedone bianchi del set Cburnett di Colin M.L. Burnett.
 Distribuiti da Lichess (lila/public/piece/cburnett) sotto GPLv2+.
 I file sorgenti SVG sono inclusi senza modifiche e mantengono la loro licenza,
 separata dalla licenza MIT del codice Diego.

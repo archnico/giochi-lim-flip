@@ -116,7 +116,7 @@ footer{min-height:52px;border-top:1px solid var(--line);padding:10px 20px;displa
 const games=[
   {id:'pregrafismo',icon:'✏️',title:'Pregrafismo',desc:'112 percorsi · 32 classici + 56 altri + 24 nuovi'},
   {id:'parole',icon:'🔤',title:'Componi la parola',desc:'Ascolta e ordina le lettere · senza intrusi'},
-  {id:'scacchi',icon:'♖',title:'Scacchi',desc:'Re, torre e regina: prendi sottomarini, squali e berretti'},
+  {id:'scacchi',icon:'♖',title:'Scacchi',desc:'Sei pezzi: prendi sottomarini, squali e berretti'},
   {id:'match',icon:'🧩',title:'Abbina',desc:'Una parola grande · scegli fra due foto'},
   {id:'count',icon:'🔢',title:'Conta',desc:'Conta cuffie, squali, sub e chitarre'},
   {id:'unisci',icon:'🔗',title:'Unisci numeri e quantità',desc:'Collega i numeri ai pallini · 1–5'},
@@ -202,7 +202,7 @@ function point(){var completed=stars===4;stars=Math.min(5,stars+1);refreshScore(
 const topics=[
   {id:'pregrafismo',icon:'✏️',title:'Segni e parole',desc:'Traccia, ascolta, componi',ids:['pregrafismo','parole']},
   {id:'acqua',icon:'🌊',title:'Acqua',desc:'Splash! Giochi sensoriali',ids:['acqua']},
-  {id:'scacchi',icon:'♖',title:'Scacchi',desc:'Prendi gli oggetti con re, torre e regina',ids:['scacchi']},
+  {id:'scacchi',icon:'♖',title:'Scacchi',desc:'Prendi gli oggetti con sei pezzi',ids:['scacchi']},
   {id:'matematica',icon:'🔢',title:'Matematica',desc:'Numeri, quantità e conteggio',ids:['count','numeri','unisci']},
   {id:'animali',icon:'🐬',title:'Animali e natura',desc:'Animali, colori e ambienti',ids:['habitat1','habitat2','colori']},
   {id:'attenzione',icon:'👀',title:'Attenzione',desc:'Uguale, diverso e intruso',ids:['same','odd']},
@@ -244,7 +244,7 @@ function home(){
     ['ANIMALI','Dove vive? · Colori','animali'],
     ['NUMERI','Numeri · Conta · Unisci','matematica'],
     ['ACQUA','Splash! · Piscina','acqua'],
-    ['SCACCHI','Re · Torre · Regina','scacchi'],
+    ['SCACCHI','Re · Torre · Alfiere','scacchi'],
     ['PAROLE','Disegna · Ascolta · Componi','pregrafismo']
   ];
   main.innerHTML='<div class="flip-home">'+primaries.map(function(a){return flipCard(a[0],a[1],a[2],flipVisual[a[2]],'game')}).join('')+

@@ -1,247 +1,409 @@
 <!doctype html>
-<html lang="it" data-diego-edition="flip" data-diego-game="scacchi"><head>
-<meta name="robots" content="noindex,nofollow"><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<html lang="it" data-diego-edition="flip" data-diego-game="scacchi"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Scacchi — Diego</title>
 <style>
-:root{font-family:system-ui,-apple-system,Arial,sans-serif;color:#fff9ec;background:#12354e}
-*{box-sizing:border-box}body{margin:0;min-height:100vh}
-button{font:inherit;touch-action:manipulation;cursor:pointer;-webkit-tap-highlight-color:transparent}
-header{display:flex;justify-content:space-between;align-items:center;padding:8px 20px;background:#12354e;border-bottom:3px solid #0093a5}
-header strong{font-size:clamp(20px,2vw,28px);display:flex;align-items:center;gap:9px}header .chess-brand-logo{width:clamp(40px,4.5vw,56px);height:clamp(40px,4.5vw,56px);object-fit:contain;flex:none;pointer-events:none;user-select:none}header a{color:#fff9ec;text-decoration:none;border:2px solid #b4cdc2;border-radius:12px;padding:7px 15px;font-size:20px;font-weight:800}
-main{max-width:1550px;margin:auto;padding:10px 18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,.48fr);grid-gap:20px;gap:20px;align-items:center}
-.board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-template-rows:repeat(8,minmax(0,1fr));width:75vh;width:min(76vh,76vw,840px);max-width:100%;aspect-ratio:1;border:7px solid #b4cdc2;border-radius:10px;overflow:hidden;box-shadow:0 8px 25px #05123077;touch-action:none}
-.sq{position:relative;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;overflow:hidden;border:0;border-radius:0;padding:0}
-.light{background:#fff9ec}.dark{background:#b4cdc2}
-.piece{display:block;width:80%;height:80%;max-width:100%;max-height:100%;object-fit:contain;pointer-events:none;user-select:none;-webkit-user-select:none}
-.star{display:block;width:82%;height:82%;max-width:82%;max-height:82%;object-fit:contain;pointer-events:none;user-select:none;-webkit-user-select:none;filter:drop-shadow(0 2px 1px #12354e88)}
-.sq.active{box-shadow:inset 0 0 0 5px #f99d1b}
-.sq.reachable:not(.has-goal):after{content:"";width:15%;height:15%;background:#0093a58c;border-radius:100%;position:absolute;pointer-events:none}
-.sq:focus-visible{outline:3px solid #dd4027;outline-offset:-3px;z-index:1}
-.controls{display:flex;flex-direction:column;align-items:stretch;grid-gap:14px;gap:14px;min-width:0}
-.topline{display:flex;justify-content:space-between;align-items:center;grid-gap:12px;gap:12px}
-.controls h1{font-size:clamp(34px,3.5vw,60px);margin:0;line-height:1.1}
-.level{font-weight:900;font-size:clamp(21px,2.5vw,38px);white-space:nowrap;color:#ffefae}
-.instruction{font-weight:900;color:#ffefae;font-size:clamp(26px,3vw,48px);min-height:1.2em}
-.progress{font-size:clamp(25px,3vw,43px);font-weight:900}
-.progressbar{height:12px;border-radius:20px;background:#174b60;overflow:hidden;border:1px solid #b4cdc2}
-.progressbar i{display:block;height:100%;background:#f99d1b;width:0%;transition:width .2s}
-.modes{display:flex;grid-gap:10px;gap:10px}
-.modes button{flex:1;min-height:68px;min-width:0;border:3px solid #b4cdc2;border-radius:16px;background:#23596c;color:#fff9ec;font-size:clamp(18px,2vw,26px);font-weight:900}
-.modes button.on{background:#ffefae;color:#12354e;border-color:#f99d1b}
-.nav{display:flex;grid-gap:10px;gap:10px}
-.nav button{min-height:68px;flex:1;border-radius:15px;border:2px solid #b4cdc2;color:#fff9ec;background:#23596c;font-size:36px;font-weight:900}
-.nav .again{background:#f99d1b;color:#12354e;border:0}
-.teacher{margin-top:3px;font-size:18px;color:#dbeae6}.teacher summary{cursor:pointer;font-weight:800;min-height:28px}
-.pick{display:flex;grid-gap:8px;gap:8px;margin-top:8px}.pick button{flex:1;min-width:0;border:2px solid #b4cdc2;background:#23596c;color:#fff9ec;padding:9px 2px;border-radius:13px;font-size:18px;font-weight:900}
-.pick button.on{background:#ffefae;color:#12354e;border-color:#f99d1b}
-.pick-piece{width:35px;height:35px;vertical-align:middle;object-fit:contain;pointer-events:none}
-@media(max-width:850px){
- main{grid-template-columns:1fr;justify-items:center;padding:8px 10px;grid-gap:10px;gap:10px}
- .board{width:90vw;width:min(93vw,64vh);max-width:100%}
- .controls{width:100%;max-width:640px;grid-gap:7px;gap:7px}
- .controls h1{font-size:28px}.instruction{font-size:25px;min-height:0}.level{font-size:21px}
- .progress{font-size:25px}.progressbar{height:8px}.modes button,.nav button{min-height:46px}
- .modes button{font-size:17px}.nav button{font-size:28px}.teacher{font-size:15px}
-}
-@media(max-width:850px) and (orientation:landscape){
- main{display:flex;flex-direction:row;align-items:center;justify-content:center}
- .board{width:72vh;width:min(76vh,56vw)}
- .controls{flex:1;max-width:none}
- .controls h1{font-size:25px}
-}
-</style>
-<link rel="stylesheet" href="diego-runtime.css">
-<link rel="stylesheet" href="diegoland.css">
-<link rel="stylesheet" href="diegoland-games.css">
-<script src="diego-runtime.js"></script></head><body>
+:root{font-family:system-ui,-apple-system,sans-serif;color:#f7f8fa;background:#101519}
+*{box-sizing:border-box}body{margin:0;min-height:100vh}button{font:inherit;touch-action:manipulation;cursor:pointer}
+header{display:flex;justify-content:space-between;align-items:center;padding:10px 22px;background:#20272d}
+header strong{font-size:24px;display:flex;align-items:center;gap:10px}header .chess-brand-logo{width:clamp(40px,4.5vw,56px);height:clamp(40px,4.5vw,56px);object-fit:contain;flex:none;pointer-events:none}header a{color:#fff;text-decoration:none;border:2px solid #8998a4;border-radius:14px;padding:10px 20px;font-size:20px;font-weight:800}
+main{max-width:1500px;margin:auto;padding:10px 24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,.52fr);/*diego-fallback*/--diego-gap:26px;grid-gap:26px;/*end-fallback*/gap:26px;align-items:center}
+.board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-template-rows:repeat(8,minmax(0,1fr));/*diego-fallback*/width:76vh;/*end-fallback*/width:min(76vh,76vw,850px);max-width:100%;aspect-ratio:1;border:8px solid #e7e2d4;border-radius:12px;overflow:hidden;box-shadow:0 7px 32px #0009}
+.sq{border:0;border-radius:0;position:relative;padding:0;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;overflow:hidden}
+.light{background:#f1e4c9}.dark{background:#87a48c}
+.piece{display:block;width:78%;height:78%;max-width:100%;max-height:100%;object-fit:contain;pointer-events:none;user-select:none;-webkit-user-select:none}
+.sq.active{box-shadow:inset 0 0 0 7px #f2c230}.star{display:block;width:82%;height:82%;max-width:82%;max-height:82%;object-fit:contain;filter:drop-shadow(0 2px 2px #664);pointer-events:none}
+.controls{display:flex;flex-direction:column;/*diego-fallback*/--diego-gap:15px;grid-gap:15px;/*end-fallback*/gap:15px;align-items:stretch}.controls h1{/*diego-fallback*/font-size:3.6vw;/*end-fallback*/font-size:clamp(30px,3.6vw,60px);margin:0}.instruction{/*diego-fallback*/font-size:2.4vw;/*end-fallback*/font-size:clamp(24px,2.4vw,39px);font-weight:900;min-height:2em;color:#ffe076}
+.pick{display:flex;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px}.pick{flex-wrap:wrap}.pick button{flex:1 1 30%;min-width:0;min-height:78px;border:3px solid #64727c;border-radius:18px;background:#232c32;color:#fff;font-size:24px;font-weight:800}
+.pick button.on{border-color:#ffd34d;background:#39442d}.pick img.pick-piece{display:block;width:50px;height:50px;object-fit:contain;margin:0 auto 3px;pointer-events:none}
+.modes{display:flex;/*diego-fallback*/--diego-gap:12px;grid-gap:12px;/*end-fallback*/gap:12px}.modes button{flex:1;min-width:0;min-height:75px;border:3px solid #79858d;border-radius:18px;background:#27323b;color:#fff;font-weight:850;font-size:18px}
+.modes button.on{border-color:#f6cd48;background:#56461e}
+.again{min-height:68px;border:0;background:#ffd34d;color:#1b1b1b;border-radius:18px;font-size:26px;font-weight:900}
+.progress{font-size:25px;font-weight:800}.hint{font-size:19px;color:#aebcc4}
+@media(max-width:850px){main{grid-template-columns:1fr;justify-items:center;padding:12px;/*diego-fallback*/--diego-gap:10px;grid-gap:10px;/*end-fallback*/gap:10px}.board{/*diego-fallback*/width:90vw;/*end-fallback*/width:min(90vw,62vh)}.controls{width:100%;max-width:620px}.controls h1{font-size:26px}.instruction{min-height:0;font-size:25px}.pick button{min-height:57px}.pick img.pick-piece{display:inline-block;vertical-align:middle;width:31px;height:31px;margin:0 5px 0 0}.modes button{min-height:55px;font-size:13px;padding:5px 2px}.hint{font-size:15px}}
+
+.flow-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  font-size:clamp(19px,1.8vw,27px);font-weight:900;color:#FFF9EC;letter-spacing:.07em}
+#flowDots{font-size:clamp(16px,1.6vw,25px);color:#FFEFAE;white-space:nowrap}
+.teacher-tools{align-self:flex-end;width:100%;margin-top:2px}
+.teacher-tools>summary{display:block;cursor:pointer;width:54px;height:52px;line-height:49px;
+ text-align:center;border-radius:13px;background:#23596C;border:2px solid #B4CDC2;
+ font-size:28px;color:#FFF9EC;user-select:none;list-style:none;margin-left:auto}
+.teacher-tools>summary::-webkit-details-marker{display:none}
+.teacher-tools:not([open])>.teacher-panel{display:none!important}
+.teacher-panel{background:#12354E;border:2px solid #B4CDC2;border-radius:15px;
+ padding:10px;display:flex;flex-direction:column;gap:8px}
+.teacher-panel .pick button,.teacher-panel .modes button{min-height:52px}
+.teacher-panel .pick img.pick-piece{height:35px;width:35px}
+.teacher-steps{display:flex;gap:10px}
+.teacher-steps button,.auto-resume{flex:1;min-height:50px;border:2px solid #B4CDC2;border-radius:12px;
+ background:#FFEFAE;color:#12354E;font-weight:900;font-size:24px}
+.star-celebrate{position:fixed;left:50%;top:49%;z-index:8;color:#F99D1B;
+ font-size:clamp(70px,8vw,145px);text-shadow:0 3px 1px #12354E;
+ transform:translate(-50%,-50%) scale(.6);opacity:0;pointer-events:none}
+.star-celebrate.show{animation:chess-reward .55s ease-out both}
+@keyframes chess-reward{0%{opacity:0;transform:translate(-50%,-40%) scale(.4)}
+ 35%{opacity:1;transform:translate(-50%,-65%) scale(1.15)}
+ 100%{opacity:0;transform:translate(-50%,-100%) scale(.8)}}
+.sq.hint-square{box-shadow:inset 0 0 0 6px #0093A5,0 0 0 2px #FFEFAE}
+@media(max-width:850px){.teacher-tools>summary{width:47px;height:44px;line-height:40px}
+ .teacher-panel .pick button,.teacher-panel .modes button{font-size:14px;min-height:45px}
+ .controls{gap:5px}.controls h1{font-size:24px}.progress{font-size:21px}}
+@media(prefers-reduced-motion:reduce){.star-celebrate.show{animation:none}}
+</style><link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script></head><body>
 <header><strong><img class="chess-brand-logo" src="assets/diegoland/scacchi-logo.webp" alt="" draggable="false">DIEGO · SCACCHI</strong><a href="index.html">⌂ MENU</a></header>
 <main>
-<div class="board" id="board" role="group" aria-label="Scacchiera a 64 caselle"></div>
+<div class="board" id="board" aria-label="Scacchiera interattiva"></div>
 <section class="controls">
- <div class="topline"><h1 id="pieceName">RE</h1><div class="level" id="level">1 / 36</div></div>
- <div class="instruction" id="instruction" role="status" aria-live="polite">TOCCA</div>
- <div class="progress" id="progress" aria-live="polite">0 / 1</div>
- <div class="progressbar" aria-hidden="true"><i id="progressFill"></i></div>
- <div class="modes" role="group" aria-label="Modo di gioco">
-  <button id="easyMode" aria-pressed="true">1 TOCCO</button>
-  <button id="classicMode" aria-pressed="false">2 TOCCHI</button>
- </div>
- <div class="nav">
-  <button id="prev" aria-label="Livello prima">‹</button>
-  <button class="again" id="again" aria-label="Ricomincia">↻</button>
-  <button id="next" aria-label="Livello dopo">›</button>
- </div>
- <details class="teacher"><summary>PEZZI</summary><div class="pick" aria-label="Scegli pezzo">
-  <button data-piece="king"><img class="pick-piece" src="assets/scacchi/cburnett/wK.svg" alt=""> RE</button>
-  <button data-piece="rook"><img class="pick-piece" src="assets/scacchi/cburnett/wR.svg" alt=""> TORRE</button>
-  <button data-piece="queen"><img class="pick-piece" src="assets/scacchi/cburnett/wQ.svg" alt=""> REGINA</button>
- </div></details>
-</section>
-</main>
+<h1>⭐ Scacchi Stellari</h1>
+<div class="instruction" id="instruction" role="status">Tocca la stella!</div>
+<div class="progress" id="progress" aria-live="polite">★ 0 / 3</div>
+<div class="flow-strip" id="flowStrip" aria-label="Percorso progressivo"><span id="flowTitle">TORRE</span><span id="flowDots">● ○ ○</span></div>
+<div class="star-celebrate" id="starCelebrate" aria-hidden="true">★</div>
+<details class="teacher-tools" id="teacherTools"><summary aria-label="Opzioni per adulto">⚙</summary>
+<div class="teacher-panel">
+<button class="auto-resume" id="autoResume" type="button">▶ PERCORSO</button>
+<div class="teacher-steps"><button type="button" id="stageBack">←</button><button type="button" id="stageNext">→</button></div>
+<div class="pick" aria-label="Scegli il pezzo">
+<button data-piece="king"><img class="pick-piece" src="assets/scacchi/cburnett/wK.svg" alt="" aria-hidden="true" draggable="false"> RE</button>
+<button data-piece="rook"><img class="pick-piece" src="assets/scacchi/cburnett/wR.svg" alt="" aria-hidden="true" draggable="false"> TORRE</button>
+<button data-piece="queen"><img class="pick-piece" src="assets/scacchi/cburnett/wQ.svg" alt="" aria-hidden="true" draggable="false"> REGINA</button>
+<button data-piece="bishop"><img class="pick-piece" src="assets/scacchi/cburnett/wB.svg" alt="" aria-hidden="true" draggable="false"> ALFIERE</button>
+<button data-piece="knight"><img class="pick-piece" src="assets/scacchi/cburnett/wN.svg" alt="" aria-hidden="true" draggable="false"> CAVALLO</button>
+<button data-piece="pawn"><img class="pick-piece" src="assets/scacchi/cburnett/wP.svg" alt="" aria-hidden="true" draggable="false"> PEDONE</button>
+</div>
+<div class="modes" aria-label="Difficoltà">
+<button data-mode="easy">1 · FACILE</button>
+<button data-mode="two">2 · 3 STELLE</button>
+<button data-mode="challenge">3 · 5 STELLE</button>
+</div>
+<button class="again" id="again">↻ RICOMINCIA</button>
+<div class="hint">Il gioco passa da solo alla prova successiva.</div>
+</div></details>
+</section></main>
 <script src="diego-audio.js"></script><script>
 'use strict';
-// Percorso continuo: 12 livelli per pezzo, nessun pedone o cavallo.
-// Le sequenze sotto sono tutte mosse lecite; gli obiettivi appaiono INSIEME.
-var routes={
- king:[[6,4],[5,4],[4,4],[3,3],[3,4],[2,5],[1,5],[1,6],[2,6],[2,7],[3,7],[4,6],[5,7],[5,6],[6,5],[7,5],[7,4],[6,3],[5,2],[4,1],[3,1],[2,2]],
- rook:[[6,0],[6,4],[2,4],[2,1],[4,1],[4,6],[1,6],[1,2],[6,2],[6,7],[3,7],[3,0],[0,0],[0,5],[5,5],[5,0],[7,0],[7,7],[4,7],[4,3],[0,3],[0,6],[2,6]],
- queen:[[6,0],[4,2],[4,5],[1,5],[2,4],[6,4],[6,7],[1,2],[1,7],[5,3],[2,0],[0,2],[0,7],[5,7],[3,5],[3,1],[7,1],[7,5],[2,5],[2,2],[5,2],[5,6]]
+const plans={
+ king:{name:'RE',glyph:'♔',asset:'assets/scacchi/cburnett/wK.svg',start:[6,4],
+       targets:[[5,4],[4,4],[3,3]],challenge:[[5,4],[5,5],[4,5],[3,4],[2,5]]},
+ rook:{name:'TORRE',glyph:'♖',asset:'assets/scacchi/cburnett/wR.svg',start:[6,0],
+       targets:[[2,0],[2,4],[5,4]],challenge:[[6,4],[2,4],[2,1],[4,1],[4,6]]},
+ queen:{name:'REGINA',glyph:'♕',asset:'assets/scacchi/cburnett/wQ.svg',start:[6,0],
+        targets:[[4,2],[4,5],[1,5]],challenge:[[4,2],[4,5],[1,5],[2,2],[6,6]]},
+ bishop:{name:'ALFIERE',glyph:'♗',asset:'assets/scacchi/cburnett/wB.svg',start:[6,0],
+         targets:[[5,1],[3,3],[1,5]],challenge:[[5,1],[3,3],[1,5],[4,2],[6,4]]},
+ knight:{name:'CAVALLO',glyph:'♘',asset:'assets/scacchi/cburnett/wN.svg',start:[6,1],
+         targets:[[4,2],[2,3],[0,4]],challenge:[[4,2],[2,3],[0,4],[1,6],[3,7]]},
+ pawn:{name:'PEDONE',glyph:'♙',asset:'assets/scacchi/cburnett/wP.svg',start:[6,3],
+       targets:[[5,2],[4,3],[3,2]],challenge:[[5,2],[4,3],[3,2],[2,3],[1,2]]}
 };
-var plans={
- king:{name:'RE',asset:'assets/scacchi/cburnett/wK.svg'},
- rook:{name:'TORRE',asset:'assets/scacchi/cburnett/wR.svg'},
- queen:{name:'REGINA',asset:'assets/scacchi/cburnett/wQ.svg'}
-};
-var order=['king','rook','queen'],counts=[1,1,2,2,3,3,4,4,5,5,6,7];
-var goalKinds=['berretto','sottomarino','squalo'];
-var goalImages={
- berretto:'assets/diegoland/berretto.svg',
- sottomarino:'assets/diegoland/vettori/sottomarino.svg',
- squalo:'assets/diegoland/vettori/squalo.svg'
-};
-var chessScope=DiegoRuntime.createScope();
-var stage=0,piece='king',position=[6,4],remaining=[],step=0,moves=0,selected=true,locked=false;
-var easy=true,maxMoves=0,dragFrom=null,ignoreClickUntil=0;
-var board=document.getElementById('board');
-var instruction=document.getElementById('instruction');
-var progress=document.getElementById('progress');
-var progressFill=document.getElementById('progressFill');
-function same(a,b){return a[0]===b[0]&&a[1]===b[1]}
-function allowed(a,b){
- var dr=Math.abs(a[0]-b[0]),dc=Math.abs(a[1]-b[1]);
- if(!dr&&!dc)return false;
- return piece==='king'?Math.max(dr,dc)===1:piece==='rook'?dr===0||dc===0:dr===0||dc===0||dr===dc;
-}
-function totalStars(){return counts[stage%counts.length]}
-function mission(){
- var n=stage%counts.length,path=routes[piece];
- var goals=[];
- for(var i=0;i<counts[n];i++){
-  var kind=goalKinds[(n<6?Math.floor(n/2):n+i)%goalKinds.length];
-  goals.push({row:path[n+1+i][0],col:path[n+1+i][1],kind:kind});
+// Ogni episodio cambia una sola variabile per volta: quantita, contemporaneita, gesto.
+// Il gioco resta sulla stessa scacchiera: niente capitoli o conferme tra un episodio e l'altro.
+const flowSteps=[
+ {piece:'rook',stars:[[6,1]],parallel:false,oneTap:true},
+ {piece:'rook',stars:[[6,2],[3,2]],parallel:false,oneTap:true},
+ {piece:'rook',stars:[[6,2],[3,2]],parallel:true,oneTap:true},
+ {piece:'rook',stars:[[6,2],[3,2],[3,5]],parallel:true,oneTap:true},
+ {piece:'rook',stars:[[6,2],[3,2],[3,5]],parallel:true,oneTap:true},
+ {piece:'rook',stars:[[6,2],[3,2],[3,5],[1,5],[1,1]],parallel:true,oneTap:true},
+ {piece:'king',stars:[[5,4]],parallel:false,oneTap:true},
+ {piece:'king',stars:[[5,4],[4,4]],parallel:false,oneTap:true},
+ {piece:'king',stars:[[5,4],[4,4]],parallel:true,oneTap:true},
+ {piece:'king',stars:[[5,4],[4,4],[3,4]],parallel:true,oneTap:true},
+ {piece:'king',stars:[[5,4],[4,4],[3,4]],parallel:true,oneTap:true},
+ {piece:'king',stars:[[5,4],[5,5],[4,5],[3,4],[2,5]],parallel:true,oneTap:true},
+ {piece:'queen',stars:[[5,1]],parallel:false,oneTap:true},
+ {piece:'queen',stars:[[5,1],[3,3]],parallel:false,oneTap:true},
+ {piece:'queen',stars:[[5,1],[3,3]],parallel:true,oneTap:true},
+ {piece:'queen',stars:[[5,1],[3,3],[3,6]],parallel:true,oneTap:true},
+ {piece:'queen',stars:[[5,1],[3,3],[3,6]],parallel:true,oneTap:true},
+ {piece:'queen',stars:[[5,1],[3,3],[3,6],[6,6],[2,2]],parallel:true,oneTap:true},
+ // ALFIERE: diagonali prima semplici, poi piu stelle visibili.
+ {piece:'bishop',stars:[[5,1]],parallel:false,oneTap:true},
+ {piece:'bishop',stars:[[5,1],[3,3]],parallel:false,oneTap:true},
+ {piece:'bishop',stars:[[5,1],[3,3]],parallel:true,oneTap:true},
+ {piece:'bishop',stars:[[5,1],[3,3],[1,5]],parallel:true,oneTap:true},
+ {piece:'bishop',stars:[[5,1],[3,3],[1,5]],parallel:true,oneTap:true},
+ {piece:'bishop',stars:[[5,1],[4,2],[3,3],[2,4],[1,5]],parallel:true,oneTap:true},
+ // CAVALLO e PEDONE: esclusivamente catture dirette, mai mosse nel vuoto.
+ {piece:'knight',stars:[[4,2]],parallel:false,oneTap:true},
+ {piece:'pawn',stars:[[5,2]],parallel:false,oneTap:true},
+ {piece:'knight',stars:[[4,2],[2,3]],parallel:false,oneTap:true},
+ {piece:'pawn',stars:[[5,2],[4,3]],parallel:false,oneTap:true},
+ // Due mosse autentiche: prima una casella vuota, poi la stella.
+ {piece:'rook',stars:[[3,4]],parallel:false,oneTap:true,route:2},
+ {piece:'king',stars:[[4,4]],parallel:false,oneTap:true,route:2},
+ {piece:'bishop',stars:[[4,4]],parallel:false,oneTap:true,route:2},
+ {piece:'queen',stars:[[3,4]],parallel:false,oneTap:true,route:2},
+ {piece:'knight',stars:[[4,2],[2,3],[0,4]],parallel:false,oneTap:true},
+ {piece:'pawn',stars:[[5,2],[4,3],[3,2]],parallel:false,oneTap:true},
+ {piece:'rook',stars:[[1,5]],parallel:false,oneTap:true,route:2},
+ {piece:'bishop',stars:[[2,6]],parallel:false,oneTap:true,route:2},
+ {piece:'king',stars:[[4,5]],parallel:false,oneTap:true,route:2},
+ {piece:'queen',stars:[[2,5]],parallel:false,oneTap:true,route:2},
+ {piece:'knight',stars:[[4,2],[2,3],[0,4],[1,6],[3,7]],parallel:false,oneTap:true},
+ {piece:'pawn',stars:[[5,2],[4,3],[3,2],[2,3],[1,2]],parallel:false,oneTap:true}
+];
+const goalImages=[
+ 'assets/diegoland/berretto.svg',
+ 'assets/diegoland/vettori/sottomarino.svg',
+ 'assets/diegoland/vettori/squalo.svg'
+];
+const chessScope=DiegoRuntime.createScope();
+// Tre stelle subito, ma resta disponibile il livello Facile.
+// Query-string compatibile con il browser Samsung Tizen 5 (senza URLSearchParams).
+function chessParam(name){
+ var parts=(window.location.search||'').replace(/^\?/,'').split('&');
+ for(var i=0;i<parts.length;i++){
+  var pair=parts[i].split('=');
+  if(pair[0]===name)return decodeURIComponent(pair.slice(1).join('='));
  }
- return {start:path[n].slice(),goals:goals,limit:n>=9?counts[n]+3:0};
+ return '';
 }
+const requestedMode=chessParam('mode');
+const requestedPiece=chessParam('piece');
+function rememberedStage(){
+ try{
+  const value=Number(localStorage.getItem('diego-scacchi-stage-v1'));
+  if(Number.isInteger(value)&&value>=0&&value<flowSteps.length)return Math.max(0,value-1);
+ }catch(ignore){}
+ return 0;
+}
+function saveStage(){
+ try{localStorage.setItem('diego-scacchi-stage-v1',String(flowIndex))}
+ catch(ignore){}
+}
+let autoFlow=!requestedMode||chessParam('flow')==='1',
+ flowIndex=Math.max(0,Math.min(flowSteps.length-1,
+            chessParam('stage')!==''?Number(chessParam('stage'))||0:rememberedStage())),
+ repeatCount=0,stallCount=0,mistakes=0,transit=0,assist=false,
+ piece=Object.prototype.hasOwnProperty.call(plans,requestedPiece)?requestedPiece:'rook',
+ mode=['easy','two','challenge'].indexOf(requestedMode)>=0?requestedMode:'two',
+ position,step,selected,locked=false,remaining=[],dragFrom=null,ignoreClickUntil=0;
+const board=document.getElementById('board'),instruction=document.getElementById('instruction'),progress=document.getElementById('progress');
+// Fix in pixel, not in grid-content height: a rook moving must never
+// stretch a row. Explicit height also supports older Samsung Tizen browsers
+// that do not consistently honor aspect-ratio on a CSS grid.
 function fitChessboard(){
- var width=board.getBoundingClientRect().width;
- if(width>0)board.style.height=width+'px';
+ const width=board.getBoundingClientRect().width;
+ if(!width)return;
+ const size=Math.round(width*100)/100;
+ board.style.height=size+'px';
+ // Pieces size automatically to the square: no system chess font.
 }
 window.addEventListener('resize',fitChessboard);
+const same=(a,b)=>a[0]===b[0]&&a[1]===b[1];
+function specialPiece(){return piece==='knight'||piece==='pawn'}
+function allowed(a,b){
+ if(b[0]<0||b[0]>7||b[1]<0||b[1]>7)return false;
+ const dr=Math.abs(a[0]-b[0]),dc=Math.abs(a[1]-b[1]);
+ if(!dr&&!dc)return false;
+ if(piece==='pawn')return b[0]===a[0]-1&&dc===1;
+ if(piece==='knight')return (dr===2&&dc===1)||(dr===1&&dc===2);
+ if(piece==='king')return Math.max(dr,dc)===1;
+ const straight=dr===0||dc===0,diagonal=dr===dc;
+ if(!(piece==='rook'?straight:piece==='bishop'?diagonal:straight||diagonal))return false;
+ // Le stelle sono occupanti: torre, alfiere e regina non le attraversano.
+ const sr=Math.sign(b[0]-a[0]),sc=Math.sign(b[1]-a[1]);
+ const stars=availableStars();
+ for(let r=a[0]+sr,c=a[1]+sc;r!==b[0]||c!==b[1];r+=sr,c+=sc){
+  if(stars.some(p=>same(p,[r,c])))return false;
+ }
+ return true;
+}
+function activeFlow(){return flowSteps[flowIndex]}
+function oneTouch(){return true} // Tocco unico anche nelle prove avanzate.
+function promptText(){
+ return autoFlow&&activeFlow().route===2&&transit===0?'VAI ★':'TOCCA ★';
+}
+function totalStars(){return autoFlow?activeFlow().stars.length:
+  mode==='challenge'?plans[piece].challenge.length:plans[piece].targets.length}
+function availableStars(){
+ if(autoFlow&&!activeFlow().parallel)return step<totalStars()?[activeFlow().stars[step]]:[];
+ if(!autoFlow&&(mode==='easy'||specialPiece())){
+  const list=mode==='challenge'?plans[piece].challenge:plans[piece].targets;
+  return step<list.length?[list[step]]:[];
+ }
+ return remaining;
+}
+function showFlow(){
+ document.body.classList.toggle('flow-mode',autoFlow);
+ document.querySelector('.teacher-tools').open=!autoFlow&&document.querySelector('.teacher-tools').open;
+ const title=document.getElementById('flowTitle'),dots=document.getElementById('flowDots');
+ title.textContent=plans[piece].name;
+ dots.textContent=autoFlow?'★ '+(flowIndex+1)+' / '+flowSteps.length:'★ '+(mode==='easy'?1:mode==='two'?2:3);
+ document.getElementById('autoResume').textContent=autoFlow?'★ IN CORSO':'▶ PERCORSO';
+}
 function reset(){
  chessScope.reset();DiegoAudio.stop();
- var m=mission();
- position=m.start;remaining=m.goals;moves=0;step=0;
- locked=false;selected=easy;maxMoves=m.limit;dragFrom=null;
- instruction.textContent=easy?'TOCCA':'VAI';
- draw();
+ if(autoFlow){
+  const current=activeFlow();
+  piece=current.piece;
+  mode=current.parallel?'two':'easy';
+ }
+ position=plans[piece].start.slice();step=0;assist=false;mistakes=0;transit=0;dragFrom=null;
+ selected=oneTouch();locked=false;
+ remaining=(autoFlow?activeFlow().stars:mode==='challenge'?plans[piece].challenge:plans[piece].targets).map(p=>p.slice());
+ document.getElementById('starCelebrate').classList.remove('show');
+ instruction.textContent=promptText();
+ showFlow();draw();
 }
-function gotoStage(target){
- stage=(target+order.length*counts.length)%(order.length*counts.length);
- piece=order[Math.floor(stage/counts.length)];
+function moveCloser(){
+ const stars=availableStars();
+ if(!stars.length)return null;
+ for(const star of stars)if(allowed(position,star))return star;
+ if(specialPiece())return null;
+ // Cerca un primo passo legale che consenta una cattura immediata al secondo.
+ for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+  const dest=[r,c];
+  if(stars.some(p=>same(p,dest)))continue;
+  if(allowed(position,dest)&&stars.some(star=>allowed(dest,star)))return dest;
+ }
+ return null;
+}
+function wrongMove(){
+ mistakes++;
+ if(autoFlow&&mistakes>=2){assist=true;selected=true;draw();}
+ instruction.textContent='RIPROVA';
+}
+function advanceFlow(){
+ if(!autoFlow)return;
+ // Ripetere una prova gia difficile se sono stati necessari vari aiuti.
+ if(mistakes>=3){
+  repeatCount=0;stallCount++;
+  if(stallCount>=2){flowIndex=Math.max(0,flowIndex-1);stallCount=0;}
+  saveStage();reset();return;
+ }
+ stallCount=0;
+ const repeats=activeFlow().route===2?2:activeFlow().stars.length>=3?2:1;
+ repeatCount++;
+ if(repeatCount>=repeats){
+  repeatCount=0;flowIndex=(flowIndex+1)%flowSteps.length;
+  saveStage();
+ }
  reset();
 }
 function draw(){
- document.getElementById('pieceName').textContent=plans[piece].name;
- document.getElementById('level').textContent=(stage+1)+' / '+(order.length*counts.length);
- progress.textContent=step+' / '+totalStars();
- progressFill.style.width=(100*step/totalStars())+'%';
- document.getElementById('easyMode').classList.toggle('on',easy);
- document.getElementById('classicMode').classList.toggle('on',!easy);
- document.getElementById('easyMode').setAttribute('aria-pressed',String(easy));
- document.getElementById('classicMode').setAttribute('aria-pressed',String(!easy));
- var pick=document.querySelectorAll('[data-piece]');
- for(var i=0;i<pick.length;i++)pick[i].classList.toggle('on',pick[i].getAttribute('data-piece')===piece);
- while(board.firstChild)board.removeChild(board.firstChild);
- for(var r=0;r<8;r++)for(var c=0;c<8;c++){
-  var cell=document.createElement('button');
+ progress.textContent='★ '+step+' / '+totalStars();
+ for(const b of document.querySelectorAll('[data-piece]'))b.classList.toggle('on',b.dataset.piece===piece);
+ for(const b of document.querySelectorAll('[data-mode]'))b.classList.toggle('on',b.dataset.mode===mode);
+ const stars=availableStars();
+ board.replaceChildren();
+ for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+  const cell=document.createElement('button');
   cell.type='button';cell.className='sq '+((r+c)%2?'dark':'light');
-  cell.setAttribute('data-r',r);cell.setAttribute('data-c',c);
-  cell.setAttribute('aria-label','Casella '+String.fromCharCode(97+c)+(8-r));
-  var dest=[r,c],atPiece=same(dest,position),goal=null;
-  for(var j=0;j<remaining.length;j++)if(remaining[j].row===r&&remaining[j].col===c){goal=remaining[j];break}
-  if(atPiece){
-   cell.classList.add('active');
-   var p=document.createElement('img');p.className='piece';p.src=plans[piece].asset;
-   p.alt='';p.draggable=false;p.setAttribute('aria-hidden','true');cell.appendChild(p);
-   cell.setAttribute('aria-label',plans[piece].name);
-  }else if(goal){
-   cell.classList.add('has-goal');
-   var img=document.createElement('img');img.className='star';img.src=goalImages[goal.kind];
-   img.alt='';img.draggable=false;img.setAttribute('aria-hidden','true');cell.appendChild(img);
-   cell.setAttribute('aria-label',goal.kind);
-  }else if((easy||selected)&&allowed(position,dest)){
-   cell.classList.add('reachable');
+  cell.dataset.r=r;cell.dataset.c=c;cell.setAttribute('aria-label','Casella '+String.fromCharCode(97+c)+(8-r));
+  if(same([r,c],position)){
+   cell.classList.toggle('active',selected);
+   const p=document.createElement('img');p.className='piece';p.src=plans[piece].asset;p.alt='';p.setAttribute('aria-hidden','true');p.draggable=false;cell.append(p);
+  }else if(stars.some(p=>same(p,[r,c]))){
+   cell.setAttribute('aria-label','Obiettivo da raccogliere');
+   const allGoals=autoFlow?activeFlow().stars:mode==='challenge'?plans[piece].challenge:plans[piece].targets;
+   const iconIndex=allGoals.findIndex(p=>same(p,[r,c]));
+   const icon=document.createElement('img');
+   icon.className='star';icon.src=goalImages[((autoFlow?flowIndex:0)+Math.max(0,iconIndex))%goalImages.length];
+   icon.alt='';icon.draggable=false;icon.setAttribute('aria-hidden','true');
+   cell.append(icon);
   }
-  (function(row,col,el){
-   el.addEventListener('click',function(){if(Date.now()<ignoreClickUntil)return;tap(row,col)});
-   el.addEventListener('pointerdown',function(){if(same([row,col],position))dragFrom=[row,col];else dragFrom=null});
-  })(r,c,cell);
-  board.appendChild(cell);
+  if(autoFlow&&assist){
+   const toward=moveCloser();
+   if(toward&&same(toward,[r,c]))cell.classList.add('hint-square');
+  }
+  cell.addEventListener('click',()=>{if(Date.now()>=ignoreClickUntil)tap(r,c)});
+  cell.addEventListener('pointerdown',()=>{dragFrom=same([r,c],position)?[r,c]:null});
+  board.append(cell);
  }
  fitChessboard();
 }
-function tap(r,c,fromDrag){
- if(locked)return;
- var dest=[r,c];
- if(same(dest,position)){selected=true;instruction.textContent='VAI';draw();return}
- if(!easy&&!selected&&!fromDrag){instruction.textContent='TOCCA IL PEZZO';return}
- if(!allowed(position,dest)){instruction.textContent='VAI';return}
- position=dest;moves++;selected=easy;
- var found=-1;
- for(var i=0;i<remaining.length;i++)if(remaining[i].row===r&&remaining[i].col===c){found=i;break}
- if(found!==-1){
-  remaining.splice(found,1);step++;
-  DiegoAudio.play(remaining.length===0?'fantastico':'stella');
+function tap(r,c){
+ if(locked||step>=totalStars())return;
+ const dest=[r,c];
+ if(same(dest,position)){
+  selected=true; // Il doppio tocco non toglie mai la selezione.
+  instruction.textContent=promptText();
+  draw();return;
  }
- if(remaining.length===0){
-  locked=true;instruction.textContent='BRAVO!';
-  draw();
-  chessScope.later(function(){gotoStage(stage+1)},780);
-  return;
+ if(!selected){selected=true;draw();return;}
+ if(!allowed(position,dest)){wrongMove();return;}
+ const stars=availableStars(),index=stars.findIndex(p=>same(p,dest));
+ if(index<0){
+  // Il cavallo e il pedone non si spostano mai senza catturare una stella.
+  if(specialPiece()){wrongMove();return;}
+  const staged=autoFlow&&activeFlow().route===2;
+  if(staged){
+   // Il bambino trova da solo UNA casella intermedia per la cattura.
+   if(transit!==0||stars.length!==1||!allowed(dest,stars[0])){
+    wrongMove();return;
+   }
+  }else if(autoFlow?!activeFlow().parallel:mode==='easy'){
+   wrongMove();return;
+  }
+  position=dest;selected=true;transit++;
+  if(autoFlow&&transit>4){assist=true;}
+  instruction.textContent=promptText();
+  draw();return;
  }
- if(maxMoves&&moves>=maxMoves){
-  locked=true;instruction.textContent='↻';draw();
-  chessScope.later(reset,470);
-  return;
- }
- instruction.textContent=found!==-1?'BENE!':'VAI';
+ position=dest;step++;selected=oneTouch();
+ if(autoFlow?activeFlow().parallel:mode!=='easy')remaining.splice(index,1);
+ assist=false;transit=0;
+ const finished=step===totalStars();
+ instruction.textContent=finished?'★':'★';
+ DiegoAudio.play(finished?'fantastico':'stella');
+ const reward=document.getElementById('starCelebrate');
+ reward.classList.remove('show');void reward.offsetWidth;reward.classList.add('show');
  draw();
+ locked=true;
+ chessScope.later(()=>{
+  reward.classList.remove('show');
+  if(finished&&autoFlow){advanceFlow();return;}
+  locked=false;
+  if(!finished)instruction.textContent=promptText();
+ },finished?690:390);
 }
-function setMode(value){
- easy=value;selected=easy;dragFrom=null;
- instruction.textContent=easy?'TOCCA':'VAI';draw();
-}
-function selectPiece(name){
- var idx=order.indexOf(name);
- if(idx>=0)gotoStage(idx*counts.length);
-}
-document.getElementById('easyMode').addEventListener('click',function(){setMode(true)});
-document.getElementById('classicMode').addEventListener('click',function(){setMode(false)});
-document.getElementById('again').addEventListener('click',reset);
-document.getElementById('prev').addEventListener('click',function(){gotoStage(stage-1)});
-document.getElementById('next').addEventListener('click',function(){gotoStage(stage+1)});
-var picker=document.querySelectorAll('[data-piece]');
-for(var k=0;k<picker.length;k++)picker[k].addEventListener('click',function(){selectPiece(this.getAttribute('data-piece'))});
-// Trascinamento facoltativo, come su Lichess; il tocco normale rimane autonomo.
-window.addEventListener('pointerup',function(e){
+// Trascinamento facoltativo, senza sottrarre il tocco unico.
+window.addEventListener('pointerup',e=>{
  if(!dragFrom||locked)return;
- var cell=document.elementFromPoint(e.clientX,e.clientY);
+ let cell=document.elementFromPoint(e.clientX,e.clientY);
  while(cell&&cell!==board&&(!cell.classList||!cell.classList.contains('sq')))cell=cell.parentNode;
- var origin=dragFrom;dragFrom=null;
+ const from=dragFrom;dragFrom=null;
  if(!cell||cell===board)return;
- var r=Number(cell.getAttribute('data-r')),c=Number(cell.getAttribute('data-c'));
- if(same(origin,[r,c]))return;
- ignoreClickUntil=Date.now()+380;
- tap(r,c,true);
+ const r=Number(cell.dataset.r),c=Number(cell.dataset.c);
+ if(same(from,[r,c]))return;
+ ignoreClickUntil=Date.now()+350;tap(r,c);
 });
-window.addEventListener('pointercancel',function(){dragFrom=null});
-document.addEventListener('keydown',function(e){
- if(e.ctrlKey||e.metaKey||e.altKey||['INPUT','TEXTAREA','SELECT'].indexOf(e.target.tagName)>=0)return;
- var key=(e.key||'').toLowerCase();
- if(key==='r'){e.preventDefault();reset()}
- else if(key==='j'||key==='arrowright'){e.preventDefault();gotoStage(stage+1)}
- else if(key==='k'||key==='arrowleft'){e.preventDefault();gotoStage(stage-1)}
+window.addEventListener('pointercancel',()=>{dragFrom=null});
+document.querySelectorAll('[data-piece]').forEach(b=>b.addEventListener('click',()=>{
+ autoFlow=false;piece=b.dataset.piece;reset();
+}));
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{
+ autoFlow=false;mode=b.dataset.mode;reset();
+}));
+document.getElementById('again').addEventListener('click',reset);
+document.getElementById('autoResume').addEventListener('click',()=>{
+ autoFlow=true;repeatCount=0;reset();
+ document.getElementById('teacherTools').open=false;
+});
+document.getElementById('stageBack').addEventListener('click',()=>{
+ autoFlow=true;flowIndex=Math.max(0,flowIndex-1);repeatCount=0;reset();
+});
+document.getElementById('stageNext').addEventListener('click',()=>{
+ autoFlow=true;flowIndex=Math.min(flowSteps.length-1,flowIndex+1);repeatCount=0;reset();
+});
+/* TASTI DIEGO: J/K cambia esercizio, R ricomincia. */
+document.addEventListener('keydown',e=>{
+ if(e.ctrlKey||e.metaKey||e.altKey||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;
+ const k=(e.key||'').toLowerCase();
+ if(k==='r'){e.preventDefault();repeatCount=0;reset()}
+ else if(k==='j'||k==='k'){
+  e.preventDefault();
+  if(autoFlow){
+   flowIndex=Math.max(0,Math.min(flowSteps.length-1,flowIndex+(k==='j'?1:-1)));
+   repeatCount=0;stallCount=0;saveStage();
+  }else{
+   const order=['king','rook','queen','bishop','knight','pawn'];
+   piece=order[(order.indexOf(piece)+(k==='j'?1:order.length-1))%order.length];
+  }
+  reset();
+ }
 });
 reset();
 </script></body></html>
