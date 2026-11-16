@@ -74,7 +74,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
     </div>
   </div>
   <div id="menu">
-    <div class="intro"><h1><img class="pg-intro-illustration" src="assets/icons/kit-v2/pregrafismo.svg" alt="" draggable="false"></h1><p class="pg-visual-instruction" aria-label="Parti dal cerchio e raggiungi la stella marina"><img src="assets/diegoland/ui/tocco.svg" alt="" draggable="false"><span aria-hidden="true">→</span><img src="assets/diegoland/stella-marina-canonica.webp" alt="" draggable="false"></p></div>
+    <div class="intro"><h1><img class="pg-intro-illustration" src="assets/icons/kit-v2/pregrafismo.svg" alt="" draggable="false"></h1><p class="pg-visual-instruction" aria-label="Segui la freccia e raggiungi il cerchio"><img src="assets/diegoland/ui/tocco.svg" alt="" draggable="false"><span aria-hidden="true">→</span><span class="pg-arrival-circle" aria-hidden="true"></span></p></div>
     <div class="deck-tabs" role="group" aria-label="Scegli i percorsi">
       <button id="deckPC" type="button" class="deck-tab selected" aria-pressed="true">CLASSICI · 32</button>
       <button id="deckExtra" type="button" class="deck-tab" aria-pressed="false">PERCORSI · 56</button>
@@ -83,7 +83,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
     <div id="chapters" class="chapters"></div>
   </div>
   <div id="play" hidden>
-    <div class="hud"><div><h1 id="ex-title"></h1><p id="ex-subtitle" aria-label="Tocca il punto iniziale e segui il percorso verso la stella"><span class="pg-visual-instruction pg-small-cue"><img src="assets/diegoland/ui/tocco.svg" alt="" draggable="false"><span aria-hidden="true">→</span><img src="assets/diegoland/stella-marina-canonica.webp" alt="" draggable="false"></span></p></div><div class="hud-right"><span class="counter" id="ex-counter"></span><span id="mastery-stars" hidden aria-label="Allenamento cinque stelle"></span><div class="meter" aria-label="Avanzamento del disegno"><span id="trace-progress"></span></div></div></div>
+    <div class="hud"><div><h1 id="ex-title"></h1><p id="ex-subtitle" aria-label="Parti dalla freccia e raggiungi il cerchio"><span class="pg-visual-instruction pg-small-cue"><img src="assets/diegoland/ui/tocco.svg" alt="" draggable="false"><span aria-hidden="true">→</span><span class="pg-arrival-circle" aria-hidden="true"></span></span></p></div><div class="hud-right"><span class="counter" id="ex-counter"></span><span id="mastery-stars" hidden aria-label="Allenamento cinque stelle"></span><div class="meter" aria-label="Avanzamento del disegno"><span id="trace-progress"></span></div></div></div>
     <div class="board-wrap">
       <div class="illustration-wing left-wing" aria-hidden="true"><svg id="scene-side-left" viewBox="0 0 220 500"></svg></div>
       <div class="illustration-wing right-wing" aria-hidden="true"><svg id="scene-side-right" viewBox="0 0 220 500"></svg></div>
@@ -108,7 +108,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
     <div class="board-tools">
       <button id="chaptersBtn" type="button" class="btn" title="Percorsi" aria-label="Torna ai percorsi">←</button>
       <button id="again" type="button" class="btn" title="Riprova" aria-label="Ricomincia">↻</button>
-      <span class="bottom-hint pg-visual-instruction" aria-hidden="true"><img src="assets/diegoland/ui/tocco.svg" alt="" draggable="false"><span>→</span><img src="assets/diegoland/stella-marina-canonica.webp" alt="" draggable="false"></span>
+      <span class="bottom-hint pg-visual-instruction" aria-hidden="true"><img src="assets/diegoland/ui/tocco.svg" alt="" draggable="false"><span>→</span><span class="pg-arrival-circle" aria-hidden="true"></span></span>
       <button id="next" type="button" class="btn light" title="Salta o vai avanti" aria-label="Esercizio successivo, salta senza penalità">▶</button>
     </div>
     <div id="teacherTools" class="teacher-tools" hidden>
@@ -289,7 +289,15 @@ function draw(){state.touchMatrix=null;clear(tracks);clear(markers);clear(drawnI
  document.getElementById('decorA').textContent='';
  document.getElementById('decorB').textContent='';
  state.parts=[];var raw=lesson[1],mode=effectiveMode();
-raw.forEach(function(d,i){var outer=svg('path',{d:d,fill:'none',stroke:'#F4E4B0','stroke-width':'49','stroke-linecap':'round','stroke-linejoin':'round',opacity:'.66'},tracks);var p=svg('path',{d:d,fill:'none',stroke:'#B98741','stroke-width':'10','stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':'3 26'},tracks);var ink=svg('path',{d:d,fill:'none',stroke:'#9AC9C0','stroke-width':'23','stroke-linecap':'round','stroke-linejoin':'round'},tracks);var len=0;try{len=p.getTotalLength()}catch(e){len=1}ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;state.parts.push({path:p,outer:outer,ink:ink,length:len,completed:false})});fitLesson();activate()}
+raw.forEach(function(d,i){
+ // Il percorso da copiare resta più saturo del segno tracciato dal dito.
+ var outer=svg('path',{'class':'track-bed',d:d,fill:'none',stroke:'#F4E4B0','stroke-width':49,'stroke-linecap':'round','stroke-linejoin':'round',opacity:'.66'},tracks);
+ var path=svg('path',{'class':'model-path',d:d,fill:'none',stroke:'#0093A5','stroke-width':22,'stroke-linecap':'round','stroke-linejoin':'round'},tracks);
+ var ink=svg('path',{'class':'progress-path',d:d,fill:'none',stroke:'#B4CDC2','stroke-width':10,'stroke-linecap':'round','stroke-linejoin':'round'},tracks);
+ var len=0;try{len=path.getTotalLength()}catch(e){len=1}
+ ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;
+ state.parts.push({path:path,outer:outer,ink:ink,length:len,completed:false})
+});fitLesson();activate()}
 /* A compact lesson viewBox gives the drawn path more of the interactive surface.
    Coordinates remain in original SVG space: touch mapping and checkpoints stay exact. */
 function fitLesson(){
@@ -311,18 +319,27 @@ function fitLesson(){
  board.setAttribute('viewBox',base.x+' '+base.y+' '+base.w+' '+base.h);state.touchMatrix=null;
 }
 function samplePart(data){var samples=[],n=Math.max(3,Math.min(240,Math.ceil(data.length/7)));for(var i=0;i<=n;i++)samples.push(data.path.getPointAtLength(data.length*i/n));return samples}
-function activate(){clear(markers);if(state.stroke>=state.parts.length)return;state.parts.forEach(function(d,i){var m=effectiveMode();
-  d.path.setAttribute('opacity',i===state.stroke?[1,.66,.24][m]:(d.completed?'.4':'.15'));
-  d.outer.setAttribute('opacity',i===state.stroke?[.76,.45,.12][m]:'.12')});state.samples=samplePart(state.parts[state.stroke]);state.index=0;state.lastBell=0;state.down=false;
+function activate(){
+ clear(markers);if(state.stroke>=state.parts.length)return;
+ state.parts.forEach(function(d,i){var m=effectiveMode();
+  d.path.setAttribute('opacity',i===state.stroke?[1,.76,.55][m]:(d.completed?'.45':'.16'));
+  d.outer.setAttribute('opacity',i===state.stroke?[.76,.45,.20][m]:'.12');
+ });
+ state.samples=samplePart(state.parts[state.stroke]);state.index=0;state.lastBell=0;state.down=false;
  var first=state.samples[0],last=state.samples[state.samples.length-1];
- svg('circle',{cx:last.x,cy:last.y,r:38,fill:'#FFEFAE',stroke:'#CC922B','stroke-width':6},markers);
- var star=svg('image',{x:last.x-28,y:last.y-28,width:56,height:56,href:'assets/diegoland/stella-marina-canonica.webp'},markers);
- star.setAttributeNS('http://www.w3.org/1999/xlink','href','assets/diegoland/stella-marina-canonica.webp');
- svg('circle',{cx:first.x,cy:first.y,r:67,fill:'#CDEBDD',opacity:'.28'},markers);
- svg('circle',{cx:first.x,cy:first.y,r:52,fill:'#E5F5EB',stroke:'#50A989','stroke-width':5,opacity:'.88'},markers);
- svg('circle',{cx:first.x,cy:first.y,r:38,fill:'#D2F3E2',stroke:'#318F75','stroke-width':7},markers);
- svg('circle',{cx:first.x,cy:first.y,r:17,fill:'#0093A5'},markers);
- svg('circle',{id:'cursor',cx:first.x,cy:first.y,r:32,fill:'#FFF9EC',stroke:'#0093A5','stroke-width':6},markers);
+ // Cerchio di arrivo, anche per percorsi chiusi come la O.
+ var finishRadius=dist(first,last)<8?59:40;
+ svg('circle',{'class':'finish-ring',cx:last.x,cy:last.y,r:finishRadius,fill:'#FFF9EC',stroke:'#D1A044','stroke-width':7},markers);
+ svg('circle',{'class':'finish-dot',cx:last.x,cy:last.y,r:12,fill:'#D94C4C'},markers);
+ // Freccia al punto iniziale, orientata secondo la tangente del percorso.
+ var track=state.parts[state.stroke],ahead=track.path.getPointAtLength(Math.min(35,track.length*.14));
+ var deg=Math.atan2(ahead.y-first.y,ahead.x-first.x)*180/Math.PI;
+ if(!isFinite(deg))deg=0;
+ var arrow=svg('g',{'class':'start-arrow',transform:'translate('+first.x+' '+first.y+') rotate('+deg+')'},markers);
+ svg('circle',{cx:0,cy:0,r:40,fill:'#D94C4C',stroke:'#FFF9EC','stroke-width':6},arrow);
+ svg('path',{d:'M-17 -16 L10 0 L-17 16',fill:'none',stroke:'#FFF9EC','stroke-width':9,'stroke-linecap':'round','stroke-linejoin':'round'},arrow);
+ // Il cursore segue il dito e non copre la freccia prima del gesto.
+ svg('circle',{id:'cursor',cx:first.x,cy:first.y,r:28,fill:'none',stroke:'#12354E','stroke-width':4,opacity:'.65',visibility:'hidden'},markers);
  if(state.decorated&&window.PregrafismoScene)PregrafismoScene.placeTraveler(themeIndex(),markers,first);
  document.getElementById('trace-progress').style.width=Math.round(100*state.stroke/state.parts.length)+'%';setMessage('SEGUI')
 }
@@ -372,7 +389,7 @@ function renderTrace(){
  data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));if(state.activeBrush&&state.brushD)state.activeBrush.setAttribute('d',state.brushD);
  document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+r)/state.parts.length)+'%';
  var point=state.samples[state.index],cursor=document.getElementById('cursor');
- if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y)}
+ if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y);cursor.setAttribute('visibility','visible')}
  if(state.decorated&&window.PregrafismoScene)PregrafismoScene.moveTraveler(point);
 }
 
@@ -413,7 +430,7 @@ function moveGesture(ev,id){
 }
 function endGesture(id){if(!state.down||state.id!==id)return;flushTrace();
  state.down=false;state.id=null;state.touchMatrix=null;state.inputLast=null;
- state.activeBrush=null;state.brushLast=null;if(!state.done)setMessage('SEGUI')}
+ state.activeBrush=null;state.brushLast=null;var cursor=document.getElementById('cursor');if(cursor)cursor.setAttribute('visibility','hidden');if(!state.done)setMessage('SEGUI')}
 function completeStroke(){flushTrace();state.down=false;state.id=null;state.touchMatrix=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+1)/state.parts.length)+'%';state.stroke++;
  if(state.stroke<state.parts.length){if(window.DiegoAudio)DiegoAudio.play('stella');var token=state.session;setMessage('OK');later(function(){if(state.session!==token)return;activate()},520)}else finishLevel()}
 function finishLevel(){

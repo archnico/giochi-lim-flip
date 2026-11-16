@@ -1,7 +1,6 @@
 /* Diego · Pregrafismo: tema canonico Wada / Zissou, 14 novembre 2026.
    Invariati viewBox, mapping touch, tolleranze, avanzamento e progressione.
-   Tre livelli visivi: guida sabbia, avanzamento esatto laguna,
-   segno autentico del dito ceruleo intenso. */
+   Modello saturo ceruleo; mano e avanzamento in laguna tenue. */
 html[data-diego-page="pregrafismo"] {
   --pg-bg:#E9F5F1;
   --pg-paper:#FFF9EC;
@@ -11,9 +10,9 @@ html[data-diego-page="pregrafismo"] {
   --pg-pale:#FFEFAE;
   --pg-sun:#F99D1B;
   --pg-coral:#F48067;
-  --pg-guide:#F4E4B0;
-  --pg-precise:#9AC9C0;
-  --pg-hand:#0093A5;
+  --pg-guide:#0093A5;
+  --pg-precise:#B4CDC2;
+  --pg-hand:#B4CDC2;
 }
 html[data-diego-page="pregrafismo"] body,
 html[data-diego-page="pregrafismo"] #app,
@@ -163,10 +162,10 @@ html[data-diego-page="pregrafismo"] .pc-corner {
    Projected exact progress remains pale lagoon under the real hand trace. */
 html[data-diego-page="pregrafismo"] #board .live-ink {
   stroke:var(--pg-hand);
-  stroke-width:22;
+  stroke-width:14;
   stroke-linecap:round;
   stroke-linejoin:round;
-  fill:none;opacity:.98;
+  fill:none;opacity:.94;
   pointer-events:none;
 }
 html[data-diego-page="pregrafismo"] #guide-halo {
@@ -242,3 +241,12 @@ html[data-diego-page="pregrafismo"] #celebrate .reward-medal {
    animation:none;
  }
 }
+
+/* Arrivo a cerchio nelle istruzioni visive, non più a stella. */
+html[data-diego-page="pregrafismo"] .pg-arrival-circle {
+ width:40px;height:40px;display:inline-block;flex:none;
+ border:7px solid #D1A044;border-radius:50%;background:var(--pg-paper);
+}
+html[data-diego-page="pregrafismo"] .pg-small-cue .pg-arrival-circle,
+html[data-diego-page="pregrafismo"] .bottom-hint .pg-arrival-circle {width:33px;height:33px;border-width:6px}
+@media(max-width:720px){html[data-diego-page="pregrafismo"] .pg-arrival-circle{width:30px;height:30px;border-width:5px}}
