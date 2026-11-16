@@ -40,6 +40,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 .board-wrap{width:100%;max-width:1680px;flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;border:5px solid #ceffff;border-radius:28px;overflow:hidden;box-shadow:inset 0 0 48px #08b9b866,0 10px 25px #032d3f88;background:#0ca79d}
 .board-wrap:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.36;background-image:radial-gradient(circle at 5% 7%,#ffd668 0 8px,transparent 10px),radial-gradient(circle at 8% 93%,#f16f9b 0 12px,transparent 14px),radial-gradient(circle at 95% 90%,#ffe668 0 8px,transparent 10px),radial-gradient(circle at 93% 8%,#be90eb 0 11px,transparent 13px);background-size:100% 100%;background-repeat:no-repeat}
 #board{width:100%;height:100%;max-height:100%;display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+#ink-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2}
 .board-tools{flex:none;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
 .board-tools .btn{min-height:54px}
 #message{position:absolute;top:14px;left:50%;transform:translateX(-50%);border-radius:20px;background:#163a4edf;padding:9px 21px;max-width:95%;text-align:center;font-size:clamp(17px,1.5vw,27px);font-weight:800;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -96,6 +97,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
           <circle id="guide-hand" cx="0" cy="0" r="16" fill="#0093A5" stroke="#FFF9EC" stroke-width="5"></circle>
         </g>
       </svg>
+      <canvas id="ink-canvas" aria-hidden="true"></canvas>
       <div id="decorA" class="pc-corner corner-a" aria-hidden="true"></div>
       <div id="decorB" class="pc-corner corner-b" aria-hidden="true"></div>
       <div id="zoom-readout" aria-hidden="true">100%</div>
@@ -240,6 +242,44 @@ function openAt(n,repeat){
  openLevel(p.ci,p.li,repeat);
 }
 var sessionTimers=[],demoTimer=0,audioCtx=null,progress={},traceRenderTimer=0,masteryProgress={},attempts={};
+// Disegno immediato su Canvas: ogni movimento aggiunge solo un segmento.
+// Nessuna ricostruzione del percorso SVG crescente ad ogni frame sulla Flip.
+var inkCanvas=document.getElementById('ink-canvas');
+var inkCtx=inkCanvas&&inkCanvas.getContext?inkCanvas.getContext('2d'):null;
+function inkMatrix(){
+ if(!inkCtx)return false;
+ var m=board.getScreenCTM(),r=inkCanvas.getBoundingClientRect();
+ if(!m||!r.width)return false;
+ var dpr=inkCanvas.width/r.width;
+ inkCtx.setTransform(m.a*dpr,m.b*dpr,m.c*dpr,m.d*dpr,(m.e-r.left)*dpr,(m.f-r.top)*dpr);
+ inkCtx.strokeStyle='#B4CDC2';inkCtx.fillStyle='#B4CDC2';
+ inkCtx.lineWidth=14;inkCtx.lineCap='round';inkCtx.lineJoin='round';
+ return true;
+}
+function inkSegment(a,b){
+ if(!inkCtx||!a||!b)return;
+ inkCtx.beginPath();inkCtx.moveTo(a.x,a.y);inkCtx.lineTo(b.x,b.y);inkCtx.stroke();
+}
+function syncInkCanvas(redraw){
+ if(!inkCtx)return;
+ var r=inkCanvas.getBoundingClientRect();
+ if(!r.width||!r.height)return;
+ // A Tizen un framebuffer ad alta risoluzione sprecava memoria e tempo.
+ var scale=Math.min(1.25,window.devicePixelRatio||1);
+ var w=Math.max(1,Math.round(r.width*scale)),h=Math.max(1,Math.round(r.height*scale));
+ var changed=inkCanvas.width!==w||inkCanvas.height!==h;
+ if(changed){inkCanvas.width=w;inkCanvas.height=h}
+ if(!changed&&!redraw)return;
+ inkCtx.setTransform(1,0,0,1,0,0);inkCtx.clearRect(0,0,w,h);
+ if(!inkMatrix())return;
+ state.strokeCaptures.forEach(function(points){
+  if(!points||!points.length)return;
+  inkCtx.beginPath();inkCtx.moveTo(points[0][0],points[0][1]);
+  if(points.length===1)inkCtx.lineTo(points[0][0]+.1,points[0][1]+.1);
+  else for(var i=1;i<points.length;i++)inkCtx.lineTo(points[i][0],points[i][1]);
+  inkCtx.stroke();
+ });
+}
 try{progress=JSON.parse(localStorage.getItem('diego-pregrafismo-progress-v1')||'{}')||{}}catch(e){progress={}}
 try{masteryProgress=JSON.parse(localStorage.getItem('diego-pregrafismo-5stelle-v1')||'{}')||{};attempts=JSON.parse(localStorage.getItem('diego-pregrafismo-attempts-v1')||'{}')||{}}catch(e){masteryProgress={};attempts={}}
 function save(){try{localStorage.setItem('diego-pregrafismo-progress-v1',JSON.stringify(progress));
@@ -347,7 +387,7 @@ function fitLesson(){
   }
  }
  state.baseView=base;
- board.setAttribute('viewBox',base.x+' '+base.y+' '+base.w+' '+base.h);state.touchMatrix=null;
+ board.setAttribute('viewBox',base.x+' '+base.y+' '+base.w+' '+base.h);state.touchMatrix=null;syncInkCanvas(true);
 }
 function samplePart(data){var samples=[],n=Math.max(3,Math.min(165,Math.ceil(data.length/10)));for(var i=0;i<=n;i++)samples.push(data.path.getPointAtLength(data.length*i/n));return samples}
 function activate(){
@@ -394,9 +434,8 @@ function startGesture(ev,id){if(state.chapter<0||state.done||state.down)return;
  if(!target||dist(pt,target)>Math.max([96,70,50][effectiveMode()],(board.viewBox.baseVal.width/Math.max(1,board.getBoundingClientRect().width))*26)){setMessage('TOCCA');return false}
  stopDemo();state.down=true;state.id=id;state.inputLast=pt;
  state.hitWidth=Math.max(1,board.getBoundingClientRect().width);
- state.brushD='M'+Math.round(pt.x)+' '+Math.round(pt.y);
- state.brushLast=pt;state.activeBrush=svg('path',{'class':'live-ink',d:state.brushD,opacity:'.98','pointer-events':'none'},drawnInk);
- state.strokeCaptures.push([[Math.round(pt.x),Math.round(pt.y)]]);
+ state.brushLast=pt;state.strokeCaptures.push([[Math.round(pt.x),Math.round(pt.y)]]);
+ syncInkCanvas(false);if(inkCtx){inkSegment(pt,{x:pt.x+.1,y:pt.y+.1})}
  renderTrace();return true;
 }
 /* Real ink: only touch points that advance sequential path checkpoints can paint.
@@ -418,7 +457,7 @@ function renderTrace(){
  if(state.chapter<0||state.done||state.stroke>=state.parts.length)return;
  var data=state.parts[state.stroke];
  var r=state.index/Math.max(1,state.samples.length-1);
- data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));if(state.activeBrush&&state.brushD)state.activeBrush.setAttribute('d',state.brushD);
+ data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));
  document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+r)/state.parts.length)+'%';
  var point=state.samples[state.index],cursor=document.getElementById('cursor');
  if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y);cursor.setAttribute('visibility','visible')}
@@ -436,7 +475,8 @@ function moveStep(pt){
   state.index=best;
   var r=state.index/(state.samples.length-1);
   var phase=Math.min(3,Math.floor(r*4));
-  if(phase>state.lastBell){state.lastBell=phase;chirp()}
+  // Niente sintesi audio lungo il gesto: evita blocchi del thread UI Tizen.
+  if(phase>state.lastBell)state.lastBell=phase;
   if(r>=.985||(r>.94&&dist(pt,state.samples[state.samples.length-1])<28))completeStroke();
  }
 }
@@ -444,12 +484,15 @@ function moveGesture(ev,id){
  if(!state.down||state.id!==id||state.done)return;
  var pt=mapEvent(ev),last=state.inputLast||pt,dd=dist(last,pt);
  // Eventi persi o salti enormi non devono disegnare una linea falsa.
- if(dd>240){state.inputLast=pt;state.activeBrush=null;return}
- // Una sola traccia reale SVG per gesto, con punti limitati: niente lag su Tizen.
+ if(dd>360){state.inputLast=pt;state.brushLast=null;return}
+ // Il pixel arriva subito al dito; non aspetta il timer del percorso SVG.
  var capture=state.strokeCaptures[state.strokeCaptures.length-1];
- if(capture&&(!state.brushLast||dist(pt,state.brushLast)>9)&&capture.length<360){
-  state.brushD+=' L'+Math.round(pt.x)+' '+Math.round(pt.y);
-  capture.push([Math.round(pt.x),Math.round(pt.y)]);state.brushLast=pt;
+ if(!state.brushLast||dist(pt,state.brushLast)>2){
+  if(inkCtx)inkSegment(state.brushLast||pt,pt);
+  state.brushLast=pt;
+ }
+ if(capture&&capture.length<360&&(!capture.length||dist(pt,{x:capture[capture.length-1][0],y:capture[capture.length-1][1]})>8)){
+  capture.push([Math.round(pt.x),Math.round(pt.y)]);
  }
  // A discontinuity cannot earn a completed path. Lost frames get interpolation.
  var count=Math.max(1,Math.min(22,Math.ceil(dd/12)));
@@ -498,7 +541,7 @@ function panBoard(dx,dy){
  var v=board.viewBox.baseVal,w=base.w/state.zoom,h=base.h/state.zoom;
  var x=Math.max(base.x,Math.min(base.x+base.w-w,v.x+dx));
  var y=Math.max(base.y,Math.min(base.y+base.h-h,v.y+dy));
- board.setAttribute('viewBox',x+' '+y+' '+w+' '+h);state.touchMatrix=null;
+ board.setAttribute('viewBox',x+' '+y+' '+w+' '+h);state.touchMatrix=null;syncInkCanvas(true);
 }
 function zoomBoard(delta){
  var base=state.baseView||{x:0,y:0,w:1000,h:600};
@@ -507,7 +550,7 @@ function zoomBoard(delta){
  var w=base.w/state.zoom,h=base.h/state.zoom;
  var x=Math.max(base.x,Math.min(base.x+base.w-w,cx-w/2));
  var y=Math.max(base.y,Math.min(base.y+base.h-h,cy-h/2));
- board.setAttribute('viewBox',x+' '+y+' '+w+' '+h);state.touchMatrix=null;
+ board.setAttribute('viewBox',x+' '+y+' '+w+' '+h);state.touchMatrix=null;syncInkCanvas(true);
  document.getElementById('zoom-readout').textContent=Math.round(state.zoom*100)+'%';
 }
 
@@ -582,6 +625,7 @@ if(usePointer){
  board.addEventListener('mousedown',function(e){if(e.button!==0||Date.now()-state.lastTouch<800)return;if(e.cancelable)e.preventDefault();startGesture(e,'mouse')});
  window.addEventListener('mousemove',function(e){moveGesture(e,'mouse')});window.addEventListener('mouseup',function(){endGesture('mouse')});
 }
+window.addEventListener('resize',function(){if(state.chapter>=0)syncInkCanvas(true)});
 window.addEventListener('blur',function(){state.down=false;state.id=null;stopDemo()});
 document.addEventListener('visibilitychange',function(){if(document.hidden){state.down=false;state.id=null;stopDemo()}});
 window.addEventListener('pagehide',function(){clearTimers();if(audioCtx&&audioCtx.close)try{audioCtx.close()}catch(ignore){}});
