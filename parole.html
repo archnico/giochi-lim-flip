@@ -82,7 +82,7 @@ button:focus-visible{outline:5px solid #fff07e;outline-offset:3px}
 <link rel="stylesheet" href="parole-layout.css">
 <link rel="stylesheet" href="diegoland.css">
 <link rel="stylesheet" href="diego-premio.css">
-<link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script></head>
+<link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script><link rel="stylesheet" href="diego-focus.css"></head>
 <body>
 <div id="app">
 <header class="top">
@@ -128,7 +128,8 @@ button:focus-visible{outline:5px solid #fff07e;outline-offset:3px}
 'use strict';
 // La seconda serie si apre soltanto con ?serie=2 (scelta dell'educatore).
 var serie=/(?:^|[?&])serie=2(?:&|$)/.test(location.search)?2:1;
-var words=window.DiegoLessico.parole(serie);
+function gradedWords(items){return items.slice().sort(function(a,b){return a.word.length-b.word.length})}
+var words=gradedWords(window.DiegoLessico.parole(serie));
 var index=0,tiles=[],chosen=[],active=false,done=false,attempts=0;
 var currentSound=null,audioToken=0,revealTimer=0;
 function $(id){return document.getElementById(id)}
@@ -236,7 +237,7 @@ function win(){
  if(window.DiegoAudio)window.DiegoAudio.play('bravo');
  try{window.localStorage.setItem('diego-parole-completate',String(index+1))}catch(e){}
  window.DiegoLessico.registra(words[index].word,'componi');
- if(serie===1)words=window.DiegoLessico.parole(1);
+ if(serie===1)words=gradedWords(window.DiegoLessico.parole(1));
  clearTimeout(nextWordTimer);
  if(window.DiegoPremio)DiegoPremio.show($('reward'),function(){if(done)next(1)});
  else {$('reward').textContent='★';nextWordTimer=setTimeout(function(){if(done)next(1)},1200);}

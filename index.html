@@ -102,7 +102,7 @@ footer{min-height:52px;border-top:1px solid var(--line);padding:10px 20px;displa
 <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/app-180.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="diego-runtime.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-arte.css"><link rel="stylesheet" href="conta-marino.css"><link rel="stylesheet" href="diego-menu.css"><link rel="stylesheet" href="diego-premio.css">
-<link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script></head>
+<link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script><link rel="stylesheet" href="diego-focus.css"></head>
 <body>
 <div id="app">
 <header><div class="brand">DIEGO</div><div class="toolbar"><button class="iconbtn" id="homeBtn" title="Torna al menu" aria-label="Torna al menu">⌂ <span class="tool-label">MENU</span></button><button class="iconbtn" id="testBtn" title="Prova il touch" aria-label="Prova il touch">⊕ <span class="tool-label">TEST</span></button><button class="iconbtn" id="fullBtn" title="Schermo intero" aria-label="Schermo intero">⛶ <span class="tool-label">SCHERMO</span></button></div></header>
@@ -240,26 +240,26 @@ function flipCard(title,desc,id,visual,kind,href){
 function home(){
   clearRound();current=null;topic=null;stars=0;
   statusEl.textContent='';
-  // Il menu è dell'adulto. Tutte le categorie sono visibili, niente "Altri".
-  // Una categoria con un solo gioco si apre subito, le altre mostrano i propri giochi.
-  const cards=topics.map(function(t){
-    const mode=t.ids.length===1?'Avvia '+t.title:'Apri '+t.title;
-    return '<button type="button" class="diego-menu-card flip-'+t.id+'" data-topic="'+t.id+'" aria-label="'+mode+'">'+
-      '<div class="diego-menu-copy"><h2>'+t.title+'</h2><p>'+t.desc+'</p></div>'+
-      '<div class="diego-menu-art"><img src="'+flipVisual[t.id]+'" alt="" draggable="false"></div></button>';
+  // Una sola schermata per l'adulto: nessun passaggio categoria -> sotto-menu.
+  // Habitat 2 arriva automaticamente dopo habitat 1; non e' un gioco separato.
+  const visibleGames=games.filter(function(g){return g.id!=='habitat2'});
+  const shortNames={pregrafismo:'Segni',parole:'Parole',scacchi:'Scacchi',
+    match:'Abbina',count:'Conta',unisci:'Unisci',numeri:'Numeri',same:'Uguale',
+    memory:'Memory',odd:'Diverso',habitat1:'Animali',colori:'Colori',acqua:'Acqua'};
+  const cards=visibleGames.map(function(g){
+    var picture=flipVisual[g.id]||flipVisual.attenzione;
+    return '<button type="button" class="diego-menu-card flip-'+g.id+'" data-game="'+g.id+
+      '" aria-label="'+g.title+'"><div class="diego-menu-copy"><h2>'+
+      (shortNames[g.id]||g.title)+'</h2></div><div class="diego-menu-art"><img src="'+
+      picture+'" alt="" draggable="false"></div></button>';
   }).join('');
-  main.innerHTML='<section class="diego-menu" aria-label="Categorie dei giochi">'+
-    '<div class="diego-menu-heading"><div><h1>GIOCHI</h1><p>Scegli una categoria</p></div>'+
-    '<img src="assets/diegoland/belafonte-canonica.webp" alt="" draggable="false"></div>'+
-    '<div class="diego-menu-grid">'+cards+'</div></section>';
-  main.querySelectorAll('.diego-menu-card').forEach(function(b){
-    b.onclick=function(){
-      const t=topics.find(function(x){return x.id===b.dataset.topic});
-      if(!t)return;
-      if(t.ids.length===1)start(t.ids[0]);else openTopic(t.id);
-    };
+  main.innerHTML='<section class="diego-menu diego-direct" aria-label="Scegli il gioco">'+
+     '<div class="diego-menu-grid">'+cards+'</div></section>';
+  main.querySelectorAll('button[data-game]').forEach(function(b){
+    b.onclick=function(){start(b.dataset.game)};
   });
 }
+
 function flipGameCard(g){
   const href=g.id==='numeri'?'trova-il-numero.html':null;
   return flipCard(g.title,g.desc,g.id,flipVisual[g.id]||flipVisual.attenzione,'game',href);
@@ -274,7 +274,7 @@ function openTopic(id){
   main.querySelectorAll('button[data-game]').forEach(function(b){b.onclick=function(){start(b.dataset.game)}});
 }
 
-function start(id){if(id==='pregrafismo'){location.href='pregrafismo.html';return}if(id==='parole'){location.href='parole.html';return}if(id==='scacchi'){location.href='scacchi-stelle.html';return}if(id==='acqua'){location.href='acqua.html?game=splash';return}if(id==='numeri'){location.href='trova-il-numero.html';return}if(id==='unisci'){location.href='unisci-quantita.html';return}current=id;stars=0;if(id==='count'){countSolved=0;countTouchedAudio=null}statusEl.textContent=games.find(g=>g.id===id).title;if(id==='habitat1'||id==='habitat2'){habitatDeck=[];habitatCorrect=0}render()}
+function start(id){if(id==='pregrafismo'){location.href='pregrafismo.html';return}if(id==='parole'){location.href='parole.html';return}if(id==='scacchi'){location.href='scacchi-stelle.html';return}if(id==='acqua'){location.href='acqua.html?game=splash';return}if(id==='numeri'){location.href='trova-il-numero.html';return}if(id==='unisci'){location.href='unisci-quantita.html';return}current=id;stars=0;if(id==='count'){countSolved=0;countTouchedAudio=null}if(id==='colori'){coloriSolved=0;coloriDeck=[]}if(id==='memory'){memoryRounds=0}statusEl.textContent=games.find(g=>g.id===id).title;if(id==='habitat1'||id==='habitat2'){habitatDeck=[];habitatCorrect=0}render()}
 function render(){roundToken++;if(current==='match')renderMatch();if(current==='count')renderCount();if(current==='same')renderSame();if(current==='memory')renderMemory();if(current==='odd')renderOdd();if(current==='habitat1'||current==='habitat2')renderHabitat();if(current==='colori')renderColori()}
 function renderMatch(){
  if(!matchDeck.length)matchDeck=shuffle(matchItems);
@@ -316,7 +316,7 @@ const countTypes=[
  {name:'STELLA',file:'assets/diegoland/stella-marina-canonica.webp'},
  {name:'CHITARRA',file:'assets/diegoland/chitarra-canonica.webp'}
 ];
-const countPlan=[1,2,3,2,3,4,3,4,5,4,5,6,5,6,7,6,7,8];
+const countPlan=[1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8];
 let countSolved=0,countTouchedAudio=null;
 function countNumber(n){
  // Lettura vocale locale del browser, se disponibile: nessun servizio online.
@@ -331,7 +331,7 @@ function countNumber(n){
 }
 function renderCount(){
  const step=countSolved;
- const n=step<countPlan.length?countPlan[step]:1+((step-countPlan.length+4)%8);
+ const n=step<countPlan.length?countPlan[step]:8;
  const type=countTypes[step%countTypes.length];
  // Due pose dello stesso squalo: una figura uniforme per ciascun esercizio.
  const art=type.alternate && Math.floor(step/countTypes.length)%2 ? type.alternate : type.file;
@@ -384,10 +384,12 @@ function renderSequence(){
   const q=seqs[Math.floor(Math.random()*seqs.length)];shell('Sequenze','Quale figura viene dopo?',`<div style="width:100%"><div class="sequence">${q.s.join(' ')} <span class="blank">?</span></div><div style="height:36px"></div><div class="answers">${shuffle(q.opts).map(x=>`<button class="answer" data-a="${x}">${x}</button>`).join('')}</div></div>`);
   let answered=false;document.querySelectorAll('.answer').forEach(b=>b.onclick=()=>{if(answered)return;if(b.dataset.a===q.a){answered=true;point();later(renderSequence,750)}else{b.style.borderColor='var(--bad)';say('Guarda il ritmo')}})
 }
+let memoryRounds=0;
 function renderMemory(){
-  const vals=shuffle(pairs).slice(0,4).map(x=>x[0]);const deck=shuffle([...vals,...vals]);let open=[],lock=false,done=0;
+  const pairsNow=Math.min(4,2+Math.floor(memoryRounds/2));
+  const vals=shuffle(pairs).slice(0,pairsNow).map(x=>x[0]);const deck=shuffle([...vals,...vals]);let open=[],lock=false,done=0;
   shell('MEMORY','',`<div class="memgrid">${deck.map((v,i)=>`<button class="mem closed" data-v="${v}" data-i="${i}">${v}</button>`).join('')}</div>`);
-  document.querySelectorAll('.mem').forEach(b=>b.onclick=()=>{if(lock||!b.classList.contains('closed'))return;b.classList.remove('closed');open.push(b);if(open.length===2){lock=true;if(open[0].dataset.v===open[1].dataset.v){later(()=>{open.forEach(x=>x.classList.add('done'));open=[];lock=false;done++;point();if(done===4)later(renderMemory,900)},350)}else{later(()=>{open.forEach(x=>x.classList.add('closed'));open=[];lock=false},650)}}})
+  document.querySelectorAll('.mem').forEach(b=>b.onclick=()=>{if(lock||!b.classList.contains('closed'))return;b.classList.remove('closed');open.push(b);if(open.length===2){lock=true;if(open[0].dataset.v===open[1].dataset.v){later(()=>{open.forEach(x=>x.classList.add('done'));open=[];lock=false;done++;point();if(done===pairsNow){memoryRounds++;later(renderMemory,800)}},350)}else{later(()=>{open.forEach(x=>x.classList.add('closed'));open=[];lock=false},650)}}})
 }
 function renderHabitat(){
   const level=current==='habitat2'?2:1;
@@ -410,7 +412,7 @@ function renderHabitat(){
       </div>
     </div>`);
   main.querySelector('.gamewrap').classList.add('habitat-wide');
-  const back=document.createElement('button');back.className='iconbtn habitat-back';back.textContent='⚙';back.setAttribute('aria-label','Scegli gli esercizi');back.onclick=()=>openTopic('animali');
+  const back=document.createElement('button');back.className='iconbtn habitat-back';back.textContent='⚙';back.setAttribute('aria-label','Scegli gli esercizi');back.onclick=home;
   main.querySelector('.gamehead').append(back);
   let answered=false;
   document.querySelectorAll('.habitat-zone').forEach(b=>b.onclick=()=>{
@@ -446,9 +448,9 @@ const coloriAnimals=[
  {name:'PINGUINO',file:'pinguino',answer:['nero','bianco'],wrong:[['verde','giallo'],['rosa','marrone']]},
  {name:'VOLPE',file:'volpe',answer:['arancione','bianco'],wrong:[['verde','nero'],['blu','grigio']]}
 ];
-let coloriDeck=[];
+let coloriDeck=[],coloriSolved=0;
 function renderColori(){
- if(!coloriDeck.length)coloriDeck=shuffle(coloriAnimals);
+ if(!coloriDeck.length)coloriDeck=shuffle(coloriAnimals.filter(function(a){return a.answer.length===(coloriSolved<3?1:2)}));
  const a=coloriDeck.pop();
  const choices=shuffle([{colors:a.answer,right:true},...a.wrong.map(colors=>({colors,right:false}))]);
  shell('COLORI','',
@@ -461,7 +463,7 @@ function renderColori(){
  main.querySelectorAll('.colori-choice').forEach(b=>b.onclick=()=>{
   if(answered)return;
   if(choices[+b.dataset.choice].right){
-   answered=true;b.classList.add('good');point();later(renderColori,1250)
+   answered=true;b.classList.add('good');coloriSolved++;point();later(renderColori,900)
   }else{
    b.classList.add('wrong');say('Riprova');later(()=>b.classList.remove('wrong'),600)
   }

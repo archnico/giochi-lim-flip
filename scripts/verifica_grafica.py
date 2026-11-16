@@ -287,9 +287,9 @@ verify("pregrafismo:'assets/diegoland/esploratore-canonico.webp'" in index,
        "PAROLE: manca l'esploratore dalla barba bianca")
 verify("esploratore_intero.webp" not in index,
        "PAROLE: vecchio esploratore ancora in uso")
-verify('<div class="diego-menu-heading">' in index and
-       '<img src="assets/diegoland/belafonte-canonica.webp"' in index,
-       "Belafonte non compare nell'intestazione del menu unico")
+verify((ROOT / "assets/diegoland/belafonte-canonica.webp").is_file() and
+       "diego-direct" in index,
+       "Home diretta senza intestazione testuale: Belafonte conservata nel kit")
 verify("belafonte-canonica.webp" not in
        index.split("const countTypes=[",1)[1].split("];",1)[0],
        "Belafonte erroneamente introdotta in Conta")
@@ -305,19 +305,26 @@ menu_script=index.split("function home(){",1)[1].split("function flipGameCard(",
 topics_data=index.split("const topics=[",1)[1].split("];",1)[0]
 verify(topics_data.count("{id:") == 8,
        "Menu adulto: attese esattamente otto categorie")
-verify("topics.map(function(t)" in menu_script and
+verify("visibleGames.map(function(g)" in menu_script and
        "diego-menu-grid" in menu_script and
-       "data-topic" in menu_script,
-       "Menu adulto: non tutte le categorie sono generate in superficie")
+       "data-game" in menu_script and
+       "diego-direct" in menu_script,
+       "Menu adulto: i giochi non sono tutti accessibili direttamente")
 verify("otherBtn" not in index and "openOthers" not in index and
        "ALTRI GIOCHI" not in index,
        "Menu adulto: persiste la vecchia sezione Altri")
-verify("if(t.ids.length===1)start(t.ids[0]);else openTopic(t.id)" in index,
-       "Menu adulto: apertura diretta per le categorie con un gioco non attiva")
+verify("b.onclick=function(){start(b.dataset.game)}" in menu_script and
+       "g.id!=='habitat2'" in menu_script,
+       "Menu adulto: l'avvio deve essere diretto, habitat2 segue habitat1")
 verify("function openTopic(id)" in index and "backTopic" in index,
        "Menu adulto: selezione dei giochi interni o ritorno al menu assenti")
 verify("diego-menu.css" in index,
        "Menu adulto: foglio di stile non caricato")
+verify("diego-focus.css" in index and
+       "diego-focus.css" in (ROOT/'acqua.html').read_text(encoding='utf8'),
+       "Flusso compatto: foglio condiviso non caricato")
+verify("const countPlan=[1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8]" in index,
+       "Conta: crescita con salti improvvisi")
 games_data=index.split("const games=[",1)[1].split("];",1)[0]
 all_games=set(re.findall(r"\{id:'([^']+)'", games_data))
 topic_groups=re.findall(r"ids:\[([^\]]*)\]",topics_data)
@@ -360,9 +367,9 @@ if touch_icon.is_file():
                "Pregrafismo: icona tocco SVG malformata")
     except ET.ParseError:
         verify(False,"Pregrafismo: icona tocco SVG invalida")
-verify("assets/diegoland/stella-marina-canonica.webp" in preg
-       and "var star=svg('image'" in preg,
-       "Pregrafismo: arrivo e premio non usano la stella canonica")
+verify("class':'finish-ring'" in preg and "class':'start-arrow'" in preg
+       and "reward-medal" in preg and "assets/diegoland/stella-marina-canonica.webp" in preg,
+       "Pregrafismo: freccia e cerchio all'arrivo; stella solo come premio")
 verify("assets/diegoland/ui/tocco.svg" in preg
        and "pg-visual-instruction" in preg,
        "Pregrafismo: istruzioni visive non locali")
@@ -377,15 +384,14 @@ verify("👆 → ⭐" not in preg and
        "setMessage('⭐')" not in preg and
        '">✏️</h1>' not in preg,
        "Pregrafismo: emoji di sistema visibili nelle istruzioni")
-verify("stroke:'#F4E4B0'" in preg and
-       "stroke:'#B98741'" in preg and
-       "stroke:'#9AC9C0'" in preg,
-       "Pregrafismo: guida sabbia e progresso laguna non distinti")
+verify("class':'model-path'" in preg and "stroke:'#0093A5'" in preg
+       and "class':'progress-path'" in preg and "stroke:'#B4CDC2'" in preg,
+       "Pregrafismo: modello ceruleo saturo, segno completato laguna")
 verify("stroke:var(--pg-hand)" in pg_css and
-       "--pg-hand:#0093A5" in pg_css and
-       "opacity:'.98'" in preg and
+       "--pg-hand:#B4CDC2" in pg_css and
+       "stroke-width:14" in pg_css and
        "opacity:effectiveMode()===0?'.22':'.9'" not in preg,
-       "Pregrafismo: tratto reale non contrastato in ogni modalità")
+       "Pregrafismo: il dito è tenue ma leggibile in tutte le modalità")
 verify("esploratore_intero.webp" not in pg_v2 and
        "squalo_giaguaro.webp" not in pg_v2 and
        "esploratore-canonico.webp" in pg_v2 and

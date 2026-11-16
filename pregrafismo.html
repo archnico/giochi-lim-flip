@@ -61,7 +61,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 <link rel="stylesheet" href="pregrafismo-diegoland-v2.css">
 <link rel="stylesheet" href="diego-premio.css">
 <script src="diego-runtime.js"></script>
-<link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script></head>
+<link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script><link rel="stylesheet" href="diego-focus.css"></head>
 <body>
 <div id="app">
   <div class="top">
@@ -70,7 +70,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
       <button type="button" id="home" class="btn">⌂ GIOCHI</button>
       <button id="fullscreen" type="button" class="btn">⛶ SCHERMO</button>
       <button id="sound" type="button" class="btn" aria-pressed="true">SUONI</button>
-      <button id="toolToggle" type="button" class="btn" aria-expanded="false" aria-controls="teacherTools">OPZIONI</button>
+      <button id="toolToggle" type="button" class="btn" aria-expanded="false" aria-controls="teacherTools">⚙</button>
     </div>
   </div>
   <div id="menu">
@@ -112,6 +112,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
       <button id="next" type="button" class="btn light" title="Salta o vai avanti" aria-label="Esercizio successivo, salta senza penalità">▶</button>
     </div>
     <div id="teacherTools" class="teacher-tools" hidden>
+      <button id="teacherChapters" type="button" class="btn" aria-label="Scegli percorso">PERCORSI</button>
       <button id="prev" type="button" class="btn">← PRIMA</button>
       <button id="hint" type="button" class="btn">▶ MOSTRA</button>
       <button id="easy" type="button" class="btn" aria-label="Cambia aiuti di scrittura">ASSISTITO</button>
@@ -209,6 +210,35 @@ var chapters=[
 if(!window.PregrafismoPCChapters||window.PregrafismoPCChapters.length!==4)throw new Error('Percorsi PC mancanti');
 chapters=window.PregrafismoPCChapters.concat(chapters,window.PregrafismoNuoviChapters||[]);
 var state={deck:'pc',chapter:-1,level:0,stroke:0,parts:[],samples:[],index:0,down:false,id:null,lastTouch:0,done:false,easy:true,mode:0,mastery:false,masteryStep:0,decorated:false,session:0,zoom:1,inputLast:null,activeBrush:null,brushLast:null,brushD:'',strokeCaptures:[],errors:0,startedAt:0};
+// Curriculum unico: tutte le 112 schede, nessun menu fra una scheda e l'altra.
+ // Le fasce sono cognitive (retta, diagonale, angolo, curva, onda, anello,
+ // forma, combinazione, lettera, disegno), NON moltiplicatori di difficolta'.
+ // A parita' di fascia prima meno tratti e meno cambi di direzione.
+function lessonGrade(ci,li){
+ var c=chapters[ci],id=c.id,paths=c.levels[li][1];
+ var band={ 'pc-prime':0,'rette':0,'diagonali':1,'segni':2,
+   'pc-curve':3,'curve':3,'onde':4,'pc-forme':5,'cerchi':5,
+   'acqua':6,'pc-avventura':6,'prime-lettere':7,'altre-lettere':8,
+   'mare-disegni':9}[id];
+ if(id==='pc-prime'&&li>=4)band=2;
+ if(id==='prime-lettere'&&li===4)band=0; // I: una linea sola
+ if(id==='prime-lettere'&&li===5)band=2; // L: un angolo
+ var turns=0;
+ paths.forEach(function(p){var m=p.match(/[LlHhVvQqCcSsTtAaZz]/g);turns+=(m||[]).length});
+ return band*100+Math.min(75,Math.max(0,paths.length-1)*12+turns*3);
+}
+var learningPath=[];
+chapters.forEach(function(c,ci){c.levels.forEach(function(level,li){
+ learningPath.push({ci:ci,li:li,grade:lessonGrade(ci,li)});
+})});
+learningPath.sort(function(a,b){return a.grade-b.grade||a.ci-b.ci||a.li-b.li});
+function pathIndex(ci,li){for(var i=0;i<learningPath.length;i++){
+ if(learningPath[i].ci===ci&&learningPath[i].li===li)return i;
+}return 0}
+function openAt(n,repeat){
+ var i=Math.max(0,Math.min(learningPath.length-1,n)),p=learningPath[i];
+ openLevel(p.ci,p.li,repeat);
+}
 var sessionTimers=[],demoTimer=0,audioCtx=null,progress={},traceRenderTimer=0,masteryProgress={},attempts={};
 try{progress=JSON.parse(localStorage.getItem('diego-pregrafismo-progress-v1')||'{}')||{}}catch(e){progress={}}
 try{masteryProgress=JSON.parse(localStorage.getItem('diego-pregrafismo-5stelle-v1')||'{}')||{};attempts=JSON.parse(localStorage.getItem('diego-pregrafismo-attempts-v1')||'{}')||{}}catch(e){masteryProgress={};attempts={}}
@@ -250,7 +280,7 @@ function labelButtons(){var c=chapters[state.chapter],mode=effectiveMode();
  document.getElementById('ex-title').setAttribute('aria-label',title());
  // Suggerimento composto da pittogrammi locali, non da emoji di sistema.
  document.getElementById('ex-subtitle').setAttribute('aria-label',c.levels[state.level][4]||c.title);
- document.getElementById('ex-counter').textContent=(state.level+1)+' / '+c.levels.length;
+ document.getElementById('ex-counter').textContent=(state.routeIndex+1)+' / '+learningPath.length;
  document.getElementById('easy').textContent=['ASSISTITO','GUIDATO','AUTONOMO'][state.mode];
  document.getElementById('easy').setAttribute('data-mode',String(state.mode));
  document.getElementById('mastery').textContent='5 STELLE';
@@ -274,6 +304,7 @@ function showDemo(){if(state.chapter<0||state.done||state.down)return;stopDemo()
 function openLevel(ci,li,repeat){state.session++;clearTimers();if(window.DiegoPremio)DiegoPremio.stop(celebrate);state.chapter=ci;
  state.deck=chapters[ci].kind||'extra';
  state.level=(li+chapters[ci].levels.length)%chapters[ci].levels.length;
+ state.routeIndex=pathIndex(ci,state.level);
  if(!repeat)state.masteryStep=0;
  state.stroke=0;state.index=0;state.down=false;state.id=null;state.done=false;
  state.startedAt=Date.now();state.errors=0;state.strokeCaptures=[];
@@ -318,7 +349,7 @@ function fitLesson(){
  state.baseView=base;
  board.setAttribute('viewBox',base.x+' '+base.y+' '+base.w+' '+base.h);state.touchMatrix=null;
 }
-function samplePart(data){var samples=[],n=Math.max(3,Math.min(240,Math.ceil(data.length/7)));for(var i=0;i<=n;i++)samples.push(data.path.getPointAtLength(data.length*i/n));return samples}
+function samplePart(data){var samples=[],n=Math.max(3,Math.min(165,Math.ceil(data.length/10)));for(var i=0;i<=n;i++)samples.push(data.path.getPointAtLength(data.length*i/n));return samples}
 function activate(){
  clear(markers);if(state.stroke>=state.parts.length)return;
  state.parts.forEach(function(d,i){var m=effectiveMode();
@@ -362,6 +393,7 @@ function startGesture(ev,id){if(state.chapter<0||state.done||state.down)return;
  state.touchMatrix=null;var pt=mapEvent(ev),target=state.samples[state.index];
  if(!target||dist(pt,target)>Math.max([96,70,50][effectiveMode()],(board.viewBox.baseVal.width/Math.max(1,board.getBoundingClientRect().width))*26)){setMessage('TOCCA');return false}
  stopDemo();state.down=true;state.id=id;state.inputLast=pt;
+ state.hitWidth=Math.max(1,board.getBoundingClientRect().width);
  state.brushD='M'+Math.round(pt.x)+' '+Math.round(pt.y);
  state.brushLast=pt;state.activeBrush=svg('path',{'class':'live-ink',d:state.brushD,opacity:'.98','pointer-events':'none'},drawnInk);
  state.strokeCaptures.push([[Math.round(pt.x),Math.round(pt.y)]]);
@@ -398,7 +430,7 @@ function moveStep(pt){
  var lo=Math.max(0,state.index-3),hi=Math.min(state.samples.length-1,state.index+9);
  var best=-1,bestDist=1e9;
  for(var i=lo;i<=hi;i++){var di=dist(pt,state.samples[i]);if(di<bestDist){bestDist=di;best=i}}
- var tolerance=Math.max([42,30,19][effectiveMode()],(board.viewBox.baseVal.width/Math.max(1,board.getBoundingClientRect().width))*15);
+ var tolerance=Math.max([42,30,19][effectiveMode()],(board.viewBox.baseVal.width/(state.hitWidth||board.clientWidth||1))*15);
  if(bestDist>tolerance){state.errors++;return}if(best<state.index)return;
  if(best>state.index){
   state.index=best;
@@ -452,13 +484,14 @@ function finishLevel(){
 }
 function nextLevel(){if(state.chapter<0)return;
  if(window.DiegoPremio)DiegoPremio.stop(celebrate);
- if(state.mastery&&state.done&&state.masteryStep<4){state.masteryStep++;openLevel(state.chapter,state.level,true);return}
- var n=state.level+1;
- if(n>=chapters[state.chapter].levels.length){
-  if(state.chapter===chapters.length-1){location.href='parole.html';return}
-  openLevel(state.chapter+1,0)
- }else openLevel(state.chapter,n)
+ if(state.mastery&&state.done&&state.masteryStep<4){
+   state.masteryStep++;openLevel(state.chapter,state.level,true);return;
+ }
+ if(state.routeIndex+1>=learningPath.length){location.href='parole.html';return}
+ openAt(state.routeIndex+1);
 }
+function previousLevel(){if(state.chapter<0)return;openAt(state.routeIndex-1)}
+
 function panBoard(dx,dy){
  if(state.zoom<=1)return;
  var base=state.baseView||{x:0,y:0,w:1000,h:600};
@@ -484,7 +517,8 @@ sound.onclick=function(){if(window.DiegoAudio){DiegoAudio.setEnabled(!DiegoAudio
 if(window.DiegoAudio)DiegoAudio.subscribe(syncSound);syncSound();
 document.getElementById('home').onclick=function(){location.href='index.html'};
 document.getElementById('chaptersBtn').onclick=chapterMenu;
-document.getElementById('prev').onclick=function(){if(state.level===0)chapterMenu();else openLevel(state.chapter,state.level-1)};
+ document.getElementById('teacherChapters').onclick=chapterMenu;
+document.getElementById('prev').onclick=previousLevel;
 document.getElementById('next').onclick=nextLevel;
 document.getElementById('again').onclick=function(){if(state.chapter>=0)openLevel(state.chapter,state.level)};
 document.getElementById('hint').onclick=showDemo;
@@ -513,11 +547,11 @@ document.addEventListener('keydown',function(e){
  else if(key==='arrowup'&&state.zoom>1){e.preventDefault();panBoard(0,-65)}
  else if(key==='arrowdown'&&state.zoom>1){e.preventDefault();panBoard(0,65)}
  else if(key==='j'&&state.chapter>=0){e.preventDefault();nextLevel()}
- else if(key==='k'&&state.chapter>=0){e.preventDefault();if(state.level===0)chapterMenu();else openLevel(state.chapter,state.level-1)}
- else if(key==='escape'&&state.chapter>=0){e.preventDefault();chapterMenu()}
+ else if(key==='k'&&state.chapter>=0){e.preventDefault();previousLevel()}
+ else if(key==='escape'&&state.chapter>=0){e.preventDefault();location.href='index.html'}
  else if(key==='0'){e.preventDefault();zoomBoard(1-state.zoom)}
  else if(key==='i'&&state.chapter>=0){e.preventDefault();openLevel(state.chapter,state.level)}
- else if(key==='r'){e.preventDefault();location.reload()}
+ else if(key==='r'){e.preventDefault();if(state.chapter>=0)openLevel(state.chapter,state.level)}
  else if(key==='f'){e.preventDefault();try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen();else if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen()}catch(ignore){}}
 });
 document.getElementById('easy').onclick=function(){
@@ -551,18 +585,15 @@ if(usePointer){
 window.addEventListener('blur',function(){state.down=false;state.id=null;stopDemo()});
 document.addEventListener('visibilitychange',function(){if(document.hidden){state.down=false;state.id=null;stopDemo()}});
 window.addEventListener('pagehide',function(){clearTimers();if(audioCtx&&audioCtx.close)try{audioCtx.close()}catch(ignore){}});
-// Avvio immediato dal primo percorso ancora da imparare. Il menu rimane
-// per l'adulto sul pulsante PERCORSI, ma non interrompe la sessione di Diego.
-var firstChapter=0,firstLevel=0;
-for(var ci=0;ci<chapters.length;ci++){
- var completed=progress[chapters[ci].id]||[];
- if(completed.length>=chapters[ci].levels.length)continue;
- firstChapter=ci;firstLevel=0;
- while(firstLevel<chapters[ci].levels.length-1&&completed.indexOf(firstLevel)>=0)firstLevel++;
- break;
+// Riprendi il primo esercizio non completato, senza mostrare le raccolte.
+var firstRoute=0;
+while(firstRoute<learningPath.length-1){
+ var p=learningPath[firstRoute],completed=progress[chapters[p.ci].id]||[];
+ if(completed.indexOf(p.li)<0)break;
+ firstRoute++;
 }
-openLevel(firstChapter,firstLevel);
-window.PregrafismoTest={chapters:chapters,state:state,openLevel:openLevel,nextLevel:nextLevel,chapterMenu:chapterMenu,startGesture:startGesture,moveGesture:moveGesture,endGesture:endGesture,mapEvent:mapEvent,zoomBoard:zoomBoard,panBoard:panBoard};
+openAt(firstRoute);
+window.PregrafismoTest={chapters:chapters,state:state,learningPath:learningPath,openAt:openAt,openLevel:openLevel,nextLevel:nextLevel,previousLevel:previousLevel,chapterMenu:chapterMenu,startGesture:startGesture,moveGesture:moveGesture,endGesture:endGesture,mapEvent:mapEvent,zoomBoard:zoomBoard,panBoard:panBoard};
 })();
 </script>
 </body>

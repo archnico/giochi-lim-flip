@@ -1,5 +1,8 @@
 # Diego — Pregrafismo Diegoland (14 novembre 2026)
 
+> **Aggiornamento 16/11/2026:** le convenzioni del colore e dei marcatori
+> sono state corrette. Vale il documento [PREGRAFISMO_DIREZIONE_20261116.md](PREGRAFISMO_DIREZIONE_20261116.md).
+
 ## Scopo della revisione
 
 L'utente ha approvato la pulizia grafica del pregrafismo per la Samsung Flip e lo smartphone:

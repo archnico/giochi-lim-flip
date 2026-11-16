@@ -14,16 +14,18 @@ main{position:relative;min-height:0;overflow:hidden}.view{display:none;width:100
 #fishBtn:active{transform:translateY(4px);box-shadow:0 2px 0 #082f4b}
 #fishNotice{position:absolute;z-index:2;left:25%;right:8%;bottom:28px;text-align:center;font-weight:900;font-size:clamp(18px,2.2vw,31px);text-shadow:0 3px 5px #074c70;pointer-events:none;min-height:1.4em}
 @media(max-width:720px){#fishBtn{left:9px;bottom:9px;min-width:120px;min-height:61px;padding:6px 10px;gap:5px;font-size:20px;border-width:3px;border-radius:18px}#fishBtn img{width:35px;height:35px}#fishNotice{left:42%;right:3%;bottom:14px;font-size:18px}}
-</style><link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diego-flusso.css"><link rel="stylesheet" href="diego-premio.css"><script src="diego-flusso.js"></script><link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script></head><body><div id="app"><header><strong>🌊 DIEGO · ACQUA</strong><div class="right"><button id="sound" aria-pressed="true">🔊 SUONO</button><button id="back">⌂ MENU</button></div></header><main>
+</style><link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diego-flusso.css"><link rel="stylesheet" href="diego-premio.css"><script src="diego-flusso.js"></script><link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script><link rel="stylesheet" href="diego-focus.css"></head><body><div id="app"><header><strong aria-label="Diego · Acqua">DIEGO</strong><div class="right"><button id="sound" aria-pressed="true">🔊 SUONO</button><button id="back" aria-label="Torna ai giochi">⌂</button></div></header><main>
 <section id="menu" class="view menu active"><h1>🌊 IL MONDO DELL'ACQUA</h1><p>TOCCA · ASCOLTA · GIOCA</p><div class="menu-grid">
 <button class="mode" data-go="splash"><span class="art">💦</span>TOCCA L'ACQUA</button><button class="mode" data-go="pool"><span class="art">🏊</span>LA PISCINA</button></div></section>
-<section id="splash" class="view"><canvas id="sea" aria-label="Tocca o trascina il dito sull'acqua per creare onde; in pesca segui la linea con il dito"></canvas><div class="overlay" id="splashInstruction">FAI SPLASH!</div><button id="fishBtn" type="button" aria-pressed="false" aria-label="Gioca a pescare"><img src="assets/diegoland/vettori/pesce.svg" alt=""><span>PESCA</span></button><div id="fishNotice" aria-live="polite"></div></section>
+<section id="splash" class="view"><canvas id="sea" aria-label="Tocca o trascina il dito sull'acqua per creare onde; in pesca segui la linea con il dito"></canvas><div class="overlay" id="splashInstruction" aria-label="Tocca il mare"></div><button id="fishBtn" type="button" aria-pressed="false" aria-label="Gioca a pescare"><img src="assets/diegoland/vettori/pesce.svg" alt=""><span class="sr-only">PESCA</span></button><div id="fishNotice" aria-live="polite"></div></section>
 <section id="pool" class="view"><div class="pooltitle" id="pooltitle">TIENI PREMUTO PER RIEMPIRE LA PISCINA!</div><div class="poolscene"><div class="poolwater" id="water"></div><div class="tapjet" id="jet"></div><div class="pooltoy" id="toy">🛟</div></div><button class="tapbtn" id="tapwater">🚰 APRI L'ACQUA</button></section>
 </main></div><script src="diego-audio.js"></script><script src="diego-premio.js"></script><script src="diego-acqua-sorprese.js"></script><script>
 'use strict';
 const $=id=>document.getElementById(id),waterScope=DiegoRuntime.createScope();
 let view='menu',soundOn=DiegoAudio.isEnabled(),ac=null,noise=null,poolLevel=0,hold=false,holdFrame=0,seaFrame=0,lastHold=0;
 let waves=[],droplets=[],lastNoise=0,waterNodes=[];
+const flipLite=/Tizen|SmartSignage/i.test(navigator.userAgent);
+let lastSeaPaint=0,lastPoolPaint=0;
 let splashExtra=null;
 function soundContext(){if(!soundOn)return null;try{const AudioEngine=window.AudioContext||window.webkitAudioContext;if(!AudioEngine)return null;ac=ac||new AudioEngine();if(ac.state==='suspended'){const p=ac.resume();if(p&&p.catch)p.catch(()=>{})}if(!noise){noise=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate);let a=noise.getChannelData(0),v=0;for(let i=0;i<a.length;i++){v=(v+(.055*(Math.random()*2-1)))*.995;a[i]=Math.max(-1,Math.min(1,v*3))}}return ac}catch(e){return null}}
 /* Registrazioni naturali: si caricano solo al primo gesto, offline e a volume basso.
@@ -68,7 +70,7 @@ DiegoAudio.subscribe(function(enabled){soundOn=enabled;$('sound').textContent=en
 $('sound').onclick=()=>{DiegoAudio.setEnabled(!soundOn);if(soundOn)playMarine('bolle',false)};
 function stopSea(){cancelAnimationFrame(seaFrame);seaFrame=0;waves=[];droplets=[];lastSplashPoint=null;if(ctx)ctx.clearRect(0,0,seaWidth,seaHeight);if(splashExtra)splashExtra.leave()}
 function show(id){if(window.waterFlow)waterFlow.begin();stopHold();stopAllMarine();stopSea();waterScope.reset();DiegoAudio.stop();view=id;document.querySelectorAll('.view').forEach(e=>e.classList.toggle('active',e.id===id));if(id==='splash'){resizeSea();if(splashExtra)splashExtra.enter()}if(id==='pool')resetPool()}
-document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));$('back').onclick=()=>{if(view==='menu')location.href='index.html?topic=acqua';else show('menu')};document.addEventListener('keydown',e=>{if(e.key==='Escape')show('menu')});
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));$('back').onclick=()=>{location.href='index.html'};document.addEventListener('keydown',e=>{if(e.key==='Escape')location.href='index.html'});
 /* Splash: sfondo CSS statico, solo gli schizzi sul canvas.
    Nessun limite artificiale a 29 fps; il browser decide il ritmo. */
 const canvas=$('sea'),ctx=canvas.getContext('2d');
@@ -87,13 +89,13 @@ window.addEventListener('resize',()=>{if(view==='splash')resizeSea()});
 function wakeSea(){if(view==='splash'&&!document.hidden&&!seaFrame)seaFrame=requestAnimationFrame(frame)}
 function addWave(x,y,now,trail){
  waves.push({x:x,y:y,t:now});
- if(waves.length>22)waves.splice(0,waves.length-22);
- const count=trail?2:5;
+ if(waves.length>(flipLite?14:22))waves.splice(0,waves.length-(flipLite?14:22));
+ const count=trail?(flipLite?1:2):(flipLite?3:5);
  for(let i=0;i<count;i++){
   const a=Math.random()*6.2831853,s=30+Math.random()*130;
   droplets.push({x:x,y:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-70,t:now,size:2+Math.random()*4});
  }
- if(droplets.length>56)droplets.splice(0,droplets.length-56);
+ if(droplets.length>(flipLite?32:56))droplets.splice(0,droplets.length-(flipLite?32:56));
  if(now-lastNoise>650){waterSound(.42);lastNoise=now}
 }
 function touchSea(e,move){
@@ -111,7 +113,7 @@ function touchSea(e,move){
  const dx=x-prev.x,dy=y-prev.y,dist=Math.sqrt(dx*dx+dy*dy);
  // Filtra il tremolio del touch, ma interpola i trascinamenti rapidi.
  if(dist<12&&(dist<5||now-prev.t<35))return;
- const steps=Math.min(5,Math.max(1,Math.ceil(dist/30)));
+ const steps=Math.min(flipLite?3:5,Math.max(1,Math.ceil(dist/35)));
  for(let i=1;i<=steps;i++)addWave(prev.x+dx*i/steps,prev.y+dy*i/steps,now,true);
  lastSplashPoint={x:x,y:y,t:now};
  wakeSea();
@@ -120,6 +122,8 @@ DiegoRuntime.press(canvas,{start:e=>touchSea(e,false),move:e=>touchSea(e,true),e
 function frame(now){
  seaFrame=0;
  if(view!=='splash'||document.hidden||!ctx)return;
+ if(flipLite&&now-lastSeaPaint<32){seaFrame=requestAnimationFrame(frame);return}
+ lastSeaPaint=now;
  ctx.clearRect(0,0,seaWidth,seaHeight);
  for(let i=waves.length-1;i>=0;i--){
   const v=waves[i],age=(now-v.t)/980;
@@ -144,7 +148,7 @@ function frame(now){
  if(waves.length||droplets.length||(splashExtra&&splashExtra.animating()))seaFrame=requestAnimationFrame(frame);
 }
 function resetPool(){stopHold();poolLevel=0;$('water').style.height='0%';$('toy').style.bottom='6px';$('pooltitle').textContent='TIENI PREMUTO PER RIEMPIRE LA PISCINA!';$('tapwater').textContent='🚰 APRI L\'ACQUA'}
-function updatePool(now){if(!hold||view!=='pool')return;const elapsed=Math.max(0,Math.min(50,now-lastHold));lastHold=now;poolLevel=Math.min(100,poolLevel+elapsed*.033);$('water').style.height=poolLevel+'%';$('toy').style.bottom='calc('+poolLevel+'% + 6px)';/* flusso naturale continuo: nessun generatore per ogni frame */if(poolLevel>=100){stopHold();$('pooltitle').textContent='🌊 ⭐';$('tapwater').textContent='🔁 ANCORA!';DiegoAudio.play('fantastico');waterFlow.complete(function(){show('splash')});return}holdFrame=requestAnimationFrame(updatePool)}
+function updatePool(now){if(!hold||view!=='pool')return;const elapsed=Math.max(0,Math.min(50,now-lastHold));lastHold=now;poolLevel=Math.min(100,poolLevel+elapsed*.033);if(!flipLite||now-lastPoolPaint>=32||poolLevel>=100){lastPoolPaint=now;$('water').style.height=poolLevel+'%';$('toy').style.bottom='calc('+poolLevel+'% + 6px)'}/* flusso naturale continuo: nessun generatore per ogni frame */if(poolLevel>=100){stopHold();$('pooltitle').textContent='🌊 ⭐';$('tapwater').textContent='🔁 ANCORA!';DiegoAudio.play('fantastico');waterFlow.complete(function(){show('splash')});return}holdFrame=requestAnimationFrame(updatePool)}
 function stopHold(){hold=false;stopMarine('corrente');cancelAnimationFrame(holdFrame);$('jet').classList.remove('on');$('tapwater').classList.remove('pressing')}
 function startHold(){if(view!=='pool')return;if(poolLevel>=100){waterFlow.begin();resetPool();return}if(hold)return;hold=true;lastHold=performance.now();$('tapwater').classList.add('pressing');$('jet').classList.add('on');if(!playMarine('corrente',true))syntheticWaterSound(.7);holdFrame=requestAnimationFrame(updatePool)}
 DiegoRuntime.press($('tapwater'),{start:startHold,end:stopHold});
@@ -167,5 +171,5 @@ document.addEventListener('keydown',e=>{
  }
 });
 const waterFlow=DiegoFlusso.create('acqua',function(){show(view==='splash'?'pool':'splash')});window.waterFlow=waterFlow;
-const requested=new URLSearchParams(location.search).get('game');if(['splash','pool'].includes(requested))show(requested);
+const requested=new URLSearchParams(location.search).get('game');show(requested==='pool'?'pool':'splash');
 </script></body></html>

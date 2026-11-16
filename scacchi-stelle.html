@@ -49,7 +49,7 @@ main{max-width:1500px;margin:auto;padding:10px 24px;display:grid;grid-template-c
  .teacher-panel .pick button,.teacher-panel .modes button{font-size:14px;min-height:45px}
  .controls{gap:5px}.controls h1{font-size:24px}.progress{font-size:21px}}
 @media(prefers-reduced-motion:reduce){.star-celebrate.show{animation:none}}
-</style><link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diego-flusso.css"><link rel="stylesheet" href="diego-premio.css"><script src="diego-flusso.js"></script><link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script></head><body>
+</style><link rel="stylesheet" href="diego-runtime.css"><link rel="stylesheet" href="diegoland.css"><link rel="stylesheet" href="diegoland-games.css"><script src="diego-runtime.js"></script><link rel="stylesheet" href="diego-flusso.css"><link rel="stylesheet" href="diego-premio.css"><script src="diego-flusso.js"></script><link rel="stylesheet" href="diego-pittogrammi.css"><script src="diego-pittogrammi.js"></script><link rel="stylesheet" href="diego-focus.css"></head><body>
 <header><strong><img class="chess-brand-logo" src="assets/diegoland/scacchi-logo.webp" alt="" draggable="false">DIEGO · SCACCHI</strong><a href="index.html">⌂ MENU</a></header>
 <main>
 <div class="board" id="board" aria-label="Scacchiera interattiva"></div>
@@ -103,26 +103,26 @@ const flowSteps=[
  {piece:'rook',stars:[[6,2],[3,2]],parallel:false,oneTap:true},
  {piece:'rook',stars:[[6,2],[3,2]],parallel:true,oneTap:true},
  {piece:'rook',stars:[[6,2],[3,2],[3,5]],parallel:true,oneTap:true},
- {piece:'rook',stars:[[6,2],[3,2],[3,5]],parallel:true,oneTap:true},
+ {piece:'rook',stars:[[6,2],[3,2],[3,5],[1,5]],parallel:true,oneTap:true},
  {piece:'rook',stars:[[6,2],[3,2],[3,5],[1,5],[1,1]],parallel:true,oneTap:true},
  {piece:'king',stars:[[5,4]],parallel:false,oneTap:true},
  {piece:'king',stars:[[5,4],[4,4]],parallel:false,oneTap:true},
  {piece:'king',stars:[[5,4],[4,4]],parallel:true,oneTap:true},
  {piece:'king',stars:[[5,4],[4,4],[3,4]],parallel:true,oneTap:true},
- {piece:'king',stars:[[5,4],[4,4],[3,4]],parallel:true,oneTap:true},
+ {piece:'king',stars:[[5,4],[4,4],[3,4],[2,4]],parallel:true,oneTap:true},
  {piece:'king',stars:[[5,4],[5,5],[4,5],[3,4],[2,5]],parallel:true,oneTap:true},
  {piece:'queen',stars:[[5,1]],parallel:false,oneTap:true},
  {piece:'queen',stars:[[5,1],[3,3]],parallel:false,oneTap:true},
  {piece:'queen',stars:[[5,1],[3,3]],parallel:true,oneTap:true},
  {piece:'queen',stars:[[5,1],[3,3],[3,6]],parallel:true,oneTap:true},
- {piece:'queen',stars:[[5,1],[3,3],[3,6]],parallel:true,oneTap:true},
+ {piece:'queen',stars:[[5,1],[3,3],[3,6],[6,6]],parallel:true,oneTap:true},
  {piece:'queen',stars:[[5,1],[3,3],[3,6],[6,6],[2,2]],parallel:true,oneTap:true},
  // ALFIERE: diagonali prima semplici, poi piu stelle visibili.
  {piece:'bishop',stars:[[5,1]],parallel:false,oneTap:true},
  {piece:'bishop',stars:[[5,1],[3,3]],parallel:false,oneTap:true},
  {piece:'bishop',stars:[[5,1],[3,3]],parallel:true,oneTap:true},
  {piece:'bishop',stars:[[5,1],[3,3],[1,5]],parallel:true,oneTap:true},
- {piece:'bishop',stars:[[5,1],[3,3],[1,5]],parallel:true,oneTap:true},
+ {piece:'bishop',stars:[[5,1],[3,3],[1,5],[4,2]],parallel:true,oneTap:true},
  {piece:'bishop',stars:[[5,1],[4,2],[3,3],[2,4],[1,5]],parallel:true,oneTap:true},
  // CAVALLO e PEDONE: esclusivamente catture dirette, mai mosse nel vuoto.
  {piece:'knight',stars:[[4,2]],parallel:false,oneTap:true},
