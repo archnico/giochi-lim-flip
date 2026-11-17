@@ -367,7 +367,9 @@ raw.forEach(function(d,i){
  var ink=svg('path',{'class':'progress-path',d:d,fill:'none',stroke:'#B4CDC2','stroke-width':10,'stroke-linecap':'round','stroke-linejoin':'round'},tracks);
  var len=0;try{len=path.getTotalLength()}catch(e){len=1}
  ink.style.strokeDasharray=len+' '+(len+4);ink.style.strokeDashoffset=len+2;
- state.parts.push({path:path,outer:outer,ink:ink,length:len,completed:false})
+ var part={path:path,outer:outer,ink:ink,length:len,completed:false};
+ // Sample path positions just once when the level opens, never at finger lift-off.
+ part.samples=samplePart(part);state.parts.push(part)
 });fitLesson();activate()}
 /* A compact lesson viewBox gives the drawn path more of the interactive surface.
    Coordinates remain in original SVG space: touch mapping and checkpoints stay exact. */
@@ -396,7 +398,7 @@ function activate(){
   d.path.setAttribute('opacity',i===state.stroke?[1,.76,.55][m]:(d.completed?'.45':'.16'));
   d.outer.setAttribute('opacity',i===state.stroke?[.76,.45,.20][m]:'.12');
  });
- state.samples=samplePart(state.parts[state.stroke]);state.index=0;state.lastBell=0;state.down=false;
+ state.samples=state.parts[state.stroke].samples;state.index=0;state.lastBell=0;state.down=false;
  var first=state.samples[0],last=state.samples[state.samples.length-1];
  // Cerchio di arrivo, anche per percorsi chiusi come la O.
  var finishRadius=dist(first,last)<8?59:40;
@@ -522,7 +524,7 @@ function finishGestureEvent(ev,id){
  endGesture(id);
 }
 function completeStroke(){flushTrace();state.down=false;state.id=null;state.source=null;state.touchMatrix=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+1)/state.parts.length)+'%';state.stroke++;
- if(state.stroke<state.parts.length){var token=state.session;setMessage('OK');later(function(){if(state.session!==token)return;activate()},120)}else finishLevel()}
+ if(state.stroke<state.parts.length){activate()}else finishLevel()}
 function finishLevel(){
  state.done=true;celebrate.hidden=false;document.getElementById('trace-progress').style.width='100%';
  var id=chapters[state.chapter].id,level=state.level,key=id+':'+level,p=progress[id]||[];
