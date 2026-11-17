@@ -211,7 +211,7 @@ var chapters=[
 ];
 if(!window.PregrafismoPCChapters||window.PregrafismoPCChapters.length!==4)throw new Error('Percorsi PC mancanti');
 chapters=window.PregrafismoPCChapters.concat(chapters,window.PregrafismoNuoviChapters||[]);
-var state={deck:'pc',chapter:-1,level:0,stroke:0,parts:[],samples:[],index:0,down:false,id:null,lastTouch:0,done:false,easy:true,mode:0,mastery:false,masteryStep:0,decorated:false,session:0,zoom:1,inputLast:null,activeBrush:null,brushLast:null,brushD:'',strokeCaptures:[],errors:0,startedAt:0};
+var state={deck:'pc',chapter:-1,level:0,stroke:0,parts:[],samples:[],index:0,down:false,id:null,lastTouch:0,done:false,easy:true,mode:0,mastery:false,masteryStep:0,decorated:false,session:0,zoom:1,source:null,inputLast:null,activeBrush:null,brushLast:null,brushD:'',strokeCaptures:[],errors:0,startedAt:0};
 // Curriculum unico: tutte le 112 schede, nessun menu fra una scheda e l'altra.
  // Le fasce sono cognitive (retta, diagonale, angolo, curva, onda, anello,
  // forma, combinazione, lettera, disegno), NON moltiplicatori di difficolta'.
@@ -265,7 +265,7 @@ function syncInkCanvas(redraw){
  var r=inkCanvas.getBoundingClientRect();
  if(!r.width||!r.height)return;
  // A Tizen un framebuffer ad alta risoluzione sprecava memoria e tempo.
- var scale=Math.min(1.25,window.devicePixelRatio||1);
+ var scale=1; // One display pixel per CSS pixel: no oversized Tizen canvas.
  var w=Math.max(1,Math.round(r.width*scale)),h=Math.max(1,Math.round(r.height*scale));
  var changed=inkCanvas.width!==w||inkCanvas.height!==h;
  if(changed){inkCanvas.width=w;inkCanvas.height=h}
@@ -328,7 +328,7 @@ function labelButtons(){var c=chapters[state.chapter],mode=effectiveMode();
  var stars=document.getElementById('mastery-stars');stars.hidden=!state.mastery;
  stars.textContent=state.mastery?('5 STELLE · '+(state.masteryStep+(state.done?1:0))+'/5'):'';
 }
-function chapterMenu(){state.session++;clearTimers();state.down=false;state.done=false;state.chapter=-1;menu.hidden=false;play.hidden=true;celebrate.hidden=true;var box=document.getElementById('chapters');clear(box);deckButtons();
+function chapterMenu(){state.session++;clearTimers();state.down=false;state.source=null;state.done=false;state.chapter=-1;menu.hidden=false;play.hidden=true;celebrate.hidden=true;var box=document.getElementById('chapters');clear(box);deckButtons();
  chapters.forEach(function(c,ci){
   if((c.kind||'extra')!==state.deck)return;
   var b=document.createElement('button');b.type='button';b.className='chapter';var done=(progress[c.id]||[]).length;
@@ -346,7 +346,7 @@ function openLevel(ci,li,repeat){state.session++;clearTimers();if(window.DiegoPr
  state.level=(li+chapters[ci].levels.length)%chapters[ci].levels.length;
  state.routeIndex=pathIndex(ci,state.level);
  if(!repeat)state.masteryStep=0;
- state.stroke=0;state.index=0;state.down=false;state.id=null;state.done=false;
+ state.stroke=0;state.index=0;state.down=false;state.id=null;state.source=null;state.done=false;
  state.startedAt=Date.now();state.errors=0;state.strokeCaptures=[];
  celebrate.hidden=true;menu.hidden=true;play.hidden=false;labelButtons();state.zoom=1;draw();
  document.getElementById('zoom-readout').textContent='100%';
@@ -416,12 +416,12 @@ function activate(){
 }
 function mapEvent(e){
  var x=e.clientX,y=e.clientY;
+ // Cache the six affine coefficients once per gesture. No SVGPoint DOM allocation
+ // and no geometry read in the hot pointermove/touchmove path on Tizen 5.
  try{
-  var pt=board.createSVGPoint();pt.x=x;pt.y=y;
-  // Una sola conversione delle coordinate per gesto, anche su Tizen 5.
   var inv=state.touchMatrix;
   if(!inv){var m=board.getScreenCTM();if(m){inv=m.inverse();state.touchMatrix=inv}}
-  if(inv){var r=pt.matrixTransform(inv);return{x:r.x,y:r.y}}
+  if(inv)return{x:x*inv.a+y*inv.c+inv.e,y:x*inv.b+y*inv.d+inv.f};
  }catch(ignore){}
  var rect=board.getBoundingClientRect(),v=board.viewBox.baseVal;
  var sc=Math.min(rect.width/v.width,rect.height/v.height);
@@ -429,10 +429,10 @@ function mapEvent(e){
  return{x:v.x+(x-rect.left-ox)/sc,y:v.y+(y-rect.top-oy)/sc}
 }
 function dist(a,b){var x=a.x-b.x,y=a.y-b.y;return Math.sqrt(x*x+y*y)}
-function startGesture(ev,id){if(state.chapter<0||state.done||state.down)return;
+function startGesture(ev,id,source){if(state.chapter<0||state.done||state.down)return false;
  state.touchMatrix=null;var pt=mapEvent(ev),target=state.samples[state.index];
- if(!target||dist(pt,target)>Math.max([96,70,50][effectiveMode()],(board.viewBox.baseVal.width/Math.max(1,board.getBoundingClientRect().width))*26)){setMessage('TOCCA');return false}
- stopDemo();state.down=true;state.id=id;state.inputLast=pt;
+ if(!target||dist(pt,target)>Math.max([112,82,56][effectiveMode()],(board.viewBox.baseVal.width/Math.max(1,board.getBoundingClientRect().width))*26)){setMessage('TOCCA');return false}
+ stopDemo();state.down=true;state.id=id;state.source=source||'manual';state.inputLast=pt;
  state.hitWidth=Math.max(1,board.getBoundingClientRect().width);
  state.brushLast=pt;state.strokeCaptures.push([[Math.round(pt.x),Math.round(pt.y)]]);
  syncInkCanvas(false);if(inkCtx){inkSegment(pt,{x:pt.x+.1,y:pt.y+.1})}
@@ -449,7 +449,9 @@ function flushTrace(){
 }
 function scheduleTrace(){
  if(traceRenderTimer)return;
- var delay=Math.max(0,33-(Date.now()-(state.lastTraceDraw||0)));
+ // Meter/cursor can lag the finger slightly; the real Canvas ink never does.
+ // Fewer SVG changes prevent expensive full-scene repaints on the Flip.
+ var delay=Math.max(0,125-(Date.now()-(state.lastTraceDraw||0)));
  traceRenderTimer=setTimeout(flushTrace,delay);
 }
 // Un unico tratto SVG predefinito: niente percorsi dinamici duplicati nella Flip.
@@ -457,7 +459,9 @@ function renderTrace(){
  if(state.chapter<0||state.done||state.stroke>=state.parts.length)return;
  var data=state.parts[state.stroke];
  var r=state.index/Math.max(1,state.samples.length-1);
- data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));
+ // Never repaint the underlying full SVG path while the finger is moving.
+ // Its completed state is applied once in completeStroke().
+ if(!state.down)data.ink.style.strokeDashoffset=Math.max(0,data.length*(1-r));
  document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+r)/state.parts.length)+'%';
  var point=state.samples[state.index],cursor=document.getElementById('cursor');
  if(cursor){cursor.setAttribute('cx',point.x);cursor.setAttribute('cy',point.y);cursor.setAttribute('visibility','visible')}
@@ -469,7 +473,7 @@ function moveStep(pt){
  var lo=Math.max(0,state.index-3),hi=Math.min(state.samples.length-1,state.index+9);
  var best=-1,bestDist=1e9;
  for(var i=lo;i<=hi;i++){var di=dist(pt,state.samples[i]);if(di<bestDist){bestDist=di;best=i}}
- var tolerance=Math.max([42,30,19][effectiveMode()],(board.viewBox.baseVal.width/(state.hitWidth||board.clientWidth||1))*15);
+ var tolerance=Math.max([68,46,28][effectiveMode()],(board.viewBox.baseVal.width/(state.hitWidth||board.clientWidth||1))*15);
  if(bestDist>tolerance){state.errors++;return}if(best<state.index)return;
  if(best>state.index){
   state.index=best;
@@ -484,7 +488,7 @@ function moveGesture(ev,id){
  if(!state.down||state.id!==id||state.done)return;
  var pt=mapEvent(ev),last=state.inputLast||pt,dd=dist(last,pt);
  // Eventi persi o salti enormi non devono disegnare una linea falsa.
- if(dd>360){state.inputLast=pt;state.brushLast=null;return}
+ if(dd>560){state.inputLast=pt;state.brushLast=null;return}
  // Il pixel arriva subito al dito; non aspetta il timer del percorso SVG.
  var capture=state.strokeCaptures[state.strokeCaptures.length-1];
  if(!state.brushLast||dist(pt,state.brushLast)>2){
@@ -495,7 +499,7 @@ function moveGesture(ev,id){
   capture.push([Math.round(pt.x),Math.round(pt.y)]);
  }
  // A discontinuity cannot earn a completed path. Lost frames get interpolation.
- var count=Math.max(1,Math.min(22,Math.ceil(dd/12)));
+ var count=Math.max(1,Math.min(45,Math.ceil(dd/12)));
  for(var k=1;k<=count;k++){
   moveStep({x:last.x+(pt.x-last.x)*k/count,y:last.y+(pt.y-last.y)*k/count});
   if(!state.down||state.done)break;
@@ -504,10 +508,21 @@ function moveGesture(ev,id){
  state.inputLast=pt;
 }
 function endGesture(id){if(!state.down||state.id!==id)return;flushTrace();
- state.down=false;state.id=null;state.touchMatrix=null;state.inputLast=null;
+ state.down=false;state.id=null;state.source=null;state.touchMatrix=null;state.inputLast=null;
  state.activeBrush=null;state.brushLast=null;var cursor=document.getElementById('cursor');if(cursor)cursor.setAttribute('visibility','hidden');if(!state.done)setMessage('SEGUI')}
-function completeStroke(){flushTrace();state.down=false;state.id=null;state.touchMatrix=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+1)/state.parts.length)+'%';state.stroke++;
- if(state.stroke<state.parts.length){if(window.DiegoAudio)DiegoAudio.play('stella');var token=state.session;setMessage('OK');later(function(){if(state.session!==token)return;activate()},520)}else finishLevel()}
+function finishGestureEvent(ev,id){
+ if(!state.down||state.id!==id)return;
+ // Some Tizen pointerup events report stale (0,0) coordinates; do not
+ // scribble a long diagonal at lift-off. Preserve genuine final touch points.
+ if(ev&&isFinite(ev.clientX)&&isFinite(ev.clientY)&&
+    !(ev.clientX===0&&ev.clientY===0)){
+  var pt=mapEvent(ev),prev=state.inputLast||pt;
+  if(dist(pt,prev)<400)moveGesture(ev,id);
+ }
+ endGesture(id);
+}
+function completeStroke(){flushTrace();state.down=false;state.id=null;state.source=null;state.touchMatrix=null;state.inputLast=null;state.activeBrush=null;state.brushLast=null;state.parts[state.stroke].completed=true;state.parts[state.stroke].ink.style.strokeDashoffset='0';document.getElementById('trace-progress').style.width=Math.round(100*(state.stroke+1)/state.parts.length)+'%';state.stroke++;
+ if(state.stroke<state.parts.length){var token=state.session;setMessage('OK');later(function(){if(state.session!==token)return;activate()},120)}else finishLevel()}
 function finishLevel(){
  state.done=true;celebrate.hidden=false;document.getElementById('trace-progress').style.width='100%';
  var id=chapters[state.chapter].id,level=state.level,key=id+':'+level,p=progress[id]||[];
@@ -610,24 +625,88 @@ document.getElementById('report').onclick=function(){
  var total=Object.keys(attempts).length,stars=Object.keys(masteryProgress).length;
  setMessage('STELLE '+stars+' · COMPLETATI '+total);
 };
+// Tizen 5 can expose PointerEvent but still deliver the reliable finger stream
+// via TouchEvent. Listen to both and process exactly ONE active source.
 var usePointer=!!window.PointerEvent;
 if(usePointer){
- board.addEventListener('pointerdown',function(e){if(e.button!==undefined&&e.button!==0)return;if(e.cancelable)e.preventDefault();if(startGesture(e,e.pointerId)){try{board.setPointerCapture(e.pointerId)}catch(ignore){}}});
- window.addEventListener('pointermove',function(e){if(e.cancelable&&state.down)e.preventDefault();moveGesture(e,e.pointerId)});
- window.addEventListener('pointerup',function(e){endGesture(e.pointerId)});
- window.addEventListener('pointercancel',function(e){endGesture(e.pointerId)});
- board.addEventListener('lostpointercapture',function(e){endGesture(e.pointerId)});
-}else{
- board.addEventListener('touchstart',function(e){if(e.cancelable)e.preventDefault();if(state.down||!e.changedTouches.length)return;state.lastTouch=Date.now();var t=e.changedTouches[0];startGesture(t,t.identifier)},{passive:false});
- window.addEventListener('touchmove',function(e){if(e.cancelable&&state.down)e.preventDefault();for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];if(t.identifier===state.id)moveGesture(t,t.identifier)}},{passive:false});
- window.addEventListener('touchend',function(e){for(var i=0;i<e.changedTouches.length;i++)endGesture(e.changedTouches[i].identifier)});
- window.addEventListener('touchcancel',function(e){for(var i=0;i<e.changedTouches.length;i++)endGesture(e.changedTouches[i].identifier)});
- board.addEventListener('mousedown',function(e){if(e.button!==0||Date.now()-state.lastTouch<800)return;if(e.cancelable)e.preventDefault();startGesture(e,'mouse')});
- window.addEventListener('mousemove',function(e){moveGesture(e,'mouse')});window.addEventListener('mouseup',function(){endGesture('mouse')});
+ board.addEventListener('pointerdown',function(e){
+  if(e.button!==undefined&&e.button!==0)return;
+  if(e.pointerType==='mouse'&&Date.now()-state.lastTouch<900)return;
+  if(e.cancelable)e.preventDefault();
+  if(startGesture(e,e.pointerId,'pointer')){
+   try{board.setPointerCapture(e.pointerId)}catch(ignore){}
+  }
+ });
+ window.addEventListener('pointermove',function(e){
+  if(state.source!=='pointer')return;
+  if(e.cancelable&&state.down)e.preventDefault();moveGesture(e,e.pointerId);
+ });
+ window.addEventListener('pointerup',function(e){
+  if(state.source!=='pointer')return;
+  // Final location might be available only in pointerup on slow displays.
+  finishGestureEvent(e,e.pointerId);
+ });
+ window.addEventListener('pointercancel',function(e){
+  if(state.source==='pointer')endGesture(e.pointerId);
+ });
+ board.addEventListener('lostpointercapture',function(e){
+  if(state.source==='pointer')endGesture(e.pointerId);
+ });
+}
+board.addEventListener('touchstart',function(e){
+ if(e.cancelable)e.preventDefault();
+ if(!e.changedTouches.length)return;
+ state.lastTouch=Date.now();
+ var t=e.changedTouches[0];
+ if(state.down){
+  // A true TouchEvent overrides synthetic/partial pointer events on the Flip.
+  if(state.source==='pointer'){
+   state.source='touch';state.id=t.identifier;state.inputLast=mapEvent(t);
+  }
+  return;
+ }
+ startGesture(t,t.identifier,'touch');
+},{passive:false});
+window.addEventListener('touchmove',function(e){
+ if(!state.down)return;
+ if(e.cancelable)e.preventDefault();
+ for(var i=0;i<e.changedTouches.length;i++){
+  var t=e.changedTouches[i];
+  if(state.source==='pointer'){
+   state.source='touch';state.id=t.identifier;state.inputLast=mapEvent(t);
+  }
+  if(state.source==='touch'&&t.identifier===state.id)moveGesture(t,t.identifier);
+ }
+},{passive:false});
+window.addEventListener('touchend',function(e){
+ for(var i=0;i<e.changedTouches.length;i++){
+  var t=e.changedTouches[i];
+  if(state.source==='touch'&&state.id===t.identifier){
+   finishGestureEvent(t,t.identifier);
+  }
+ }
+},{passive:false});
+window.addEventListener('touchcancel',function(e){
+ for(var i=0;i<e.changedTouches.length;i++){
+  var t=e.changedTouches[i];
+  if(state.source==='touch')endGesture(t.identifier);
+ }
+},{passive:false});
+if(!usePointer){
+ board.addEventListener('mousedown',function(e){
+  if(e.button!==0||Date.now()-state.lastTouch<900)return;
+  if(e.cancelable)e.preventDefault();startGesture(e,'mouse','mouse');
+ });
+ window.addEventListener('mousemove',function(e){
+  if(state.source==='mouse')moveGesture(e,'mouse');
+ });
+ window.addEventListener('mouseup',function(e){
+  if(state.source==='mouse')finishGestureEvent(e,'mouse')
+ });
 }
 window.addEventListener('resize',function(){if(state.chapter>=0)syncInkCanvas(true)});
-window.addEventListener('blur',function(){state.down=false;state.id=null;stopDemo()});
-document.addEventListener('visibilitychange',function(){if(document.hidden){state.down=false;state.id=null;stopDemo()}});
+window.addEventListener('blur',function(){state.down=false;state.id=null;state.source=null;stopDemo()});
+document.addEventListener('visibilitychange',function(){if(document.hidden){state.down=false;state.id=null;state.source=null;stopDemo()}});
 window.addEventListener('pagehide',function(){clearTimers();if(audioCtx&&audioCtx.close)try{audioCtx.close()}catch(ignore){}});
 // Riprendi il primo esercizio non completato, senza mostrare le raccolte.
 var firstRoute=0;
